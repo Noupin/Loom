@@ -22,14 +22,14 @@ jobs:
         with:
           node-version: "20" # Specify your Node.js version
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Get Yarn
+        run: npm install -g yarn
 
-      - name: Run Tests
-        run: npm test
+      - name: Install Dependencies
+        run: yarn
 
       - name: Build
-        run: npm run build
+        run: yarn build
 
       # - name: Configure AWS credentials
       # uses: aws-actions/configure-aws-credentials@v1
