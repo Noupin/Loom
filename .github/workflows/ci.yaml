@@ -16,6 +16,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch only the latest commit without history
+          submodules: false # Avoid submodules, if you're not using them
+          path: web # Check out into the 'web' directory directly
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,12 +30,10 @@ jobs:
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: npm install
-        working-directory: ./web
+        run: yarn
 
       - name: Build
-        run: npm run build
-        working-directory: ./web
+        run: yarn build
 
       # - name: Configure AWS credentials
       # uses: aws-actions/configure-aws-credentials@v1
