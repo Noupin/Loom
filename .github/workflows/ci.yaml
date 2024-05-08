@@ -29,9 +29,11 @@ jobs:
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: yarn workspaces focus web
+        working-directory: ./web
+        run: yarn install --focus
 
       - name: Build
+        working-directory: ./web
         run: yarn build
 
       # - name: Configure AWS credentials
