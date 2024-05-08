@@ -21,6 +21,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: "ls"
+        working-directory: ./web
         run: ls
 
       - name: Setup Node.js
