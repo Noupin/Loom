@@ -23,10 +23,10 @@ jobs:
           node-version: "20" # Specify your Node.js version
 
       - name: List workspaces
-        run: yarn workspaces list
+        run: yarn workspaces info
 
       - name: List workspaces from web
-        run: yarn workspaces list
+        run: yarn workspaces info
         working-directory: ./web
 
       - name: Get Yarn
