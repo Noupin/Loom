@@ -27,7 +27,6 @@ jobs:
 
       - name: Install Dependencies
         run: yarn workspace web install
-        working-directory: ./web
 
       - name: Build
         run: yarn build
