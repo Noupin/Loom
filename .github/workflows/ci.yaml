@@ -22,18 +22,11 @@ jobs:
         with:
           node-version: "20" # Specify your Node.js version
 
-      - name: List workspaces
-        run: yarn workspaces info
-
-      - name: List workspaces from web
-        run: yarn workspaces info
-        working-directory: ./web
-
       - name: Get Yarn
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: yarn workspace feryv-loom-web install
+        run: cd web && yarn install --focus
 
       - name: Build
         run: yarn build
