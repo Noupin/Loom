@@ -2,14 +2,11 @@
   "name": "feryv-loom",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT",
+  "license": "ISC",
   "private": true,
   "workspaces": {
     "packages": [
       "web",
-      "infra"
-    ],
-    "nohoist": [
       "infra"
     ]
   }
