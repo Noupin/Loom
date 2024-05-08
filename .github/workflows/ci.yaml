@@ -26,12 +26,8 @@ jobs:
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: yarn
+        run: yarn install --focus
         working-directory: ./web
-
-      - name: List node_modules
-        working-directory: ./web
-        run: ls -la node_modules
 
       - name: Build
         run: yarn build
