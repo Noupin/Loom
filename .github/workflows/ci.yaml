@@ -19,10 +19,9 @@ jobs:
         with:
           fetch-depth: 0 # Fetch only the latest commit without history
           submodules: false # Avoid submodules, if you're not using them
-          path: web # Check out into the 'web' directory directly
+          path: ./web # Check out into the 'web' directory directly
 
       - name: "ls"
-        run: cd web && ls
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
