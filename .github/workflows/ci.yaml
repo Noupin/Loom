@@ -21,9 +21,11 @@ jobs:
 
       - name: Sparse Checkout
         run: |
-          cd repo
           git sparse-checkout init --cone
           git sparse-checkout set web
+          mv web/* ./
+          mv web/.* ./
+          rmdir web
 
       - name: "ls"
         run: ls
