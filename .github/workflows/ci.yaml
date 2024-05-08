@@ -23,8 +23,7 @@ jobs:
           node-version: "20" # Specify your Node.js version
 
       - name: Get Yarn
-        run: cd web
-        run: npm install -g yarn
+        run: cd web && npm install -g yarn
 
       - name: Install Dependencies
         run: yarn
