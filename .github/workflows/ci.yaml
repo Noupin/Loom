@@ -33,7 +33,7 @@ jobs:
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: yarn workspace web install
+        run: yarn workspace feryv-loom-web install
 
       - name: Build
         run: yarn build
