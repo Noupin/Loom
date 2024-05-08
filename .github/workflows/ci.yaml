@@ -23,6 +23,7 @@ jobs:
           node-version: "20" # Specify your Node.js version
 
       - name: Get Yarn
+        run: cd web
         run: npm install -g yarn
 
       - name: Install Dependencies
@@ -38,6 +39,5 @@ jobs:
       #   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #   aws-region: ${{ secrets.AWS_REGION }}
 
-      # - name: Upload to S3
-      #   run: |
-      #     aws s3 cp ./dist s3://your-bucket-name/path-to-artifacts/ --recursive
+      # - name: Upload artifact to S3
+      #   run: aws s3 cp ./dist s3://your-artifact-bucket-name/${{ github.repository }}/${{ github.sha }}/ --recursive
