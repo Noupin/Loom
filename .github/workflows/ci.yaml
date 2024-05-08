@@ -26,7 +26,7 @@ jobs:
         run: npm install -g yarn
 
       - name: Install Dependencies
-        run: yarn install --focus
+        run: yarn workspace web install
         working-directory: ./web
 
       - name: Build
