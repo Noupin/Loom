@@ -31,12 +31,15 @@ jobs:
 
       - name: Get Yarn
         run: npm install -g yarn
+        working-directory: web
 
       - name: Install Dependencies
         run: yarn
+        working-directory: web
 
       - name: Build
         run: yarn build
+        working-directory: web
 
       # - name: Configure AWS credentials
       # uses: aws-actions/configure-aws-credentials@v1
