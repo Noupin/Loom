@@ -22,6 +22,7 @@ jobs:
           path: ./web # Check out into the 'web' directory directly
 
       - name: "ls"
+        run: ls
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
