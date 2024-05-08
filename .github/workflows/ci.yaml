@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "ls"
+        working-directory: ./web
         run: ls
 
       - name: Setup Node.js
