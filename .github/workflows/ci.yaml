@@ -14,18 +14,11 @@ jobs:
 
     # Steps define the sequence of tasks that will be executed
     steps:
-      - name: Checkout Repository
+      - name: Checkout Web Folder from Repo
         uses: actions/checkout@v4
         with:
-          path: "repo"
-
-      - name: Sparse Checkout
-        run: |
-          git sparse-checkout init --cone
-          git sparse-checkout set web
-          mv web/* ./
-          mv web/.* ./
-          rmdir web
+          sparse-checkout: "web"
+          sparse-checkout-cone-mode: false
 
       - name: "ls"
         run: ls
