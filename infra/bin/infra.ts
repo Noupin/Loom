@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import * as cdk from "@aws-cdk/core";
-import { InfraStack } from "../lib/infra-stack";
+import { LoomInfraStack } from "../lib/infra-stack";
+import { App } from "aws-cdk-lib";
 
-const app = new cdk.App();
-new InfraStack(app, "InfraStack", {
-  /* If you need to set environment-specific settings */
-  env: { account: "123456789012", region: "us-east-1" },
+const app = new App();
+new LoomInfraStack(app, "LoomInfraStack", {
+  description: "The infrastructure needed for the Loom application",
 });

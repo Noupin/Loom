@@ -1,6 +1,8 @@
 # Loom
 
 Weaving words, colors, and animations into the textiles that are stories
+look into cdk bootstrapping
+setup bootstrapping for cdk as my Noupin user
 
 ### React + TypeScript + Vite
 

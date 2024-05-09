@@ -1,30 +1,52 @@
-import * as cdk from "@aws-cdk/core";
-import * as s3 from "@aws-cdk/aws-s3";
-import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import * as codepipeline from "@aws-cdk/aws-codepipeline";
-import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
-import * as codebuild from "@aws-cdk/aws-codebuild";
+import { Stack, RemovalPolicy, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { CloudFrontWebDistribution } from "aws-cdk-lib/aws-cloudfront";
 
-export class InfraStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class LoomInfraStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+    const domainName = "feryv.com";
+
+    // S3 Bucket for dev website hosting
+    const dev_hostingBucket = new Bucket(this, "Loom_dev_HostingBucket", {
+      websiteIndexDocument: "index.html",
+      removalPolicy: RemovalPolicy.RETAIN, // Typically RETAIN for production
+      bucketName: "loom-dev-hosting",
+    });
 
     // S3 Bucket for website hosting
-    const hostingBucket = new s3.Bucket(this, "HostingBucket", {
+    const hostingBucket = new Bucket(this, "LoomHostingBucket", {
       websiteIndexDocument: "index.html",
-      publicReadAccess: true,
-      removalPolicy: cdk.RemovalPolicy.RETAIN, // Typically RETAIN for production
+      removalPolicy: RemovalPolicy.RETAIN, // Typically RETAIN for production
+      bucketName: "loom-hosting",
     });
 
     // S3 Bucket for artifacts
-    const artifactBucket = new s3.Bucket(this, "ArtifactBucket", {
-      removalPolicy: cdk.RemovalPolicy.RETAIN, // RETAIN to avoid accidental data loss
+    const artifactBucket = new Bucket(this, "LoomArtifactBucket", {
+      removalPolicy: RemovalPolicy.RETAIN, // RETAIN to avoid accidental data loss
+      bucketName: "loom-artifacts",
     });
 
     // CloudFront distribution for the website
-    const distribution = new cloudfront.CloudFrontWebDistribution(
+    const dev_distribution = new CloudFrontWebDistribution(
       this,
-      "Distribution",
+      "Loom_dev_Distribution",
+      {
+        originConfigs: [
+          {
+            s3OriginSource: {
+              s3BucketSource: dev_hostingBucket,
+            },
+            behaviors: [{ isDefaultBehavior: true }],
+          },
+        ],
+      }
+    );
+
+    const distribution = new CloudFrontWebDistribution(
+      this,
+      "LoomDistribution",
       {
         originConfigs: [
           {
@@ -36,45 +58,5 @@ export class InfraStack extends cdk.Stack {
         ],
       }
     );
-
-    // CodeBuild project for building and deploying the infrastructure
-    const buildProject = new codebuild.PipelineProject(this, "BuildProject", {
-      environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
-      },
-      buildSpec: codebuild.BuildSpec.fromSourceFilename("buildspec.yml"),
-    });
-
-    // Define the source action for CodePipeline
-    const sourceOutput = new codepipeline.Artifact();
-    const sourceAction = new codepipeline_actions.GitHubSourceAction({
-      actionName: "GitHub_Source",
-      owner: "your-github-username",
-      repo: "your-repo-name",
-      oauthToken: cdk.SecretValue.secretsManager("github-oauth-token"),
-      output: sourceOutput,
-    });
-
-    // Define the build action for CodePipeline
-    const buildAction = new codepipeline_actions.CodeBuildAction({
-      actionName: "Build_and_Deploy",
-      project: buildProject,
-      input: sourceOutput,
-    });
-
-    // Create the pipeline
-    new codepipeline.Pipeline(this, "Pipeline", {
-      pipelineName: "WebsiteDeploymentPipeline",
-      stages: [
-        {
-          stageName: "Source",
-          actions: [sourceAction],
-        },
-        {
-          stageName: "Build",
-          actions: [buildAction],
-        },
-      ],
-    });
   }
 }
