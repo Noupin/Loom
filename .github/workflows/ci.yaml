@@ -46,3 +46,14 @@ jobs:
       - name: Upload artifact to S3
         working-directory: ./web
         run: aws s3 cp ./dist s3://loom-artifacts/${{ github.sha }}/ --recursive
+
+      - name: Invoke Lambda Function to Trigger Pipeline
+        run: |
+          aws lambda invoke --function-name TriggerPipelineWithLatestArtifact \
+            --invocation-type RequestResponse \
+            --payload '{"bucketName": "loom-artifacts", "pipelineName": "loom-pipeline"}' \
+            response.json
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}

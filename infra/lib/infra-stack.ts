@@ -1,4 +1,4 @@
-import { Stack, RemovalPolicy, StackProps, Fn } from "aws-cdk-lib";
+import { Stack, RemovalPolicy, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import {
@@ -10,7 +10,24 @@ import {
 } from "aws-cdk-lib/aws-cloudfront";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Role } from "aws-cdk-lib/aws-iam";
+import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
+import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
+import {
+  CodeDeployServerDeployAction,
+  ManualApprovalAction,
+  S3SourceAction,
+  S3Trigger,
+} from "aws-cdk-lib/aws-codepipeline-actions";
+import {
+  ServerApplication,
+  ServerDeploymentGroup,
+} from "aws-cdk-lib/aws-codedeploy";
+import { Function } from "aws-cdk-lib/aws-lambda";
+import {
+  BuildSpec,
+  LinuxBuildImage,
+  PipelineProject,
+} from "aws-cdk-lib/aws-codebuild";
 
 export class LoomInfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -128,6 +145,111 @@ export class LoomInfraStack extends Stack {
           },
         ],
       }
+    );
+
+    // Get Lambda Role
+    const existingLambdaRole = Role.fromRoleArn(
+      this,
+      "LambdaExistingRole",
+      "arn:aws:iam::346316490277:role/TriggerPipelineWithLatestArtifactRole",
+      {
+        mutable: true, // This needs to be true to allow modifications
+      }
+    );
+    // Define the Lambda function
+    const pipelineTriggerLambda = Function.fromFunctionAttributes(
+      this,
+      "PipelineTriggerLambda",
+      {
+        functionArn:
+          "arn:aws:lambda:us-east-1:346316490277:function:TriggerPipelineWithLatestArtifact",
+        role: existingLambdaRole,
+      }
+    );
+    artifactBucket.grantRead(pipelineTriggerLambda);
+
+    // Create a new CodePipeline
+    const pipeline = new Pipeline(this, "LoomPipeline", {
+      pipelineName: "loom-pipeline",
+      artifactBucket: artifactBucket,
+    });
+    // Define a source artifact
+    const sourceArtifact = new Artifact();
+
+    // Source stage - dummy stage in this case, since Lambda triggers the pipeline
+    const sourceAction = new S3SourceAction({
+      actionName: "S3Source",
+      bucket: artifactBucket,
+      bucketKey: "dummy-key", // This won't actually be used, but is needed to configure the action
+      output: sourceArtifact,
+      trigger: S3Trigger.NONE, // No automatic trigger
+    });
+    pipeline.addStage({
+      stageName: "Source",
+      actions: [sourceAction],
+    });
+
+    // Deployment to Dev environment
+    const deployToDevAction = new CodeDeployServerDeployAction({
+      actionName: "DeployToDev",
+      input: sourceArtifact,
+      deploymentGroup:
+        ServerDeploymentGroup.fromServerDeploymentGroupAttributes(
+          this,
+          "DevDeploymentGroup",
+          {
+            application: ServerApplication.fromServerApplicationName(
+              this,
+              "dev_Loom",
+              "DevApplication"
+            ),
+            deploymentGroupName: "DevDeploymentGroup",
+          }
+        ),
+    });
+    pipeline.addStage({
+      stageName: "DeployToDev",
+      actions: [deployToDevAction],
+    });
+
+    // Manual approval
+    const approvalAction = new ManualApprovalAction({
+      actionName: "ApproveProdDeployment",
+    });
+    pipeline.addStage({
+      stageName: "ApproveProd",
+      actions: [approvalAction],
+    });
+
+    // Deployment to Prod environment
+    const deployToProdAction = new CodeDeployServerDeployAction({
+      actionName: "DeployToProd",
+      input: sourceArtifact,
+      deploymentGroup:
+        ServerDeploymentGroup.fromServerDeploymentGroupAttributes(
+          this,
+          "ProdDeploymentGroup",
+          {
+            application: ServerApplication.fromServerApplicationName(
+              this,
+              "Loom",
+              "ProdApplication"
+            ),
+            deploymentGroupName: "ProdDeploymentGroup",
+          }
+        ),
+    });
+    pipeline.addStage({
+      stageName: "DeployToProd",
+      actions: [deployToProdAction],
+    });
+
+    // Add IAM policy to allow the Lambda to trigger the CodePipeline
+    existingLambdaRole.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["codepipeline:StartPipelineExecution"],
+        resources: [pipeline.pipelineArn], // Use the ARN of the pipeline
+      })
     );
   }
 }
