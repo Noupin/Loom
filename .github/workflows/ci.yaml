@@ -56,6 +56,7 @@ jobs:
         run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/latest_web.zip
 
   build-and-push-infra:
+    needs: build-and-push-web
     runs-on: ubuntu-latest
 
     # Steps define the sequence of tasks that will be executed
