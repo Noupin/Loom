@@ -251,9 +251,7 @@ export class LoomInfraStack extends Stack {
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["sts:AssumeRole"],
-        resources: [
-          `arn:aws:iam::${this.account}:role/cdk-hnb659fds-file-publishing-role-${this.account}-${this.region}`,
-        ],
+        resources: ["arn:aws:iam::*:role/cdk-*"],
       })
     );
 
