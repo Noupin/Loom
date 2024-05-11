@@ -1,4 +1,4 @@
-import { Stack, RemovalPolicy, StackProps } from "aws-cdk-lib";
+import { Stack, RemovalPolicy, StackProps, Aws } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import {
@@ -22,6 +22,7 @@ import {
   LinuxBuildImage,
   PipelineProject,
 } from "aws-cdk-lib/aws-codebuild";
+import { Fn } from "aws-cdk-lib";
 
 export class LoomInfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -30,6 +31,15 @@ export class LoomInfraStack extends Stack {
       this,
       "baseDomainName"
     );
+    const stackArn = Fn.join(":", [
+      "arn",
+      "aws",
+      "cloudformation",
+      Aws.REGION,
+      Aws.ACCOUNT_ID,
+      "stack",
+      Aws.STACK_NAME,
+    ]);
 
     // Getting the certificate and roles needed
     const certificate = Certificate.fromCertificateArn(
@@ -195,14 +205,35 @@ export class LoomInfraStack extends Stack {
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: [
+          "cloudformation:CreateStack",
+          "cloudformation:UpdateStack",
+          "cloudformation:DeleteStack",
+          "cloudformation:Describe*", // Allow all Describe actions in CloudFormation
+          "cloudformation:GetTemplate",
+          "cloudformation:CreateChangeSet",
+          "cloudformation:ExecuteChangeSet",
+          "cloudformation:DeleteChangeSet",
           "s3:GetObject", // To download the artifact
           "s3:ListBucket", // To list objects in the artifact bucket
-          "s3:PutObject", // To upload files to the deployment bucket
-          "s3:DeleteObject", // To delete files from the deployment bucket
+          "iam:GetRole",
+          "iam:PassRole",
         ],
         resources: [
+          stackArn, // Access to the CloudFormation stack
           artifactBucket.bucketArn, // Access to the artifact bucket
           `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
+        ],
+      })
+    );
+
+    infraBuildProject.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: [
+          "ssm:GetParameter", // Add this to read the SSM parameter for CDK bootstrap
+        ],
+        resources: [
+          `arn:aws:ssm:${this.region}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`, // Specify the exact resource
         ],
       })
     );
