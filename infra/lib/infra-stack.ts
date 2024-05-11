@@ -23,7 +23,6 @@ import {
   ServerDeploymentGroup,
 } from "aws-cdk-lib/aws-codedeploy";
 import {
-  BuildEnvironmentVariableType,
   BuildSpec,
   LinuxBuildImage,
   PipelineProject,
@@ -60,6 +59,7 @@ export class LoomInfraStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN, // Typically RETAIN for production
       bucketName: "loom-dev-hosting",
       publicReadAccess: false,
+      versioned: true,
     });
     dev_hostingBucket.grantRead(originAccessIdentity);
 
@@ -69,6 +69,7 @@ export class LoomInfraStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN, // Typically RETAIN for production
       bucketName: "loom-hosting",
       publicReadAccess: false,
+      versioned: true,
     });
     hostingBucket.grantRead(originAccessIdentity);
 
