@@ -189,7 +189,7 @@ export class LoomInfraStack extends Stack {
     const sourceAction = new S3SourceAction({
       actionName: "S3Source",
       bucket: artifactBucket,
-      bucketKey: "*", // This won't actually be used, but is needed to configure the action
+      bucketKey: "latest.zip", // This won't actually be used, but is needed to configure the action
       output: sourceArtifact,
       trigger: S3Trigger.NONE, // No automatic trigger
     });
