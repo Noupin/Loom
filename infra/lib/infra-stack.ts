@@ -14,14 +14,9 @@ import { Effect, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import {
   CodeBuildAction,
-  CodeDeployServerDeployAction,
   ManualApprovalAction,
   S3SourceAction,
 } from "aws-cdk-lib/aws-codepipeline-actions";
-import {
-  ServerApplication,
-  ServerDeploymentGroup,
-} from "aws-cdk-lib/aws-codedeploy";
 import {
   BuildSpec,
   LinuxBuildImage,
@@ -161,7 +156,7 @@ export class LoomInfraStack extends Stack {
     const sourceAction = new S3SourceAction({
       actionName: "S3Source",
       bucket: artifactBucket,
-      bucketKey: "latest.zip", // This won't actually be used, but is needed to configure the action
+      bucketKey: "dummy-key", // This won't actually be used, but is needed to configure the action
       output: sourceArtifact,
     });
     pipeline.addStage({
