@@ -10,7 +10,12 @@ import {
 } from "aws-cdk-lib/aws-cloudfront";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
+import {
+  Effect,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
 import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import {
   CodeDeployServerDeployAction,
@@ -157,6 +162,9 @@ export class LoomInfraStack extends Stack {
         mutable: true, // This needs to be true to allow modifications
       }
     );
+    // const loomLambdaRole = new Role(this, 'PipelineTriggerLambdaRole_ForLoom', {
+    //   assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+    // });
     // Define the Lambda function
     const pipelineTriggerLambda = Function.fromFunctionAttributes(
       this,
@@ -181,7 +189,7 @@ export class LoomInfraStack extends Stack {
     const sourceAction = new S3SourceAction({
       actionName: "S3Source",
       bucket: artifactBucket,
-      bucketKey: "dummy-key", // This won't actually be used, but is needed to configure the action
+      bucketKey: "*", // This won't actually be used, but is needed to configure the action
       output: sourceArtifact,
       trigger: S3Trigger.NONE, // No automatic trigger
     });
@@ -251,9 +259,30 @@ export class LoomInfraStack extends Stack {
     // Add IAM policy to allow the Lambda to trigger the CodePipeline
     existingLambdaRole.addToPrincipalPolicy(
       new PolicyStatement({
-        actions: ["codepipeline:StartPipelineExecution"],
-        resources: [pipeline.pipelineArn], // Use the ARN of the pipeline
+        effect: Effect.ALLOW,
+        actions: [
+          "codepipeline:GetPipeline",
+          "codepipeline:UpdatePipeline",
+          "codepipeline:StartPipelineExecution",
+          "codepipeline:PollForSourceChanges",
+        ],
+        resources: [pipeline.pipelineArn, `${pipeline.pipelineArn}/*`], // Use the ARN of the pipeline
       })
     );
+
+    pipeline.stages.forEach((stage) => {
+      // console.log(stage.actions[0].actionProperties);
+      stage.actions.forEach((action) => {
+        if (action.actionProperties.role) {
+          // Some actions might not have a role
+          // existingLambdaRole.grantPassRole(action.actionProperties.role);
+          action.actionProperties.role.grantPassRole(existingLambdaRole);
+        }
+      });
+    });
+
+    // existingLambdaRole.grantPassRole(pipeline.role);
+    pipeline.role.grantPassRole(existingLambdaRole);
+    console.log(sourceAction.actionProperties.role);
   }
 }
