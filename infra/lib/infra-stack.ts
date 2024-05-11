@@ -254,7 +254,9 @@ export class LoomInfraStack extends Stack {
             },
           },
           build: {
-            commands: ["aws s3 cp s3://$SOURCE_BUCKET s3://$DEPLOY_BUCKET/"],
+            commands: [
+              "aws s3 cp s3://$SOURCE_BUCKET/ s3://$DEPLOY_BUCKET/ --recursive",
+            ],
           },
         },
       }),
