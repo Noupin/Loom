@@ -204,52 +204,6 @@ export class LoomInfraStack extends Stack {
     infraBuildProject.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ["s3:GetObject", "s3:PutObject", "s3:ListBucket"],
-        resources: [artifactBucket.bucketArn, `${artifactBucket.bucketArn}/*`],
-      })
-    );
-
-    infraBuildProject.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          "codebuild:BatchGetBuilds",
-          "codebuild:StartBuild",
-          "codebuild:StopBuild",
-        ],
-        resources: [infraBuildProject.projectArn],
-      })
-    );
-
-    infraBuildProject.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          "cloudformation:CreateStack",
-          "cloudformation:DescribeStacks",
-          "cloudformation:UpdateStack",
-          "cloudformation:DeleteStack",
-          "cloudformation:ListStackResources",
-        ],
-        resources: [
-          `arn:aws:cloudformation:${this.region}:${this.account}:stack/LoomStack/*`,
-        ],
-      })
-    );
-
-    infraBuildProject.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["ssm:GetParameter"],
-        resources: [
-          `arn:aws:ssm:${this.region}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
-        ],
-      })
-    );
-
-    infraBuildProject.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
         actions: ["sts:AssumeRole"],
         resources: ["arn:aws:iam::*:role/cdk-*"],
       })
