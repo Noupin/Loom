@@ -23,6 +23,7 @@ import {
   ServerDeploymentGroup,
 } from "aws-cdk-lib/aws-codedeploy";
 import {
+  BuildEnvironmentVariableType,
   BuildSpec,
   LinuxBuildImage,
   PipelineProject,
@@ -182,9 +183,9 @@ export class LoomInfraStack extends Stack {
           },
           build: {
             commands: [
-              "aws s3 cp s3://$CODEBUILD_SOURCE_BUCKET/$CODEBUILD_RESOLVED_SOURCE_VERSION_ID artifact.zip", // Use CodePipeline-provided variables
-              "unzip artifact.zip",
-              `aws s3 sync dist/ s3://${dev_hostingBucket.bucketName}/`,
+              "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip", // Use CodePipeline-provided variables
+              "unzip -o artifact.zip",
+              `aws s3 sync dist/ s3://$DEPLOY_BUCKET/`,
             ],
           },
         },
@@ -214,6 +215,11 @@ export class LoomInfraStack extends Stack {
       actionName: "DeployToDev",
       project: buildProject,
       input: sourceArtifact, // Use the S3 source artifact as input
+      environmentVariables: {
+        SOURCE_BUCKET: { value: artifactBucket.bucketName },
+        SOURCE_KEY: { value: "latest.zip" },
+        DEPLOY_BUCKET: { value: dev_hostingBucket.bucketName },
+      },
     });
     pipeline.addStage({
       stageName: "DeployToDev",
