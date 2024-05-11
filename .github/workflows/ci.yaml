@@ -50,7 +50,7 @@ jobs:
       - name: Encode Lambda Invocation Payload
         id: encode
         run: |
-          PAYLOAD=$(echo -n '{"bucketName": "loom-artifacts", "pipelineName": "loom-pipeline"}' | base64)
+          PAYLOAD=$(echo -n '{"bucketName": "loom-artifacts", "pipelineName": "loom-pipeline"}' | base64 -w 0)
           echo "ENCODED_PAYLOAD=$PAYLOAD" >> $GITHUB_ENV
 
       - name: Invoke Lambda Function to Trigger Pipeline
