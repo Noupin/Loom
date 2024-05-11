@@ -10,24 +10,18 @@ import {
 } from "aws-cdk-lib/aws-cloudfront";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import {
-  Effect,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from "aws-cdk-lib/aws-iam";
+import { Effect, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import {
+  CodeBuildAction,
   CodeDeployServerDeployAction,
   ManualApprovalAction,
   S3SourceAction,
-  S3Trigger,
 } from "aws-cdk-lib/aws-codepipeline-actions";
 import {
   ServerApplication,
   ServerDeploymentGroup,
 } from "aws-cdk-lib/aws-codedeploy";
-import { Function } from "aws-cdk-lib/aws-lambda";
 import {
   BuildSpec,
   LinuxBuildImage,
@@ -153,30 +147,6 @@ export class LoomInfraStack extends Stack {
       }
     );
 
-    // Get Lambda Role
-    const existingLambdaRole = Role.fromRoleArn(
-      this,
-      "LambdaExistingRole",
-      "arn:aws:iam::346316490277:role/TriggerPipelineWithLatestArtifactRole",
-      {
-        mutable: true, // This needs to be true to allow modifications
-      }
-    );
-    // const loomLambdaRole = new Role(this, 'PipelineTriggerLambdaRole_ForLoom', {
-    //   assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-    // });
-    // Define the Lambda function
-    const pipelineTriggerLambda = Function.fromFunctionAttributes(
-      this,
-      "PipelineTriggerLambda",
-      {
-        functionArn:
-          "arn:aws:lambda:us-east-1:346316490277:function:TriggerPipelineWithLatestArtifact",
-        role: existingLambdaRole,
-      }
-    );
-    artifactBucket.grantRead(pipelineTriggerLambda);
-
     // Create a new CodePipeline
     const pipeline = new Pipeline(this, "LoomPipeline", {
       pipelineName: "loom-pipeline",
@@ -185,36 +155,65 @@ export class LoomInfraStack extends Stack {
     // Define a source artifact
     const sourceArtifact = new Artifact();
 
-    // Source stage - dummy stage in this case, since Lambda triggers the pipeline
+    // Source stage for S3 to trigger the pipeline
     const sourceAction = new S3SourceAction({
       actionName: "S3Source",
       bucket: artifactBucket,
       bucketKey: "latest.zip", // This won't actually be used, but is needed to configure the action
       output: sourceArtifact,
-      trigger: S3Trigger.NONE, // No automatic trigger
     });
     pipeline.addStage({
       stageName: "Source",
       actions: [sourceAction],
     });
 
+    // Build stage for deploying to dev
+    const buildProject = new PipelineProject(this, "Loom_dev_DeployProject", {
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_5_0,
+      },
+      buildSpec: BuildSpec.fromObject({
+        version: "0.2",
+        phases: {
+          install: {
+            "runtime-versions": {
+              nodejs: "20",
+            },
+          },
+          build: {
+            commands: [
+              "aws s3 cp s3://$CODEBUILD_SOURCE_BUCKET/$CODEBUILD_RESOLVED_SOURCE_VERSION_ID artifact.zip", // Use CodePipeline-provided variables
+              "unzip artifact.zip",
+              `aws s3 sync dist/ s3://${dev_hostingBucket.bucketName}/`,
+            ],
+          },
+        },
+      }),
+    });
+
+    buildProject.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: [
+          "s3:GetObject", // To download the artifact
+          "s3:ListBucket", // To list objects in the artifact bucket
+          "s3:PutObject", // To upload files to the deployment bucket
+          "s3:DeleteObject", // To delete files from the deployment bucket
+        ],
+        resources: [
+          artifactBucket.bucketArn, // Access to the artifact bucket
+          `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
+          dev_hostingBucket.bucketArn, // Access to the deployment bucket
+          `${dev_hostingBucket.bucketArn}/*`, // Access to objects within the deployment bucket
+        ],
+      })
+    );
+
     // Deployment to Dev environment
-    const deployToDevAction = new CodeDeployServerDeployAction({
+    const deployToDevAction = new CodeBuildAction({
       actionName: "DeployToDev",
-      input: sourceArtifact,
-      deploymentGroup:
-        ServerDeploymentGroup.fromServerDeploymentGroupAttributes(
-          this,
-          "DevDeploymentGroup",
-          {
-            application: ServerApplication.fromServerApplicationName(
-              this,
-              "dev_Loom",
-              "DevApplication"
-            ),
-            deploymentGroupName: "DevDeploymentGroup",
-          }
-        ),
+      project: buildProject,
+      input: sourceArtifact, // Use the S3 source artifact as input
     });
     pipeline.addStage({
       stageName: "DeployToDev",
@@ -254,35 +253,6 @@ export class LoomInfraStack extends Stack {
     });
 
     // Grant permissions for pipeline to read from artifact bucket
-    artifactBucket.grantRead(pipeline.role, "dummy-key*");
-
-    // Add IAM policy to allow the Lambda to trigger the CodePipeline
-    existingLambdaRole.addToPrincipalPolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          "codepipeline:GetPipeline",
-          "codepipeline:UpdatePipeline",
-          "codepipeline:StartPipelineExecution",
-          "codepipeline:PollForSourceChanges",
-        ],
-        resources: [pipeline.pipelineArn, `${pipeline.pipelineArn}/*`], // Use the ARN of the pipeline
-      })
-    );
-
-    pipeline.stages.forEach((stage) => {
-      // console.log(stage.actions[0].actionProperties);
-      stage.actions.forEach((action) => {
-        if (action.actionProperties.role) {
-          // Some actions might not have a role
-          // existingLambdaRole.grantPassRole(action.actionProperties.role);
-          action.actionProperties.role.grantPassRole(existingLambdaRole);
-        }
-      });
-    });
-
-    // existingLambdaRole.grantPassRole(pipeline.role);
-    pipeline.role.grantPassRole(existingLambdaRole);
-    console.log(sourceAction.actionProperties.role);
+    artifactBucket.grantRead(pipeline.role, "*");
   }
 }
