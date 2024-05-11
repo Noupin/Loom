@@ -245,6 +245,9 @@ export class LoomInfraStack extends Stack {
       actions: [deployToProdAction],
     });
 
+    // Grant permissions for pipeline to read from artifact bucket
+    artifactBucket.grantRead(pipeline.role, "dummy-key*");
+
     // Add IAM policy to allow the Lambda to trigger the CodePipeline
     existingLambdaRole.addToPrincipalPolicy(
       new PolicyStatement({

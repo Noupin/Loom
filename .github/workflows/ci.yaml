@@ -43,9 +43,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload artifact to S3
+      - name: Zip Build Artifacts
         working-directory: ./web
-        run: aws s3 cp ./dist s3://loom-artifacts/${{ github.sha }}/ --recursive
+        run: zip -r ${{ github.sha }}.zip dist
+
+      - name: Upload Artifact to S3
+        uses: aws-actions/aws-s3-sync@v2
+        with:
+          args: --acl public-read
+          source_dir: ./web/${{ github.sha }}.zip
+          dest_dir: s3://loom-artifacts/
 
       - name: Encode Lambda Invocation Payload
         id: encode
