@@ -204,25 +204,8 @@ export class LoomInfraStack extends Stack {
     infraBuildProject.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: [
-          "cloudformation:CreateStack",
-          "cloudformation:UpdateStack",
-          "cloudformation:DeleteStack",
-          "cloudformation:Describe*", // Allow all Describe actions in CloudFormation
-          "cloudformation:GetTemplate",
-          "cloudformation:CreateChangeSet",
-          "cloudformation:ExecuteChangeSet",
-          "cloudformation:DeleteChangeSet",
-          "s3:GetObject", // To download the artifact
-          "s3:ListBucket", // To list objects in the artifact bucket
-          "iam:GetRole",
-          "iam:PassRole",
-        ],
-        resources: [
-          stackArn, // Access to the CloudFormation stack
-          artifactBucket.bucketArn, // Access to the artifact bucket
-          `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
-        ],
+        actions: ["s3:GetObject", "s3:PutObject", "s3:ListBucket"],
+        resources: [artifactBucket.bucketArn, `${artifactBucket.bucketArn}/*`],
       })
     );
 
@@ -230,10 +213,26 @@ export class LoomInfraStack extends Stack {
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: [
-          "ssm:GetParameter", // Add this to read the SSM parameter for CDK bootstrap
+          "codebuild:BatchGetBuilds",
+          "codebuild:StartBuild",
+          "codebuild:StopBuild",
+        ],
+        resources: [infraBuildProject.projectArn],
+      })
+    );
+
+    infraBuildProject.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: [
+          "cloudformation:CreateStack",
+          "cloudformation:DescribeStacks",
+          "cloudformation:UpdateStack",
+          "cloudformation:DeleteStack",
+          "cloudformation:ListStackResources",
         ],
         resources: [
-          `arn:aws:ssm:${this.region}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`, // Specify the exact resource
+          `arn:aws:cloudformation:${this.region}:${this.account}:stack/LoomStack/*`,
         ],
       })
     );
