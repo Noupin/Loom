@@ -247,6 +247,16 @@ export class LoomInfraStack extends Stack {
       })
     );
 
+    infraBuildProject.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["ssm:AssumeRole"],
+        resources: [
+          `arn:aws:iam::${this.account}:role/cdk-hnb659fds-file-publishing-role-${this.account}-${this.region}`,
+        ],
+      })
+    );
+
     // Deploy Infrastructure
     const deployInfraAction = new CodeBuildAction({
       actionName: "DeployInfrastructure",
