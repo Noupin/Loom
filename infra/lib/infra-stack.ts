@@ -16,6 +16,7 @@ import {
   CodeBuildAction,
   CodeDeployServerDeployAction,
   ManualApprovalAction,
+  S3DeployAction,
   S3SourceAction,
 } from "aws-cdk-lib/aws-codepipeline-actions";
 import {
@@ -169,90 +170,63 @@ export class LoomInfraStack extends Stack {
       actions: [sourceAction],
     });
 
-    // Build stage for deploying to dev
-    const buildProject = new PipelineProject(this, "Loom_dev_DeployProject", {
-      environment: {
-        buildImage: LinuxBuildImage.STANDARD_5_0,
-      },
+    const devArtifact = new Artifact("DevArtifact");
+    // Deployment to Dev environment
+    const deployToDevAction = new S3DeployAction({
+      actionName: "DeployToDev",
+      bucket: dev_hostingBucket,
+      input: sourceArtifact,
+      extract: true,
+      runOrder: 1,
+    });
+    const buildProject = new PipelineProject(this, "CopyFilesProject", {
       buildSpec: BuildSpec.fromObject({
         version: "0.2",
         phases: {
-          install: {
-            "runtime-versions": {
-              nodejs: "20",
-            },
-          },
           build: {
             commands: [
-              "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip", // Use CodePipeline-provided variables
-              "unzip -o artifact.zip",
-              `aws s3 sync dist/ s3://$DEPLOY_BUCKET/`,
+              "aws s3 cp s3://$CURRENT_BUCKET/ s3://$ARTIFACT_BUCKET/staging/ --recursive",
             ],
           },
+        },
+        artifacts: {
+          "base-directory": "staging",
+          files: "**/*",
         },
       }),
     });
 
-    buildProject.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          "s3:GetObject", // To download the artifact
-          "s3:ListBucket", // To list objects in the artifact bucket
-          "s3:PutObject", // To upload files to the deployment bucket
-          "s3:DeleteObject", // To delete files from the deployment bucket
-        ],
-        resources: [
-          artifactBucket.bucketArn, // Access to the artifact bucket
-          `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
-          dev_hostingBucket.bucketArn, // Access to the deployment bucket
-          `${dev_hostingBucket.bucketArn}/*`, // Access to objects within the deployment bucket
-        ],
-      })
-    );
-
-    // Deployment to Dev environment
-    const deployToDevAction = new CodeBuildAction({
-      actionName: "DeployToDev",
+    const buildAction = new CodeBuildAction({
+      actionName: "CopyFilesForProd",
       project: buildProject,
-      input: sourceArtifact, // Use the S3 source artifact as input
+      input: sourceArtifact,
+      outputs: [devArtifact],
       environmentVariables: {
-        SOURCE_BUCKET: { value: artifactBucket.bucketName },
-        SOURCE_KEY: { value: "latest.zip" },
-        DEPLOY_BUCKET: { value: dev_hostingBucket.bucketName },
+        CURRENT_BUCKET: { value: dev_hostingBucket.bucketName },
+        ARTIFACT_BUCKET: { value: artifactBucket.bucketName },
       },
+      runOrder: 2,
     });
     pipeline.addStage({
       stageName: "DeployToDev",
-      actions: [deployToDevAction],
+      actions: [deployToDevAction, buildAction],
     });
 
     // Manual approval
-    const approvalAction = new ManualApprovalAction({
+    const prodApprovalAction = new ManualApprovalAction({
       actionName: "ApproveProdDeployment",
     });
     pipeline.addStage({
       stageName: "ApproveProd",
-      actions: [approvalAction],
+      actions: [prodApprovalAction],
     });
 
     // Deployment to Prod environment
-    const deployToProdAction = new CodeDeployServerDeployAction({
+    const deployToProdAction = new S3DeployAction({
       actionName: "DeployToProd",
-      input: sourceArtifact,
-      deploymentGroup:
-        ServerDeploymentGroup.fromServerDeploymentGroupAttributes(
-          this,
-          "ProdDeploymentGroup",
-          {
-            application: ServerApplication.fromServerApplicationName(
-              this,
-              "Loom",
-              "ProdApplication"
-            ),
-            deploymentGroupName: "ProdDeploymentGroup",
-          }
-        ),
+      bucket: hostingBucket,
+      input: devArtifact, // Use the artifact resulting from Dev deployment
+      extract: true,
     });
     pipeline.addStage({
       stageName: "DeployToProd",
