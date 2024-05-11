@@ -9,7 +9,7 @@ on:
 
 # Jobs define what actions will run
 jobs:
-  build-and-test:
+  build-and-push-web:
     runs-on: ubuntu-latest
 
     # Steps define the sequence of tasks that will be executed
@@ -43,14 +43,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Zip Build Artifacts
+      - name: Zip Build Webapp Artifact
         working-directory: ./web
         run: zip -r ${{ github.sha }}.zip dist
 
-      - name: Upload artifact as SHA to S3
+      - name: Upload webapp artifact as SHA to S3
         working-directory: ./web
         run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/
 
-      - name: Upload artifact as Latest to S3
+      - name: Upload webapp artifact as Latest to S3
         working-directory: ./web
-        run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/latest.zip
+        run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/latest_web.zip
+
+  build-and-push-infra:
+    runs-on: ubuntu-latest
+
+    # Steps define the sequence of tasks that will be executed
+    steps:
+      - name: Checkout Infra Folder from Repo
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: "infra"
+          sparse-checkout-cone-mode: false
+
+      - name: Zip Build Infrastructure Artifact
+        run: zip -r ${{ github.sha }}.zip .
+
+      - name: Upload infrastructure artifact as Latest to S3
+        run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/latest_infra.zip

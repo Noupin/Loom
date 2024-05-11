@@ -150,18 +150,72 @@ export class LoomInfraStack extends Stack {
       artifactBucket: artifactBucket,
     });
     // Define a source artifact
-    const sourceArtifact = new Artifact();
+    const infraSourceArtifact = new Artifact("InfraSourceArtifact");
 
-    // Source stage for S3 to trigger the pipeline
-    const sourceAction = new S3SourceAction({
-      actionName: "S3Source",
+    const infraSourceAction = new S3SourceAction({
+      actionName: "InfraS3Source",
       bucket: artifactBucket,
-      bucketKey: "dummy-key", // This won't actually be used, but is needed to configure the action
-      output: sourceArtifact,
+      bucketKey: "latest_infra.zip",
+      output: infraSourceArtifact,
     });
     pipeline.addStage({
       stageName: "Source",
-      actions: [sourceAction],
+      actions: [infraSourceAction],
+    });
+
+    // Build stage for deploying to infrastructure
+    const infraBuildProject = new PipelineProject(
+      this,
+      "LoomDeployInfrastructure",
+      {
+        environment: {
+          buildImage: LinuxBuildImage.STANDARD_5_0,
+        },
+        buildSpec: BuildSpec.fromObject({
+          version: "0.2",
+          phases: {
+            install: {
+              "runtime-versions": {
+                nodejs: "20",
+              },
+            },
+            build: {
+              commands: [
+                "npm install -g aws-cdk",
+                "npm install",
+                "npx cdk deploy --require-approval never",
+              ],
+            },
+          },
+        }),
+      }
+    );
+
+    infraBuildProject.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: [
+          "s3:GetObject", // To download the artifact
+          "s3:ListBucket", // To list objects in the artifact bucket
+          "s3:PutObject", // To upload files to the deployment bucket
+          "s3:DeleteObject", // To delete files from the deployment bucket
+        ],
+        resources: [
+          artifactBucket.bucketArn, // Access to the artifact bucket
+          `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
+        ],
+      })
+    );
+
+    // Deploy Infrastructure
+    const deployInfraAction = new CodeBuildAction({
+      actionName: "DeployInfrastructure",
+      project: infraBuildProject,
+      input: infraSourceArtifact, // Use the S3 source artifact as input
+    });
+    pipeline.addStage({
+      stageName: "DeployInfrastructure",
+      actions: [deployInfraAction],
     });
 
     // Build stage for deploying to dev
@@ -212,12 +266,12 @@ export class LoomInfraStack extends Stack {
 
     // Deployment to Dev environment
     const deployToDevAction = new CodeBuildAction({
-      actionName: "DeployToDev",
+      actionName: "DeployWebsiteToDev",
       project: devBuildProject,
-      input: sourceArtifact, // Use the S3 source artifact as input
+      input: infraSourceArtifact, // Use the S3 source artifact as input
       environmentVariables: {
         SOURCE_BUCKET: { value: artifactBucket.bucketName },
-        SOURCE_KEY: { value: "latest.zip" },
+        SOURCE_KEY: { value: "latest_web.zip" },
         DEPLOY_BUCKET: { value: dev_hostingBucket.bucketName },
       },
     });
@@ -277,9 +331,9 @@ export class LoomInfraStack extends Stack {
 
     // Deployment to Prod environment
     const deployToProdAction = new CodeBuildAction({
-      actionName: "DeployToProd",
+      actionName: "DeployWebsiteToProd",
       project: prodBuildProject,
-      input: sourceArtifact, // Use the S3 source artifact as input
+      input: infraSourceArtifact, // Use the S3 source artifact as input
       environmentVariables: {
         SOURCE_BUCKET: { value: dev_hostingBucket.bucketName },
         DEPLOY_BUCKET: { value: hostingBucket.bucketName },
