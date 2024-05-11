@@ -22,7 +22,6 @@ import {
   LinuxBuildImage,
   PipelineProject,
 } from "aws-cdk-lib/aws-codebuild";
-import { Fn } from "aws-cdk-lib";
 
 export class LoomInfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -30,16 +29,7 @@ export class LoomInfraStack extends Stack {
     const domainName = StringParameter.valueForStringParameter(
       this,
       "baseDomainName"
-    );
-    const stackArn = Fn.join(":", [
-      "arn",
-      "aws",
-      "cloudformation",
-      Aws.REGION,
-      Aws.ACCOUNT_ID,
-      "stack",
-      Aws.STACK_NAME,
-    ]);
+    ); // TODO: Use domainName in the distributions
 
     // Getting the certificate and roles needed
     const certificate = Certificate.fromCertificateArn(
@@ -240,7 +230,7 @@ export class LoomInfraStack extends Stack {
               commands: [
                 "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip",
                 "unzip -o artifact.zip",
-                `aws s3 sync dist/ s3://$DEPLOY_BUCKET/`,
+                "aws s3 sync dist/ s3://$DEPLOY_BUCKET/",
               ],
             },
           },
