@@ -74,7 +74,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Zip Build Infrastructure Artifact
+        working-directory: ./infra
         run: zip -r ${{ github.sha }}.zip .
 
       - name: Upload infrastructure artifact as Latest to S3
+        working-directory: ./infra
         run: aws s3 cp ./${{ github.sha }}.zip s3://loom-artifacts/latest_infra.zip
