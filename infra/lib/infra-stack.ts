@@ -77,6 +77,7 @@ export class LoomInfraStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN, // RETAIN to avoid accidental data loss
       bucketName: "loom-artifacts",
       publicReadAccess: false,
+      versioned: true,
     });
     artifactBucket.grantReadWrite(githubActionsRole);
 
