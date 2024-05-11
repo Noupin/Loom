@@ -10,9 +10,10 @@ on:
 # Jobs define what actions will run
 jobs:
   build-and-push-web:
+    if: | # Conditional expression to check for '-deploy'
+      contains(github.event.head_commit.message, '-deploy') ||  
+      (github.event.pull_request && contains(github.event.pull_request.title, '-deploy'))
     runs-on: ubuntu-latest
-
-    # Steps define the sequence of tasks that will be executed
     steps:
       - name: Checkout Web Folder from Repo
         uses: actions/checkout@v4
@@ -59,7 +60,6 @@ jobs:
     needs: build-and-push-web
     runs-on: ubuntu-latest
 
-    # Steps define the sequence of tasks that will be executed
     steps:
       - name: Checkout Infra Folder from Repo
         uses: actions/checkout@v4
