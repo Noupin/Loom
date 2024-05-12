@@ -1,4 +1,5 @@
 import { Fn, Stack, StackProps } from "aws-cdk-lib";
+import { Distribution } from "aws-cdk-lib/aws-cloudfront";
 import {
   BuildSpec,
   LinuxBuildImage,
@@ -38,6 +39,9 @@ export class LoomPipelineStack extends Stack {
       "ImportedHostingBucket",
       hostingBucketName
     );
+
+    const devDistributionID = Fn.importValue("LoomDevDistributionId");
+    const distributionID = Fn.importValue("LoomDistributionId");
 
     // Create a new CodePipeline
     const pipeline = new Pipeline(this, "LoomPipeline", {
@@ -123,6 +127,7 @@ export class LoomPipelineStack extends Stack {
               "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip",
               "unzip -o artifact.zip",
               "aws s3 sync dist/ s3://$DEPLOY_BUCKET/",
+              "aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'",
             ],
           },
         },
@@ -137,12 +142,18 @@ export class LoomPipelineStack extends Stack {
           "s3:ListBucket", // To list objects in the artifact bucket
           "s3:PutObject", // To upload files to the deployment bucket
           "s3:DeleteObject", // To delete files from the deployment bucket
+          "cloudfront:CreateInvalidation", // To create CloudFront invalidation
         ],
         resources: [
           artifactBucket.bucketArn, // Access to the artifact bucket
           `${artifactBucket.bucketArn}/*`, // Access to objects within the artifact bucket
           devHostingBucket.bucketArn, // Access to the deployment bucket
           `${devHostingBucket.bucketArn}/*`, // Access to objects within the deployment bucket
+          Stack.of(this).formatArn({
+            service: "cloudfront",
+            resource: "distribution",
+            resourceName: distributionID,
+          }), // Access to the CloudFront distribution
         ],
       })
     );
@@ -156,6 +167,7 @@ export class LoomPipelineStack extends Stack {
         SOURCE_BUCKET: { value: artifactBucket.bucketName },
         SOURCE_KEY: { value: "latest_web.zip" },
         DEPLOY_BUCKET: { value: devHostingBucket.bucketName },
+        DISTRIBUTION_ID: { value: devDistributionID },
       },
     });
     pipeline.addStage({
@@ -188,6 +200,7 @@ export class LoomPipelineStack extends Stack {
           build: {
             commands: [
               "aws s3 cp s3://$SOURCE_BUCKET/ s3://$DEPLOY_BUCKET/ --recursive",
+              "aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'",
             ],
           },
         },
@@ -202,12 +215,18 @@ export class LoomPipelineStack extends Stack {
           "s3:ListBucket", // To list objects in the artifact bucket
           "s3:PutObject", // To upload files to the deployment bucket
           "s3:DeleteObject", // To delete files from the deployment bucket
+          "cloudfront:CreateInvalidation", // To create CloudFront invalidation
         ],
         resources: [
           devHostingBucket.bucketArn, // Access to the artifact bucket
           `${devHostingBucket.bucketArn}/*`, // Access to objects within the artifact bucket
           hostingBucket.bucketArn, // Access to the deployment bucket
           `${hostingBucket.bucketArn}/*`, // Access to objects within the deployment bucket
+          Stack.of(this).formatArn({
+            service: "cloudfront",
+            resource: "distribution",
+            resourceName: distributionID,
+          }), // Access to the CloudFront distribution
         ],
       })
     );
@@ -220,6 +239,7 @@ export class LoomPipelineStack extends Stack {
       environmentVariables: {
         SOURCE_BUCKET: { value: devHostingBucket.bucketName },
         DEPLOY_BUCKET: { value: hostingBucket.bucketName },
+        DISTRIBUTION_ID: { value: distributionID },
       },
     });
     pipeline.addStage({

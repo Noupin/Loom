@@ -65,9 +65,9 @@ export class LoomStorageStack extends Stack {
       exportName: "LoomHostingBucketName",
     });
 
-    new CfnOutput(this, "LoomOAIOutput", {
+    new CfnOutput(this, "OAIOutput", {
       value: originAccessIdentity.originAccessIdentityId,
-      exportName: "LoomOAIID",
+      exportName: "LoomOAIId",
     });
   }
 }

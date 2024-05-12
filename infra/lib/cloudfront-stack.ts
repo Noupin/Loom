@@ -1,7 +1,8 @@
-import { Fn, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Fn, Stack, StackProps } from "aws-cdk-lib";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import {
   AllowedMethods,
+  CachePolicy,
   Distribution,
   HttpVersion,
   LambdaEdgeEventType,
@@ -29,7 +30,7 @@ export class LoomCloudfrontStack extends Stack {
     // Get the hosting buckets and OAI from the StorageStack
     const devHostingBucketName = Fn.importValue("LoomDevHostingBucketName");
     const hostingBucketName = Fn.importValue("LoomHostingBucketName");
-    const originAccessIdentityID = Fn.importValue("LoomOAIID");
+    const originAccessIdentityID = Fn.importValue("LoomOAIId");
 
     const devHostingBucket = Bucket.fromBucketName(
       this,
@@ -69,6 +70,7 @@ export class LoomCloudfrontStack extends Stack {
         ],
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: CachePolicy.CACHING_OPTIMIZED,
       },
       certificate, // Assuming you have your ACM certificate defined (fromCertificateArn or otherwise)
       domainNames: ["dev.loom.feryv.com"],
@@ -99,6 +101,7 @@ export class LoomCloudfrontStack extends Stack {
         // If your distributionBehavior configures allowed methods or viewer protocol policy, include those settings here:
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS, // Assuming you only allow GET, HEAD, OPTIONS for static sites
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: CachePolicy.CACHING_OPTIMIZED,
       },
       certificate,
       domainNames: ["loom.feryv.com"],
@@ -117,6 +120,17 @@ export class LoomCloudfrontStack extends Stack {
       priceClass: PriceClass.PRICE_CLASS_100, // Set appropriate price class
       httpVersion: HttpVersion.HTTP2,
       minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+    });
+
+    // Export the references
+    new CfnOutput(this, "DevDistributionIdOutput", {
+      value: devDistribution.distributionId,
+      exportName: "LoomDevDistributionId",
+    });
+
+    new CfnOutput(this, "DistributionIdOutput", {
+      value: distribution.distributionId,
+      exportName: "LoomDistributionId",
     });
   }
 }
