@@ -1,5 +1,6 @@
 import { CfnOutput, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { OriginAccessIdentity } from "aws-cdk-lib/aws-cloudfront";
+import { ReadWriteType, Trail } from "aws-cdk-lib/aws-cloudtrail";
 import { Role } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
@@ -48,6 +49,15 @@ export class LoomStorageStack extends Stack {
       versioned: true,
     });
     artifactBucket.grantReadWrite(githubActionsRole);
+
+    const trail = new Trail(this, "ArtifactBucketTrail", {
+      bucket: artifactBucket,
+      sendToCloudWatchLogs: true,
+    });
+    // Make sure the trail monitors the bucket
+    trail.addS3EventSelector([{ bucket: artifactBucket }], {
+      readWriteType: ReadWriteType.WRITE_ONLY,
+    });
 
     // Export the references
     new CfnOutput(this, "ArtifactBucketOutput", {

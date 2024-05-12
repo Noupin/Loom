@@ -10,7 +10,10 @@ import {
   CodeBuildAction,
   ManualApprovalAction,
   S3SourceAction,
+  S3Trigger,
 } from "aws-cdk-lib/aws-codepipeline-actions";
+import { Rule } from "aws-cdk-lib/aws-events";
+import { CodePipeline } from "aws-cdk-lib/aws-events-targets";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
@@ -56,6 +59,7 @@ export class LoomPipelineStack extends Stack {
       bucket: artifactBucket,
       bucketKey: "latest_infra.zip",
       output: infraSourceArtifact,
+      trigger: S3Trigger.EVENTS,
     });
     pipeline.addStage({
       stageName: "Source",
