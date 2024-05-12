@@ -51,7 +51,7 @@ export class LoomCloudfrontStack extends Stack {
     const lambdaFunctionVersion = Version.fromVersionArn(
       this,
       "ImportedBasicAuthLambdaFunction",
-      "arn:aws:lambda:us-east-1:346316490277:function:BasicAuthEdge:1"
+      "arn:aws:lambda:us-east-1:346316490277:function:BasicAuthEdge:9"
     );
 
     // CloudFront distribution for the website
