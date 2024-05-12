@@ -45,7 +45,7 @@ export class LoomPipelineStack extends Stack {
       artifactBucket: artifactBucket,
     });
     // Define a source artifact
-    const infraSourceArtifact = new Artifact("InfraSourceArtifact");
+    const infraSourceArtifact = new Artifact("InfraSrc");
 
     const infraSourceAction = new S3SourceAction({
       actionName: "InfraS3Source",

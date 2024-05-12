@@ -4,12 +4,14 @@ import {
   AllowedMethods,
   Distribution,
   HttpVersion,
+  LambdaEdgeEventType,
   OriginAccessIdentity,
   PriceClass,
   SecurityPolicyProtocol,
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
+import { Version } from "aws-cdk-lib/aws-lambda";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 
@@ -46,6 +48,12 @@ export class LoomCloudfrontStack extends Stack {
         originAccessIdentityID
       );
 
+    const lambdaFunctionVersion = Version.fromVersionArn(
+      this,
+      "ImportedBasicAuthLambdaFunction",
+      "arn:aws:lambda:us-east-1:346316490277:function:BasicAuthEdge:1"
+    );
+
     // CloudFront distribution for the website
     const devDistribution = new Distribution(this, "LoomDevDistribution", {
       defaultRootObject: "index.html",
@@ -53,6 +61,12 @@ export class LoomCloudfrontStack extends Stack {
         origin: new S3Origin(devHostingBucket, {
           originAccessIdentity, // Use your OAI for secure access
         }),
+        edgeLambdas: [
+          {
+            functionVersion: lambdaFunctionVersion,
+            eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+          },
+        ],
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
