@@ -124,7 +124,7 @@ export class LoomInfraStack extends Stack {
     });
     // Needed to keep previous CloudFront distribution url
     (dev_distribution.node.defaultChild as CfnDistribution).overrideLogicalId(
-      "Loom_dev_CFDistribution"
+      "LoomDevCFDistribution"
     );
 
     const distribution = new Distribution(this, "LoomDistribution", {
