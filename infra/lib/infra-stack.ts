@@ -2,11 +2,18 @@ import { Stack, RemovalPolicy, StackProps, Aws, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import {
+  AllowedMethods,
+  CachePolicy,
+  CfnDistribution,
   CloudFrontWebDistribution,
+  Distribution,
+  HttpVersion,
   OriginAccessIdentity,
+  PriceClass,
   SSLMethod,
   SecurityPolicyProtocol,
   ViewerCertificate,
+  ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -22,6 +29,7 @@ import {
   LinuxBuildImage,
   PipelineProject,
 } from "aws-cdk-lib/aws-codebuild";
+import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 export class LoomInfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -86,71 +94,71 @@ export class LoomInfraStack extends Stack {
       maxTtl: Duration.seconds(1),
     };
 
-    // CloudFront distribution for the website
-    const dev_distribution = new CloudFrontWebDistribution(
-      this,
-      "Loom_dev_Distribution",
-      {
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: dev_hostingBucket,
-              originAccessIdentity: originAccessIdentity,
-            },
-            behaviors: [distributionBehavior],
-          },
-        ],
-        viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-          aliases: ["dev.loom.feryv.com"],
-          securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2019,
-          sslMethod: SSLMethod.SNI,
+    const dev_distribution = new Distribution(this, "Loom_dev_Distribution", {
+      defaultBehavior: {
+        origin: new S3Origin(dev_hostingBucket, {
+          originAccessIdentity, // Use your OAI for secure access
         }),
-        errorConfigurations: [
-          {
-            errorCode: 403,
-            responseCode: 200,
-            responsePagePath: "/index.html",
-          },
-          {
-            errorCode: 404,
-            responseCode: 200,
-            responsePagePath: "/index.html",
-          },
-        ],
-      }
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
+      certificate, // Assuming you have your ACM certificate defined (fromCertificateArn or otherwise)
+      domainNames: ["dev.loom.feryv.com"],
+      errorResponses: [
+        // Custom error responses for 403 and 404
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+        },
+      ],
+      enableLogging: true, // Optionally enable logging
+      priceClass: PriceClass.PRICE_CLASS_100, // Adjust for your region needs
+      httpVersion: HttpVersion.HTTP2, // Use HTTP/2 for better performance
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+    });
+    // Needed to keep previous CloudFront distribution url
+    (dev_distribution.node.defaultChild as CfnDistribution).overrideLogicalId(
+      "Loom_dev_CFDistribution"
     );
 
-    const distribution = new CloudFrontWebDistribution(
-      this,
-      "LoomDistribution",
-      {
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: hostingBucket,
-              originAccessIdentity: originAccessIdentity,
-            },
-            behaviors: [distributionBehavior],
-          },
-        ],
-        viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-          aliases: ["loom.feryv.com"],
-          securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2019,
-          sslMethod: SSLMethod.SNI,
+    const distribution = new Distribution(this, "LoomDistribution", {
+      defaultBehavior: {
+        origin: new S3Origin(hostingBucket, {
+          originAccessIdentity,
         }),
-        errorConfigurations: [
-          {
-            errorCode: 403,
-            responseCode: 200,
-            responsePagePath: "/index.html",
-          },
-          {
-            errorCode: 404,
-            responseCode: 200,
-            responsePagePath: "/index.html",
-          },
-        ],
-      }
+        // If your distributionBehavior configures allowed methods or viewer protocol policy, include those settings here:
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS, // Assuming you only allow GET, HEAD, OPTIONS for static sites
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
+      certificate,
+      domainNames: ["loom.feryv.com"],
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+        },
+      ],
+      // Additional recommended settings (adjust as needed)
+      enableLogging: true, // Enable logging
+      priceClass: PriceClass.PRICE_CLASS_100, // Set appropriate price class
+      httpVersion: HttpVersion.HTTP2,
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+    });
+    // Needed to keep previous CloudFront distribution url
+    (distribution.node.defaultChild as CfnDistribution).overrideLogicalId(
+      "LoomCFDistribution"
     );
 
     // Create a new CodePipeline
