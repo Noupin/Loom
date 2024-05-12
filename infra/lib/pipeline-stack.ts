@@ -229,7 +229,7 @@ export class LoomPipelineStack extends Stack {
             service: "cloudfront",
             resource: "distribution",
             region: "", // Empty region for global resources
-            resourceName: devDistributionID,
+            resourceName: distributionID,
           }), // Access to the CloudFront distribution
         ],
       })
