@@ -55,15 +55,12 @@ export class LoomPipelineStack extends Stack {
     const infraSourceArtifact = new Artifact("InfraSrc");
 
     const infraSourceAction = new S3SourceAction({
-      actionName: "InfraS3Source",
+      actionName: "InfrastructureS3Source",
       bucket: artifactBucket,
       bucketKey: "latest_infra.zip",
       output: infraSourceArtifact,
       trigger: S3Trigger.EVENTS,
-    });
-    pipeline.addStage({
-      stageName: "Source",
-      actions: [infraSourceAction],
+      runOrder: 1,
     });
 
     // Build stage for deploying to infrastructure
@@ -109,10 +106,11 @@ export class LoomPipelineStack extends Stack {
       actionName: "DeployInfrastructure",
       project: infraBuildProject,
       input: infraSourceArtifact, // Use the S3 source artifact as input
+      runOrder: 2,
     });
     pipeline.addStage({
-      stageName: "DeployInfrastructure",
-      actions: [deployInfraAction],
+      stageName: "Source & Infrastucture",
+      actions: [infraSourceAction, deployInfraAction],
     });
 
     // Build stage for deploying to dev
