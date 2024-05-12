@@ -5,6 +5,7 @@ function App() {
       <div className="flex-[7] bg-white bg-opacity-5 rounded-lg m-5 px-5 py-4">
         <div className="flex justify-between w-full h-full">
           <div>Hello there! - Obi Wan(Ewan McGregor) - Star Wars</div>
+          <div className="flex justify-end items-end">Invalidation test</div>
         </div>
       </div>
       <div className="flex-1"></div>

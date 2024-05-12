@@ -82,7 +82,9 @@ export class LoomPipelineStack extends Stack {
               commands: [
                 "npm install -g aws-cdk",
                 "npm install",
-                "npx cdk deploy --all --require-approval never",
+                "npx cdk deploy LoomStorageStack --require-approval never",
+                "npx cdk deploy LoomCloudfrontStack --require-approval never",
+                "npx cdk deploy LoomPipelineStack --require-approval never",
               ],
             },
           },
@@ -127,7 +129,7 @@ export class LoomPipelineStack extends Stack {
               "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip",
               "unzip -o artifact.zip",
               "aws s3 sync dist/ s3://$DEPLOY_BUCKET/",
-              "aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'",
+              'aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"',
             ],
           },
         },
@@ -200,7 +202,7 @@ export class LoomPipelineStack extends Stack {
           build: {
             commands: [
               "aws s3 cp s3://$SOURCE_BUCKET/ s3://$DEPLOY_BUCKET/ --recursive",
-              "aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'",
+              'aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"',
             ],
           },
         },
