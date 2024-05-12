@@ -80,6 +80,7 @@ export class LoomInfraStack extends Stack {
     const distributionBehavior = {
       isDefaultBehavior: true,
       defaultTtl: Duration.seconds(0),
+      maxTtl: Duration.seconds(0),
     };
 
     // CloudFront distribution for the website
@@ -93,7 +94,7 @@ export class LoomInfraStack extends Stack {
               s3BucketSource: dev_hostingBucket,
               originAccessIdentity: originAccessIdentity,
             },
-            behaviors: [distributionBehavior],
+            behaviors: [distributionBehavior, { maxTtl: Duration.seconds(0) }],
           },
         ],
         viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
