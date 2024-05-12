@@ -29,7 +29,10 @@ export class LoomInfraStack extends Stack {
     const domainName = StringParameter.valueForStringParameter(
       this,
       "baseDomainName"
-    ); // TODO: Use domainName in the distributions
+    );
+    // TODO: Use domainName in the distributions
+    // TODO: Setup specific roles for local user and others
+    // TODO: Split into multiple stacks
 
     // Getting the certificate and roles needed
     const certificate = Certificate.fromCertificateArn(
@@ -79,8 +82,8 @@ export class LoomInfraStack extends Stack {
 
     const distributionBehavior = {
       isDefaultBehavior: true,
-      defaultTtl: Duration.seconds(0),
-      maxTtl: Duration.seconds(0),
+      defaultTtl: Duration.seconds(1),
+      maxTtl: Duration.seconds(1),
     };
 
     // CloudFront distribution for the website
@@ -94,7 +97,7 @@ export class LoomInfraStack extends Stack {
               s3BucketSource: dev_hostingBucket,
               originAccessIdentity: originAccessIdentity,
             },
-            behaviors: [distributionBehavior, { maxTtl: Duration.seconds(0) }],
+            behaviors: [distributionBehavior],
           },
         ],
         viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {

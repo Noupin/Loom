@@ -3,7 +3,7 @@ function App() {
     <main className="flex flex-row w-full h-full bg-red-700 text-gray-200">
       <div className="flex-1"></div>
       <div className="flex-[7] bg-white bg-opacity-5 rounded-lg m-5 px-5 py-4">
-        Hello there! - Obi Wan
+        Hello there! - Obi Wan(Ewan)
       </div>
       <div className="flex-1"></div>
     </main>
