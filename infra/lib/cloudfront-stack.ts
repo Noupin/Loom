@@ -30,7 +30,7 @@ export class LoomCloudfrontStack extends Stack {
     // Get the hosting buckets and OAI from the StorageStack
     const devHostingBucketName = Fn.importValue("LoomDevHostingBucketName");
     const hostingBucketName = Fn.importValue("LoomHostingBucketName");
-    const originAccessIdentityID = Fn.importValue("LoomOAIId");
+    const originAccessIdentityID = Fn.importValue("LoomOAIID");
 
     const devHostingBucket = Bucket.fromBucketName(
       this,

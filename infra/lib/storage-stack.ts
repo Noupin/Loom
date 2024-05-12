@@ -67,7 +67,7 @@ export class LoomStorageStack extends Stack {
 
     new CfnOutput(this, "OAIOutput", {
       value: originAccessIdentity.originAccessIdentityId,
-      exportName: "LoomOAIId",
+      exportName: "LoomOAIID",
     });
   }
 }
