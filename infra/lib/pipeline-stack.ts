@@ -154,6 +154,7 @@ export class LoomPipelineStack extends Stack {
           Stack.of(this).formatArn({
             service: "cloudfront",
             resource: "distribution",
+            region: "", // Empty region for global resources
             resourceName: devDistributionID,
           }), // Access to the CloudFront distribution
         ],
@@ -227,7 +228,8 @@ export class LoomPipelineStack extends Stack {
           Stack.of(this).formatArn({
             service: "cloudfront",
             resource: "distribution",
-            resourceName: distributionID,
+            region: "", // Empty region for global resources
+            resourceName: devDistributionID,
           }), // Access to the CloudFront distribution
         ],
       })
