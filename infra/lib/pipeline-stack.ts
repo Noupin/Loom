@@ -129,7 +129,6 @@ export class LoomPipelineStack extends Stack {
               "aws s3 cp s3://$SOURCE_BUCKET/$SOURCE_KEY artifact.zip",
               "unzip -o artifact.zip",
               "aws s3 sync dist/ s3://$DEPLOY_BUCKET/",
-              "echo $DISTRIBUTION_ID",
               'aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"',
             ],
           },
@@ -155,7 +154,7 @@ export class LoomPipelineStack extends Stack {
           Stack.of(this).formatArn({
             service: "cloudfront",
             resource: "distribution",
-            resourceName: distributionID,
+            resourceName: devDistributionID,
           }), // Access to the CloudFront distribution
         ],
       })
