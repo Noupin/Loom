@@ -60,7 +60,10 @@ export class LoomPipelineStack extends Stack {
       bucketKey: "latest_infra.zip",
       output: infraSourceArtifact,
       trigger: S3Trigger.EVENTS,
-      runOrder: 1,
+    });
+    pipeline.addStage({
+      stageName: "Source",
+      actions: [infraSourceAction],
     });
 
     // Build stage for deploying to infrastructure
@@ -106,11 +109,10 @@ export class LoomPipelineStack extends Stack {
       actionName: "DeployInfrastructure",
       project: infraBuildProject,
       input: infraSourceArtifact, // Use the S3 source artifact as input
-      runOrder: 2,
     });
     pipeline.addStage({
-      stageName: "Source & Infrastucture",
-      actions: [infraSourceAction, deployInfraAction],
+      stageName: "DeployInfrastructure",
+      actions: [deployInfraAction],
     });
 
     // Build stage for deploying to dev
