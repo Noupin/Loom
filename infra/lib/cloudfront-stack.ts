@@ -48,6 +48,7 @@ export class LoomCloudfrontStack extends Stack {
 
     // CloudFront distribution for the website
     const devDistribution = new Distribution(this, "LoomDevDistribution", {
+      defaultRootObject: "index.html",
       defaultBehavior: {
         origin: new S3Origin(devHostingBucket, {
           originAccessIdentity, // Use your OAI for secure access
@@ -76,6 +77,7 @@ export class LoomCloudfrontStack extends Stack {
     });
 
     const distribution = new Distribution(this, "LoomDistribution", {
+      defaultRootObject: "index.html",
       defaultBehavior: {
         origin: new S3Origin(hostingBucket, {
           originAccessIdentity,
