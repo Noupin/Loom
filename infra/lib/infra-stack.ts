@@ -1,4 +1,4 @@
-import { Stack, RemovalPolicy, StackProps, Aws } from "aws-cdk-lib";
+import { Stack, RemovalPolicy, StackProps, Aws, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import {
@@ -77,6 +77,11 @@ export class LoomInfraStack extends Stack {
     });
     artifactBucket.grantReadWrite(githubActionsRole);
 
+    const distributionBehavior = {
+      isDefaultBehavior: true,
+      defaultTtl: Duration.seconds(0),
+    };
+
     // CloudFront distribution for the website
     const dev_distribution = new CloudFrontWebDistribution(
       this,
@@ -88,7 +93,7 @@ export class LoomInfraStack extends Stack {
               s3BucketSource: dev_hostingBucket,
               originAccessIdentity: originAccessIdentity,
             },
-            behaviors: [{ isDefaultBehavior: true }],
+            behaviors: [distributionBehavior],
           },
         ],
         viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
@@ -121,7 +126,7 @@ export class LoomInfraStack extends Stack {
               s3BucketSource: hostingBucket,
               originAccessIdentity: originAccessIdentity,
             },
-            behaviors: [{ isDefaultBehavior: true }],
+            behaviors: [distributionBehavior],
           },
         ],
         viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {

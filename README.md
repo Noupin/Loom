@@ -1,12 +1,8 @@
 # Loom
 
 Weaving words, colors, and animations into the textiles that are stories
-look into cdk bootstrapping
-setup bootstrapping for cdk as my Noupin user
-error pages could be the s3 issue adn those are on the cloudfront, 404 and 403 error page route to /index.html
-domain might need to be in route53
-NEED WAF on cloudfront
-arn not sensitive
+
+might need to use webACLId
 
 ### React + TypeScript + Vite
 
