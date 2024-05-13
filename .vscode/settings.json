@@ -1,0 +1,26 @@
+{
+  // Configure ESLint to automatically fix linting issues on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+
+  // Enable Prettier to format code on save
+  "editor.formatOnSave": true,
+
+  // Configure Prettier as the default formatter
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Set the tab size to 2 spaces
+  "editor.tabSize": 2,
+
+  // Enable auto closing of JSX tags
+  "html.autoClosingTags": true,
+
+  // Enable Emmet abbreviations in JSX files
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+
+  // Configure Jest to run tests in the integrated terminal
+  "jest.runInTerminal": true
+}
