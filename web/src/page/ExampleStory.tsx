@@ -1,4 +1,15 @@
+import { useSetRecoilState } from "recoil";
+import { logoState } from "../State";
+import { useEffect } from "react";
+import { TLogo } from "../types/TLogo";
+
 export default function ExampleStory() {
+  const setLogoType = useSetRecoilState(logoState);
+
+  useEffect(() => {
+    setLogoType(TLogo.LightLogo);
+  }, []);
+
   return (
     <main className="flex flex-row w-full h-full bg-green-600 text-gray-200">
       <div className="flex-1"></div>

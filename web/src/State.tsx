@@ -1,6 +1,7 @@
 import { atom } from "recoil";
+import { TLogo } from "./types/TLogo";
 
-export const textState = atom({
-  key: "textState", // unique ID (with respect to other atoms/selectors)
-  default: "", // default value (aka initial value)
+export const logoState = atom<TLogo>({
+  key: "logoType",
+  default: TLogo.Logo,
 });

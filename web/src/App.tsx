@@ -1,20 +1,21 @@
 //Third Party Imports
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 
-// First Party Imports
-import logoForLight from "./assets/logoForLight.svg";
-
 // Pages
 import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
 import ExampleStory from "./page/ExampleStory";
+import { useRecoilValue } from "recoil";
+import { logoState } from "./State";
+import { getLogo } from "./helper/chooseLogo";
 
 export default function App() {
+  const logoType = useRecoilValue(logoState);
   return (
     <BrowserRouter>
       <Link to="/">
         <img
-          src={logoForLight}
+          src={getLogo(logoType)}
           alt="Logo"
           height={50}
           width={50}
