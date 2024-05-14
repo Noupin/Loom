@@ -12,3 +12,15 @@ body,
   position: relative;
   z-index: 0;
 }
+
+.showChild {
+  position: relative;
+}
+
+.child {
+  display: none;
+}
+
+.showChild:hover .child {
+  display: flex;
+}
