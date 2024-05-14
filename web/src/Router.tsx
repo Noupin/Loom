@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Landing from "./page/Landing";
-import Color from "./page/Color";
 import StoryTemplate from "./page/StoryTemplate";
+import ExampleStory from "./page/ExampleStory";
 
 export const router = createBrowserRouter([
   {
@@ -10,10 +10,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/TestStory",
-    element: <StoryTemplate />,
-  },
-  {
-    path: "/:color",
-    element: <Color />,
+    element: (
+      <StoryTemplate>
+        <ExampleStory />
+      </StoryTemplate>
+    ),
   },
 ]);
