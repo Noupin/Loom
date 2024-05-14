@@ -26,7 +26,8 @@ export default function StoryTemplate({
               <span
                 role="textbox"
                 contentEditable
-                className=" mx-2 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px]"
+                defaultValue={67}
+                className=" mx-2 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px] text-center"
               />
               <span>wpm</span>
               <div className="flex flex-col mx-2">
@@ -61,10 +62,9 @@ export default function StoryTemplate({
               <span
                 role="textbox"
                 contentEditable
-                className="shrink-0 ml-2 mr-1 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px]"
-              >
-                {mainVolume}
-              </span>
+                defaultValue={mainVolume.toString()}
+                className="shrink-0 ml-2 mr-1 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px] text-center"
+              ></span>
               <span className="mr-2">%</span>
             </div>
           </div>
