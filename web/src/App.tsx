@@ -6,16 +6,29 @@ import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
 import ExampleStory from "./page/ExampleStory";
 import { useRecoilValue } from "recoil";
-import { logoState } from "./State";
+import { logoCustomColorState, logoState } from "./State";
 import { getLogo } from "./helper/chooseLogo";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
+  const logoCustomColor = useRecoilValue(logoCustomColorState);
+
+  const [logoSrc, setLogoSrc] = useState("");
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      const src = await getLogo(logoType, logoCustomColor);
+      setLogoSrc(src);
+    };
+    fetchLogo();
+  }, [logoType, logoCustomColor]);
+
   return (
     <BrowserRouter>
       <Link to="/">
         <img
-          src={getLogo(logoType)}
+          src={logoSrc}
           alt="Logo"
           height={50}
           width={50}

@@ -1,13 +1,15 @@
 import { useSetRecoilState } from "recoil";
-import { logoState } from "../State";
+import { logoCustomColorState, logoState } from "../State";
 import { useEffect } from "react";
 import { TLogo } from "../types/TLogo";
 
 export default function ExampleStory() {
   const setLogoType = useSetRecoilState(logoState);
+  const setLogoCustomColor = useSetRecoilState(logoCustomColorState);
 
   useEffect(() => {
-    setLogoType(TLogo.LightLogo);
+    setLogoType(TLogo.CustomLogo);
+    setLogoCustomColor("#F0A404");
   }, []);
 
   return (
