@@ -45,18 +45,27 @@ export default function StoryTemplate({
                 <Volume2 />
               </Button>
             </div>
-            <div className="ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
+            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
               <Slider.Root
-                className=" bg-red-500 relative items-center w-full h-5 flex-col"
+                className="relative flex w-full touch-none select-none items-center"
                 orientation="horizontal"
                 defaultValue={[mainVolume]}
                 max={100}
               >
-                <Slider.Track className="relative flex-1 bg-blue-500">
-                  <Slider.Range className="absolute bg-black w-full" />
+                <Slider.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-black bg-opacity-25 border-offWhite">
+                  <Slider.Range className="absolute h-full bg-[#1c2125]" />
                 </Slider.Track>
-                <Slider.Thumb className="w-7 h-7 bg-violet-500 block" />
+                <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-offWhite bg-[#1c2125] ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
               </Slider.Root>
+
+              <span
+                role="textbox"
+                contentEditable
+                className="shrink-0 ml-2 mr-1 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px]"
+              >
+                {mainVolume}
+              </span>
+              <span className="mr-2">%</span>
             </div>
           </div>
         </div>
