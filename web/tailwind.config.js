@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        offWhite: "#E9ECF2",
+      },
+    },
   },
   plugins: ["tailwindcss-animate"],
 };

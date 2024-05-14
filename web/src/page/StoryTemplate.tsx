@@ -10,13 +10,13 @@ export default function StoryTemplate({
     <>
       <div className="absolute left-[40px] bottom-[40px] flex flex-col">
         <Button
-          className="mb-[10px] p-[7.5px] bg-black bg-opacity-25 rounded-full flex items-center justify-center border-2 border-white border-opacity-50"
+          className="mb-[10px] p-[7.5px] bg-black bg-opacity-25 rounded-full flex items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-offWhite"
           onClick={() => {}}
         >
           <Mouse />
         </Button>
         <Button
-          className="p-[7.5px] bg-black bg-opacity-25 rounded-full flex items-center justify-center border-2 border-white border-opacity-50"
+          className="p-[7.5px] bg-black bg-opacity-25 rounded-full flex items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-offWhite"
           onClick={() => {}}
         >
           <Volume2 />
