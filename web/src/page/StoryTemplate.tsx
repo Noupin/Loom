@@ -8,7 +8,56 @@ export default function StoryTemplate({
 }: {
   children: React.ReactNode;
 }) {
+  // Component state
   const [mainVolume, setMainVolume] = useState(50);
+  const [wpm, setWpm] = useState(183);
+  const [autoscroll, setAutoscroll] = useState(false);
+  const [muteMain, setMuteMain] = useState(false);
+
+  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value = event.target.value;
+    // Parse the value to an integer
+    const parsedValue = parseInt(value, 10);
+    // Clamp the value between 0 and 100
+    if (!isNaN(parsedValue)) {
+      const clampedValue = Math.max(0, Math.min(100, parsedValue));
+      setMainVolume(clampedValue);
+      // Update the input field to reflect the clamped value, removing leading zeros
+      event.target.value = clampedValue.toString();
+    } else {
+      // If the input is cleared, set volume to 0
+      setMainVolume(0);
+      event.target.value = "0";
+    }
+  };
+
+  const handleWpmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value = event.target.value;
+    // Remove leading zeros, except when the value is 0
+    if (value !== "0") {
+      value = value.replace(/^0+/, "");
+    }
+    // Parse the value to an integer and clamp it between 0 and 999
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue)) {
+      const clampedValue = Math.max(0, Math.min(999, parsedValue));
+      setWpm(clampedValue);
+      // Update the input field to reflect the clamped value, removing leading zeros
+      event.target.value = clampedValue.toString();
+    } else {
+      // If the input is cleared, set WPM to 0
+      setWpm(0);
+      event.target.value = "0";
+    }
+  };
+
+  const incrementWpm = () => {
+    setWpm((current) => Math.min(999, current + 1));
+  };
+  const decrementWpm = () => {
+    setWpm((current) => Math.max(0, current - 1));
+  };
+
   return (
     <>
       <div className="absolute left-[40px] bottom-[40px] flex flex-col">
@@ -18,23 +67,24 @@ export default function StoryTemplate({
               <Button className="" onClick={() => {}}>
                 <Mouse />
               </Button>
-              <div className="child mx-2">Autoscroll</div>
+              <div className="mx-2">Autoscroll</div>
             </div>
-            <div className="child flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite">
+            <div className="flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite">
               <Gauge />
-              {/* Todo: Use javascript to make it users can't increase past 3 digits */}
-              <span
-                role="textbox"
-                contentEditable
-                defaultValue={67}
-                className=" mx-2 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px] text-center"
+              <input
+                type="number"
+                value={wpm}
+                min={0}
+                max={999}
+                onChange={handleWpmChange}
+                className="box-border appearance-none mx-2 px-1 bg-black bg-opacity-25 border-none outline-none text-white rounded min-w-[25px] max-w-[38px] text-center"
               />
               <span>wpm</span>
               <div className="flex flex-col mx-2">
-                <Button onClick={() => {}}>
+                <Button onClick={incrementWpm}>
                   <ChevronUp width={12} height={12} />
                 </Button>
-                <Button onClick={() => {}}>
+                <Button onClick={decrementWpm}>
                   <ChevronDown width={12} height={12} />
                 </Button>
               </div>
@@ -46,11 +96,12 @@ export default function StoryTemplate({
                 <Volume2 />
               </Button>
             </div>
-            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
+            <div className="ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
               <Slider.Root
                 className="relative flex w-full touch-none select-none items-center"
                 orientation="horizontal"
-                defaultValue={[mainVolume]}
+                value={[mainVolume]}
+                onValueChange={(value) => setMainVolume(value[0])}
                 max={100}
               >
                 <Slider.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-black bg-opacity-25 border-offWhite">
@@ -59,12 +110,14 @@ export default function StoryTemplate({
                 <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-offWhite bg-[#1c2125] ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
               </Slider.Root>
 
-              <span
-                role="textbox"
-                contentEditable
-                defaultValue={mainVolume.toString()}
-                className="shrink-0 ml-2 mr-1 bg-black bg-opacity-25 border-none outline-none text-white rounded px-1 min-w-[25px] text-center"
-              ></span>
+              <input
+                type="number"
+                value={mainVolume}
+                min={0}
+                max={100}
+                onChange={handleVolumeChange}
+                className="box-border mx-2 bg-black bg-opacity-25 border-none outline-none text-white rounded min-w-[25px] max-w-[38px] text-center"
+              />
               <span className="mr-2">%</span>
             </div>
           </div>
