@@ -67,9 +67,9 @@ export default function StoryTemplate({
               <Button className="" onClick={() => {}}>
                 <Mouse />
               </Button>
-              <div className="mx-2">Autoscroll</div>
+              <div className="child mx-2">Autoscroll</div>
             </div>
-            <div className="flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite">
+            <div className="child flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite">
               <Gauge />
               <input
                 type="number"
@@ -96,7 +96,7 @@ export default function StoryTemplate({
                 <Volume2 />
               </Button>
             </div>
-            <div className="ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
+            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
               <Slider.Root
                 className="relative flex w-full touch-none select-none items-center"
                 orientation="horizontal"
