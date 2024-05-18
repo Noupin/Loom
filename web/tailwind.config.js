@@ -4,7 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        offWhite: "#E9ECF2",
+        off: {
+          DEFAULT: "#E9ECF2",
+          0: "#E9ECF2",
+          50: "#DFE2EC",
+          100: "#C2C8DB",
+          200: "#838FB4",
+          300: "#505E86",
+          400: "#2A3146",
+          500: "#06070A",
+        },
       },
     },
   },
