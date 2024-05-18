@@ -17,5 +17,20 @@ export async function getLogo(logoType: TLogo, color: string = "#000000") {
       const svgContent = await fetchSVG(lightLogo);
       const coloredSVG = replaceSVGColor(svgContent, color);
       return svgToDataURL(coloredSVG);
+    default:
+      return lightLogo;
+  }
+}
+
+export function getTempLogo(logoType: TLogo) {
+  switch (logoType) {
+    case TLogo.Logo:
+      return logo;
+    case TLogo.DarkLogo:
+      return darkLogo;
+    case TLogo.LightLogo:
+      return lightLogo;
+    default:
+      return lightLogo;
   }
 }

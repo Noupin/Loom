@@ -6,12 +6,14 @@ import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
 import ExampleStory from "./page/ExampleStory";
 import { useRecoilValue } from "recoil";
-import { logoCustomColorState, logoState } from "./State";
-import { getLogo } from "./helper/chooseLogo";
+import { logoCustomColorState, logoState, tempLogoState } from "./State";
+import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
+import { TLogo } from "./types/TLogo";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
+  const tempLogoType = useRecoilValue(tempLogoState);
   const logoCustomColor = useRecoilValue(logoCustomColorState);
 
   const [logoSrc, setLogoSrc] = useState("");
@@ -28,7 +30,7 @@ export default function App() {
     <BrowserRouter>
       <Link to="/">
         <img
-          src={logoSrc}
+          src={logoSrc || getTempLogo(tempLogoType)}
           alt="Logo"
           height={50}
           width={50}
