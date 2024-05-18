@@ -11,7 +11,7 @@ function Landing() {
   }, []);
 
   return (
-    <main className="flex flex-row w-full h-full bg-offWhite text-gray-800">
+    <main className="flex flex-row w-full h-full bg-off text-gray-800">
       <div className="flex-1"></div>
       <div className="flex-[7] bg-black bg-opacity-5 rounded-lg m-5 px-5 py-4">
         <div className="flex justify-between w-full h-full">

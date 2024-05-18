@@ -63,13 +63,13 @@ export default function StoryTemplate({
       <div className="absolute left-[40px] bottom-[40px] flex flex-col">
         <div className="showChild">
           <div className="flex mb-[10px]">
-            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-offWhite">
+            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-off">
               <Button className="" onClick={() => {}}>
                 <Mouse />
               </Button>
               <div className="child mx-2">Autoscroll</div>
             </div>
-            <div className="child flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite">
+            <div className="child flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-off">
               <Gauge />
               <input
                 type="number"
@@ -91,12 +91,12 @@ export default function StoryTemplate({
             </div>
           </div>
           <div className="flex">
-            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-offWhite">
+            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-off">
               <Button className="" onClick={() => {}}>
                 <Volume2 />
               </Button>
             </div>
-            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-offWhite w-full">
+            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-off w-full">
               <Slider.Root
                 className="relative flex w-full touch-none select-none items-center"
                 orientation="horizontal"
@@ -104,10 +104,10 @@ export default function StoryTemplate({
                 onValueChange={(value) => setMainVolume(value[0])}
                 max={100}
               >
-                <Slider.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-black bg-opacity-25 border-offWhite">
+                <Slider.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-black bg-opacity-25 border-off">
                   <Slider.Range className="absolute h-full bg-[#1c2125]" />
                 </Slider.Track>
-                <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-offWhite bg-[#1c2125] ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+                <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-off bg-[#1c2125] ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
               </Slider.Root>
 
               <input
