@@ -9,7 +9,6 @@ import { useRecoilValue } from "recoil";
 import { logoCustomColorState, logoState, tempLogoState } from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
-import { TLogo } from "./types/TLogo";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
