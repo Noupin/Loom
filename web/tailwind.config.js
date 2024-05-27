@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -15,6 +16,12 @@ module.exports = {
           500: "#06070A",
         },
       },
+      scale: {
+        flip: "-1, 1",
+      },
+    },
+    fontFamily: {
+      barcode: ["'Libre Barcode 128 Text'"],
     },
   },
   plugins: ["tailwindcss-animate"],
