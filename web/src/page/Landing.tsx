@@ -46,14 +46,14 @@ function Landing() {
           alt="Rogue One"
           className="h-[40vh] w-[40vh] object-cover translate-x-[20%]"
         />
-        <div className="invert mix-blend-difference translate-x-[-20%] text-end mb-10">
+        <div className="invert mix-blend-difference translate-x-[-20%] text-end mb-14">
           <div className="text-6xl">Android Tragedy</div>
           <div className="text-lg pr-8 mt-3">Jane Doe & Mary Sue</div>
         </div>
       </div>
 
       <div className="flex justify-between p-5">
-        <div className="flex">Frv-01</div>
+        <div className="flex font-mono">Frv-01</div>
         <div className="flex font-barcode text-2xl">No1 27May2024</div>
       </div>
     </main>
