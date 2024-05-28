@@ -22,6 +22,7 @@ module.exports = {
     },
     fontFamily: {
       barcode: ["'Libre Barcode 128 Text'"],
+      lateef: ["'Lateef'"],
     },
   },
   plugins: ["tailwindcss-animate"],
