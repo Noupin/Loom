@@ -58,7 +58,7 @@ function Landing() {
             <img
               src="https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg"
               alt="Rogue One"
-              className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img"
+              className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
             />
             <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
               <div className="text-8xl mt-24">Android Tragedy</div>
@@ -76,7 +76,7 @@ function Landing() {
       </div>
 
       <div className="flex justify-between p-5">
-        <div className="flex font-mono select-none">Frv-01</div>
+        <div className="flex font-mono select-none items-end">Frv-01</div>
         <div className="flex flex-col">
           <div className="flex justify-around items-end">
             <ControlFrame className="p-1 w-fit">
