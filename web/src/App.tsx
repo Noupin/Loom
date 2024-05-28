@@ -7,7 +7,13 @@ import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
 import ExampleStory from "./page/ExampleStory";
 import { useRecoilValue } from "recoil";
-import { logoCustomColorState, logoState, tempLogoState } from "./State";
+import {
+  darkModeState,
+  leftHandModeState,
+  logoCustomColorState,
+  logoState,
+  tempLogoState,
+} from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
 
@@ -15,8 +21,17 @@ export default function App() {
   const logoType = useRecoilValue(logoState);
   const tempLogoType = useRecoilValue(tempLogoState);
   const logoCustomColor = useRecoilValue(logoCustomColorState);
+  const darkMode = useRecoilValue(darkModeState);
 
   const [logoSrc, setLogoSrc] = useState("");
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   useEffect(() => {
     const fetchLogo = async () => {

@@ -15,3 +15,13 @@ export const logoCustomColorState = atom({
   key: "logoCustomColorState",
   default: "#E9ECF2",
 });
+
+export const darkModeState = atom({
+  key: "darkModeState",
+  default: false,
+});
+
+export const leftHandModeState = atom({
+  key: "leftHandModeState",
+  default: false,
+});

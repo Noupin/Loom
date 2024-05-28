@@ -2,6 +2,7 @@
 
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -18,6 +19,9 @@ module.exports = {
       },
       scale: {
         flip: "-1, 1",
+      },
+      dropShadow: {
+        img: "8px 8px 16px rgba(0, 0, 0, 0.25)",
       },
     },
     fontFamily: {
