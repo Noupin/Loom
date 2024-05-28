@@ -1,4 +1,5 @@
 //Third Party Imports
+import "typeface-lateef";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 
 // Pages

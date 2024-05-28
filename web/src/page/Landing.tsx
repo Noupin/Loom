@@ -2,7 +2,8 @@ import { useSetRecoilState } from "recoil";
 import { logoState } from "../State";
 import { useEffect, useState } from "react";
 import { TLogo } from "../types/TLogo";
-import { Search } from "lucide-react";
+import { ArrowRight, MoveVertical, Search } from "lucide-react";
+import Progress from "../component/Progress";
 
 function Landing() {
   const setLogoType = useSetRecoilState(logoState);
@@ -13,12 +14,12 @@ function Landing() {
   }, []);
 
   return (
-    <main className="flex flex-col w-full h-full bg-off text-invert">
+    <main className="flex flex-col w-full h-full bg-off text-invert font-lateef">
       {/* Matches the logo dimensions */}
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center">
         <div className="flex-1" />
 
-        <div className="flex-[2] flex text-center">
+        <div className="flex-[2] flex text-center text-2xl">
           <div className="flex-1">Textiles</div>
           <div className="flex-1">Genres</div>
           <div className="flex-1">Platform</div>
@@ -41,14 +42,21 @@ function Landing() {
       </div>
 
       <div className="flex-1 justify-center items-center p-5 flex">
+        <MoveVertical strokeWidth={1} className="ml-auto" />
         <img
           src="https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg"
           alt="Rogue One"
           className="h-[40vh] w-[40vh] object-cover translate-x-[20%]"
         />
-        <div className="invert mix-blend-difference translate-x-[-20%] text-end mb-14">
-          <div className="text-6xl">Android Tragedy</div>
-          <div className="text-lg pr-8 mt-3">Jane Doe & Mary Sue</div>
+        <div className="invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
+          <div className="text-8xl mt-24">Android Tragedy</div>
+          <div className="text-3xl pr-8">Jane Doe & Mary Sue</div>
+          <div className="flex-1 flex justify-end items-end">
+            <ArrowRight />
+          </div>
+        </div>
+        <div className="ml-auto">
+          <Progress current={5} max={5} />
         </div>
       </div>
 
