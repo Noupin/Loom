@@ -1,0 +1,51 @@
+.scrolling-wheel-container {
+  display: flex; /* Use flexbox for centering */
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Make container full viewport height */
+  perspective: 800px;
+}
+
+.scrolling-wheel-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.scrolling-wheel-container li {
+  margin-bottom: 20px; /* Adjust spacing between items */
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.item {
+  width: 20vh;
+  height: 20vh;
+  background-color: #4caf50;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 32px;
+  position: absolute;
+  top: 35vh;
+  left: 25vw;
+  transform-origin: -50vh;
+}

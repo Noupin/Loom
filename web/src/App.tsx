@@ -16,6 +16,7 @@ import {
 } from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
+import Lab from "./page/Lab";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
@@ -64,6 +65,8 @@ export default function App() {
             </StoryTemplate>
           }
         />
+
+        <Route path="/lab" element={<Lab />} />
       </Routes>
     </BrowserRouter>
   );
