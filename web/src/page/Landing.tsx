@@ -49,6 +49,30 @@ function Landing() {
 
   return (
     <main className="flex flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
+      <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col h-full items-center justify-center">
+        {stories.map((story, idx) => (
+          <div
+            key={idx}
+            className={`flex h-full items-center ${
+              idx === currentStoryIdx ? "" : "hidden"
+            }`}
+          >
+            <img
+              src={story.image}
+              alt={story.title}
+              className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
+            />
+            <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
+              <div className="text-8xl mt-24">{story.title}</div>
+              <div className="text-3xl pr-8">{story.authors}</div>
+              <div className="flex-1 flex justify-end items-end">
+                <ArrowRight />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Matches the logo dimensions */}
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center">
         <div className="flex-1" />
@@ -76,30 +100,7 @@ function Landing() {
       </div>
 
       <div className="flex-1 justify-center items-center p-5 flex flex-row">
-        <MoveVertical strokeWidth={1} className="ml-auto" />
-        <div className="flex flex-col h-full items-center justify-center">
-          {stories.map((story, idx) => (
-            <div
-              key={idx}
-              className={`flex h-full items-center ${
-                idx === currentStoryIdx ? "" : "hidden"
-              }`}
-            >
-              <img
-                src={story.image}
-                alt={story.title}
-                className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
-              />
-              <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
-                <div className="text-8xl mt-24">{story.title}</div>
-                <div className="text-3xl pr-8">{story.authors}</div>
-                <div className="flex-1 flex justify-end items-end">
-                  <ArrowRight />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <MoveVertical strokeWidth={2} className="mr-auto" />
 
         <div className="ml-auto">
           <Progress current={currentStoryIdx} max={stories.length - 1} />
