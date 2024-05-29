@@ -48,12 +48,18 @@ function Landing() {
   }, []);
 
   return (
-    <main className="flex flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
-      <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col h-full items-center justify-center">
+    <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
+      <div
+        className="absolute z-[-1] top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center"
+        style={{
+          transformOrigin: "0vw",
+          // animation: "spin 10s linear infinite",
+        }}
+      >
         {stories.map((story, idx) => (
           <div
             key={idx}
-            className={`flex h-full items-center ${
+            className={`bg-off dark:bg-off-500 dark:text-off flex items-center ${
               idx === currentStoryIdx ? "" : "hidden"
             }`}
           >
