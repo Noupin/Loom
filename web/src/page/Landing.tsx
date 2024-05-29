@@ -1,5 +1,5 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { darkModeState, logoState } from "../State";
+import { darkModeState, leftHandModeState, logoState } from "../State";
 import { useEffect, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import {
@@ -15,9 +15,33 @@ import ControlFrame from "../component/ControlFrame";
 
 function Landing() {
   const setLogoType = useSetRecoilState(logoState);
+  const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
-  const [currentStoryIdx, setCurrentStoryIdx] = useState(0);
+  const [currentStoryIdx, setCurrentStoryIdx] = useState(1);
+
+  const stories = [
+    {
+      title: "Android Tragedy",
+      authors: "Jane Doe & Mary Sue",
+      timeToRead: "13 min read",
+      genres: ["Science Fiction", "Drama", "Romance", "16+"],
+      description:
+        "In the year 2042, a sentient android named Artemis escapes its creators, embarking on a journey of self-discovery and facing the harsh realities of a world wary of artificial intelligence.",
+      image:
+        "https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg",
+    },
+    {
+      title: "The Last of Us",
+      authors: "John Doe & Mary Smith",
+      timeToRead: "8 min read",
+      genres: ["Horror", "Thriller", "Survival", "16+"],
+      description:
+        "In a post-apocalyptic world ravaged by a fungal infection, a hardened survivor named Joel is tasked with escort",
+      image:
+        "https://static1.moviewebimages.com/wordpress/wp-content/uploads/2023/01/the-last-of-us-cordyceps.jpg",
+    },
+  ];
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
@@ -54,24 +78,31 @@ function Landing() {
       <div className="flex-1 justify-center items-center p-5 flex flex-row">
         <MoveVertical strokeWidth={1} className="ml-auto" />
         <div className="flex flex-col h-full items-center justify-center">
-          <div className="flex h-full items-center">
-            <img
-              src="https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg"
-              alt="Rogue One"
-              className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
-            />
-            <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
-              <div className="text-8xl mt-24">Android Tragedy</div>
-              <div className="text-3xl pr-8">Jane Doe & Mary Sue</div>
-              <div className="flex-1 flex justify-end items-end">
-                <ArrowRight />
+          {stories.map((story, idx) => (
+            <div
+              key={idx}
+              className={`flex h-full items-center ${
+                idx === currentStoryIdx ? "" : "hidden"
+              }`}
+            >
+              <img
+                src={story.image}
+                alt={story.title}
+                className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
+              />
+              <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
+                <div className="text-8xl mt-24">{story.title}</div>
+                <div className="text-3xl pr-8">{story.authors}</div>
+                <div className="flex-1 flex justify-end items-end">
+                  <ArrowRight />
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
 
         <div className="ml-auto">
-          <Progress current={currentStoryIdx} max={4} />
+          <Progress current={currentStoryIdx} max={stories.length - 1} />
         </div>
       </div>
 
@@ -79,7 +110,10 @@ function Landing() {
         <div className="flex font-mono select-none items-end">Frv-01</div>
         <div className="flex flex-col">
           <div className="flex justify-around items-end">
-            <ControlFrame className="p-1 w-fit">
+            <ControlFrame
+              className="p-1 w-fit cursor-pointer"
+              onClick={() => setLeftHandMode((current) => !current)}
+            >
               <ArrowLeftToLine height={20} width={20} strokeWidth={1} />
             </ControlFrame>
             <ControlFrame
