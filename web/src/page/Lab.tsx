@@ -14,7 +14,7 @@ const Lab: React.FC = () => {
 
   const rotateCarousel = (angle: number) => {
     if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+      carouselRef.current.style.transform = `translateX(-100%) rotate(${angle}deg)`;
     }
   };
 
@@ -43,11 +43,6 @@ const Lab: React.FC = () => {
     };
   }, []);
 
-  const handleControlClick = (index: number) => {
-    setActiveIndex(index);
-    setRotationAngle(-index * 90);
-  };
-
   const renderImages = () => {
     return images.map((src, index) => {
       if (
@@ -56,23 +51,17 @@ const Lab: React.FC = () => {
         index === (activeIndex + 1) % images.length
       ) {
         return (
-          <div
+          <img
+            src={src}
+            alt={`Slide ${index + 1}`}
             key={index}
-            className={`absolute h-[100px] w-[100px] object-cover transition-transform duration-500 ${
-              index === activeIndex ? "scale-[2.5]" : ""
-            }`}
+            className={`absolute h-[40vh] w-[40vh] object-cover transition-transform duration-500`}
             style={{
               transformOrigin: "center",
               transform: `rotate(${-rotationAngle}deg)`, // Counter-rotate the images
               ...getSlidePosition(index),
             }}
-          >
-            <img
-              src={src}
-              alt={`Slide ${index + 1}`}
-              className="w-full object-cover"
-            />
-          </div>
+          />
         );
       }
       return null;
@@ -80,9 +69,9 @@ const Lab: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col justify-around items-center bg-antiquewhite overflow-hidden">
+    <div className="h-screen flex flex-col justify-around items-center overflow-hidden">
       <div
-        className="absolute left-0 w-[30vw] h-[30vw] border-[2rem] border-[#eebe97] rounded-full flex justify-center items-center transition-transform duration-1000"
+        className="absolute z-[-1] left-0 w-[100vw] h-[100vw] border-[2rem] border-[#eebe97] rounded-full flex justify-center items-center transition-transform duration-1000"
         ref={carouselRef}
       >
         {renderImages()}
@@ -93,10 +82,10 @@ const Lab: React.FC = () => {
 
 const getSlidePosition = (index: number): React.CSSProperties => {
   const positionMap = [
-    { right: "-20rem" },
-    { bottom: "-20rem" },
-    { left: "-20rem" },
-    { top: "-20rem" },
+    { right: "-70vw" },
+    { bottom: "-70vw" },
+    { left: "-70vw" },
+    { top: "-70vw" },
   ];
 
   const relativeIndex = index % 4;
