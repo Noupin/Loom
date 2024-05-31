@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Progress from "../component/Progress";
 import ControlFrame from "../component/ControlFrame";
+import { STORIES } from "../Stories";
 
 function Landing() {
   const setLogoType = useSetRecoilState(logoState);
@@ -20,43 +21,33 @@ function Landing() {
   const [expandSearch, setExpandSearch] = useState(false);
   const [currentStoryIdx, setCurrentStoryIdx] = useState(1);
 
-  const stories = [
-    {
-      title: "Android Tragedy",
-      authors: "Jane Doe & Mary Sue",
-      timeToRead: "13 min read",
-      genres: ["Science Fiction", "Drama", "Romance", "16+"],
-      description:
-        "In the year 2042, a sentient android named Artemis escapes its creators, embarking on a journey of self-discovery and facing the harsh realities of a world wary of artificial intelligence.",
-      image:
-        "https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg",
-    },
-    {
-      title: "The Last of Us",
-      authors: "John Doe & Mary Smith",
-      timeToRead: "8 min read",
-      genres: ["Horror", "Thriller", "Survival", "16+"],
-      description:
-        "In a post-apocalyptic world ravaged by a fungal infection, a hardened survivor named Joel is tasked with escort",
-      image:
-        "https://static1.moviewebimages.com/wordpress/wp-content/uploads/2023/01/the-last-of-us-cordyceps.jpg",
-    },
-  ];
+  const handleWheel = (event: WheelEvent) => {
+    const scrollingDown = event.deltaY > 0;
+
+    if (scrollingDown) {
+      setCurrentStoryIdx((prevIndex) => (prevIndex + 1) % STORIES.length);
+      // setRotationAngle((prevAngle) => prevAngle - 90);
+    } else {
+      setCurrentStoryIdx(
+        (prevIndex) => (prevIndex - 1 + STORIES.length) % STORIES.length
+      );
+      // setRotationAngle((prevAngle) => prevAngle + 90);
+    }
+  };
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
+
+    window.addEventListener("wheel", handleWheel);
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+    };
   }, []);
 
   return (
     <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
-      <div
-        className="absolute z-[-1] top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center"
-        style={{
-          transformOrigin: "0vw",
-          // animation: "spin 10s linear infinite",
-        }}
-      >
-        {stories.map((story, idx) => (
+      <div className="absolute z-[-1] top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center">
+        {STORIES.map((story, idx) => (
           <div
             key={idx}
             className={`bg-off dark:bg-off-500 dark:text-off flex items-center ${
@@ -109,7 +100,7 @@ function Landing() {
         <MoveVertical strokeWidth={2} className="mr-auto" />
 
         <div className="ml-auto">
-          <Progress current={currentStoryIdx} max={stories.length - 1} />
+          <Progress current={currentStoryIdx} max={STORIES.length - 1} />
         </div>
       </div>
 
