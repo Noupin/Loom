@@ -12,28 +12,59 @@ import {
 } from "lucide-react";
 import Progress from "../component/Progress";
 import ControlFrame from "../component/ControlFrame";
-import { STORIES } from "../Stories";
+import { STORIES, TStory } from "../Stories";
 
 function Landing() {
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
-  const [currentStoryIdx, setCurrentStoryIdx] = useState(1);
+  const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
+  const [expandStory, setExpandStory] = useState(false);
+  const [storiesToRender, setStoriesToRender] = useState<TStory[]>([]);
+  const [rotationAngle, setRotationAngle] = useState(0);
+
+  const getPreviousStoryIdx = (currentIndex: number) => {
+    return (currentIndex - 1 + STORIES.length) % STORIES.length;
+  };
+
+  const getNextStoryIdx = (currentIndex: number) => {
+    return (currentIndex + 1) % STORIES.length;
+  };
 
   const handleWheel = (event: WheelEvent) => {
     const scrollingDown = event.deltaY > 0;
 
     if (scrollingDown) {
-      setCurrentStoryIdx((prevIndex) => (prevIndex + 1) % STORIES.length);
-      // setRotationAngle((prevAngle) => prevAngle - 90);
+      setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
+      setRotationAngle((prevAngle) => prevAngle - 90);
     } else {
-      setCurrentStoryIdx(
-        (prevIndex) => (prevIndex - 1 + STORIES.length) % STORIES.length
-      );
-      // setRotationAngle((prevAngle) => prevAngle + 90);
+      setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
+      setRotationAngle((prevAngle) => prevAngle + 90);
     }
   };
+
+  const carouselTransformMap: { [key: number]: React.CSSProperties } = {
+    0: {
+      transform: `rotate(${rotationAngle}deg)`,
+    },
+    1: {
+      transform: `rotate(${rotationAngle + 90}deg)`,
+    },
+    2: {
+      transform: `rotate(${rotationAngle + 180}deg)`,
+    },
+    3: {
+      transform: `rotate(${rotationAngle + 270}deg)`,
+    },
+  };
+
+  useEffect(() => {
+    setStoriesToRender([
+      STORIES[focusedStoryIndex],
+      STORIES[getNextStoryIdx(focusedStoryIndex)],
+    ]);
+  }, [focusedStoryIndex]);
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
@@ -46,14 +77,16 @@ function Landing() {
 
   return (
     <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
-      <div className="absolute z-[-1] top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center">
-        {STORIES.map((story, idx) => (
-          <div
-            key={idx}
-            className={`bg-off dark:bg-off-500 dark:text-off flex items-center ${
-              idx === currentStoryIdx ? "" : "hidden"
-            }`}
-          >
+      {STORIES.map((story, idx) => (
+        <div
+          key={idx}
+          className="absolute z-0 w-[100%] h-[100%] border-0 border-orange-400 transition-transform duration-300 flex justify-center items-center"
+          style={{
+            transformOrigin: "left center",
+            ...carouselTransformMap[idx],
+          }}
+        >
+          <div className="bg-off dark:bg-off-500 dark:text-off flex items-center">
             <img
               src={story.image}
               alt={story.title}
@@ -67,8 +100,8 @@ function Landing() {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
 
       {/* Matches the logo dimensions */}
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center">
@@ -96,11 +129,11 @@ function Landing() {
         )}
       </div>
 
-      <div className="flex-1 justify-center items-center p-5 flex flex-row">
+      <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
         <MoveVertical strokeWidth={2} className="mr-auto" />
 
         <div className="ml-auto">
-          <Progress current={currentStoryIdx} max={STORIES.length - 1} />
+          <Progress current={focusedStoryIndex} max={STORIES.length - 1} />
         </div>
       </div>
 
