@@ -111,7 +111,7 @@ function Landing() {
           </div>
         </div>
       ))}
-      <div className="h-[50px] flex mt-[25px] mx-[25px] items-center">
+      <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-1">
         <div className="flex-1" />
 
         <div className="flex-[2] flex text-center text-2xl">
@@ -142,7 +142,7 @@ function Landing() {
           <Progress current={focusedStoryIndex} max={STORIES.length - 1} />
         </div>
       </div>
-      <div className="flex justify-between p-5">
+      <div className="flex justify-between p-5  relative z-1">
         <div className="flex font-mono select-none items-end">Frv-01</div>
         <div className="flex flex-col">
           <div className="flex justify-around items-end">
