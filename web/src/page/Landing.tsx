@@ -5,6 +5,7 @@ import { TLogo } from "../types/TLogo";
 import {
   ArrowLeftToLine,
   ArrowRight,
+  ArrowRightToLine,
   Moon,
   MoveVertical,
   Search,
@@ -172,31 +173,38 @@ function Landing() {
           <Progress current={focusedStoryIndex} max={STORIES.length - 1} />
         </div>
       </div>
-      <div className="flex justify-between p-5  relative z-1">
-        <div className="flex font-mono select-none items-end">
-          {`FRV-${"0".repeat(
-            STORIES.length.toString().length -
-              focusedStoryIndex.toString().length
-          )}${focusedStoryIndex}`}
-        </div>
-        <div className="flex flex-col">
-          <div className="flex justify-around items-end">
-            <ControlFrame
-              className="p-1 w-fit cursor-pointer"
-              onClick={() => setLeftHandMode((current) => !current)}
-            >
+      <div className="flex flex-col relative z-1">
+        <div
+          className="flex mx-5 transition duration-300 ease-in-out"
+          style={{ justifyContent: leftHandMode ? "flex-start" : "flex-end" }}
+        >
+          <ControlFrame
+            className="p-1 w-fit cursor-pointer mr-2"
+            onClick={() => setLeftHandMode((current) => !current)}
+          >
+            {leftHandMode ? (
+              <ArrowRightToLine height={20} width={20} strokeWidth={1} />
+            ) : (
               <ArrowLeftToLine height={20} width={20} strokeWidth={1} />
-            </ControlFrame>
-            <ControlFrame
-              className="p-1 w-fit cursor-pointer"
-              onClick={() => setDarkMode((current) => !current)}
-            >
-              {darkMode ? (
-                <Moon height={20} width={20} strokeWidth={1} />
-              ) : (
-                <Sun height={20} width={20} strokeWidth={1} />
-              )}
-            </ControlFrame>
+            )}
+          </ControlFrame>
+          <ControlFrame
+            className="p-1 w-fit cursor-pointer ml-2"
+            onClick={() => setDarkMode((current) => !current)}
+          >
+            {darkMode ? (
+              <Moon height={20} width={20} strokeWidth={1} />
+            ) : (
+              <Sun height={20} width={20} strokeWidth={1} />
+            )}
+          </ControlFrame>
+        </div>
+        <div className="flex justify-between px-5 pb-5 pt-3">
+          <div className="flex font-mono select-none items-end">
+            {`FRV-${"0".repeat(
+              STORIES.length.toString().length -
+                focusedStoryIndex.toString().length
+            )}${focusedStoryIndex}`}
           </div>
           <div className="flex font-barcode text-2xl select-none">
             No1 07May2024
