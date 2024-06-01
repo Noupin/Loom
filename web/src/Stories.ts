@@ -19,26 +19,35 @@ export const STORIES = [
     image:
       "https://static1.moviewebimages.com/wordpress/wp-content/uploads/2023/01/the-last-of-us-cordyceps.jpg",
   },
-  // {
-  //   title: "Blade Runner",
-  //   authors: "Philip K.",
-  //   timeToRead: "10 min read",
-  //   genres: ["Science Fiction", "Drama", "Thriller", "16+"],
-  //   description:
-  //     "In a dystopian Los Angeles of 2019, retired police officer Rick Deckard is tasked with hunting down a group of rogue replicants, bioengineered beings with a limited lifespan.",
-  //   image:
-  //     "https://cdn.theatlantic.com/thumbor/qMFv8_ojwskcxzZcOC7IqdX-bsk=/93x30:1308x713/960x540/media/img/mt/2017/10/br/original.jpg",
-  // },
-  // {
-  //   title: "Dune",
-  //   authors: "Frank Herbert",
-  //   timeToRead: "12 min read",
-  //   genres: ["Science Fiction", "Adventure", "Drama", "16+"],
-  //   description:
-  //     "On the desert planet of Arrakis, young Paul Atreides must navigate the treacherous politics of the noble houses and the mysterious Fremen to secure his family's future and the planet's most valuable resource.",
-  //   image:
-  //     "https://www.indiewire.com/wp-content/uploads/2020/05/0520-Dune-Timothee-Solo-Tout-e1630027112271.jpg",
-  // },
+  {
+    title: "Blade Runner",
+    authors: "Philip K.",
+    timeToRead: "10 min read",
+    genres: ["Science Fiction", "Drama", "Thriller", "16+"],
+    description:
+      "In a dystopian Los Angeles of 2019, retired police officer Rick Deckard is tasked with hunting down a group of rogue replicants, bioengineered beings with a limited lifespan.",
+    image:
+      "https://cdn.theatlantic.com/thumbor/qMFv8_ojwskcxzZcOC7IqdX-bsk=/93x30:1308x713/960x540/media/img/mt/2017/10/br/original.jpg",
+  },
+  {
+    title: "Dune",
+    authors: "Frank Herbert",
+    timeToRead: "12 min read",
+    genres: ["Science Fiction", "Adventure", "Drama", "16+"],
+    description:
+      "On the desert planet of Arrakis, young Paul Atreides must navigate the treacherous politics of the noble houses and the mysterious Fremen to secure his family's future and the planet's most valuable resource.",
+    image:
+      "https://www.indiewire.com/wp-content/uploads/2020/05/0520-Dune-Timothee-Solo-Tout-e1630027112271.jpg",
+  },
+  {
+    title: "Ready Player One",
+    authors: "Ernest Cline",
+    timeToRead: "9 min read",
+    genres: ["Science Fiction", "Adventure", "Drama", "16+"],
+    description:
+      "In the year 2045, teenager Wade Watts embarks on a quest to find the hidden Easter egg in the virtual reality world of the OASIS, competing against corporate interests and fellow gamers.",
+    image: "https://www.sethetaylor.com/wp-content/uploads/2018/03/ready.jpeg",
+  },
 ];
 
 export type TStory = (typeof STORIES)[0];

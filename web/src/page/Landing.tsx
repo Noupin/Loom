@@ -1,6 +1,6 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { darkModeState, leftHandModeState, logoState } from "../State";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import {
   ArrowLeftToLine,
@@ -20,6 +20,7 @@ function Landing() {
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
+  const carouselIndexRef = useRef(0);
   const [expandStory, setExpandStory] = useState(false);
   const [storiesToRender, setStoriesToRender] = useState<TStory[]>([]);
   const [rotationAngle, setRotationAngle] = useState(0);
@@ -35,11 +36,13 @@ function Landing() {
   const handleWheel = (event: WheelEvent) => {
     const scrollingDown = event.deltaY > 0;
 
-    if (scrollingDown) {
+    if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
+      carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
-    } else {
+    } else if (!scrollingDown && carouselIndexRef.current > 0) {
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
+      carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
     }
   };
@@ -77,13 +80,19 @@ function Landing() {
 
   return (
     <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
+      {/* TODO: Make fix so we dont render all stories at once */}
       {STORIES.map((story, idx) => (
         <div
           key={idx}
-          className="absolute z-0 w-[100%] h-[100%] border-0 border-orange-400 transition-transform duration-300 flex justify-center items-center"
+          className="absolute z-0 w-[100%] h-[100%] border-0 border-orange-400 transition-transform duration-300 justify-center items-center"
           style={{
             transformOrigin: "left center",
-            ...carouselTransformMap[idx],
+            display:
+              carouselIndexRef.current - 1 <= idx &&
+              idx <= carouselIndexRef.current + 2
+                ? "flex"
+                : "none",
+            ...carouselTransformMap[idx % 4],
           }}
         >
           <div className="bg-off dark:bg-off-500 dark:text-off flex items-center">
@@ -102,8 +111,6 @@ function Landing() {
           </div>
         </div>
       ))}
-
-      {/* Matches the logo dimensions */}
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center">
         <div className="flex-1" />
 
@@ -128,7 +135,6 @@ function Landing() {
           </div>
         )}
       </div>
-
       <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
         <MoveVertical strokeWidth={2} className="mr-auto" />
 
@@ -136,7 +142,6 @@ function Landing() {
           <Progress current={focusedStoryIndex} max={STORIES.length - 1} />
         </div>
       </div>
-
       <div className="flex justify-between p-5">
         <div className="flex font-mono select-none items-end">Frv-01</div>
         <div className="flex flex-col">
