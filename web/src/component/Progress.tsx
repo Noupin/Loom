@@ -13,7 +13,7 @@ const Progress: React.FC<ProgressProps> = ({ current, max }) => {
   return (
     <div className="w-2 h-20 bg-black dark:bg-white dark:bg-opacity-25 bg-opacity-25 rounded-full flex items-start">
       <div
-        className="w-full bg-black rounded-full dark:bg-white"
+        className="w-full bg-black rounded-full dark:bg-white transition-transform duration-200 ease-in-out"
         style={{
           transform: `translateY(${progressPercentage}%)`,
           height: `${heightPercentage}%`,
