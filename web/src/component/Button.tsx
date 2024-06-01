@@ -6,7 +6,6 @@ interface ButtonProps
     HTMLButtonElement
   > {
   onClick: () => void;
-  children: JSX.Element;
 }
 
 const Button: React.FC<ButtonProps> = ({ onClick, children, ...props }) => {

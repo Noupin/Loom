@@ -48,6 +48,25 @@ export const STORIES = [
       "In the year 2045, teenager Wade Watts embarks on a quest to find the hidden Easter egg in the virtual reality world of the OASIS, competing against corporate interests and fellow gamers.",
     image: "https://www.sethetaylor.com/wp-content/uploads/2018/03/ready.jpeg",
   },
+  {
+    title: "Foundation",
+    authors: "Isaac Asimov",
+    timeToRead: "11 min read",
+    genres: ["Science Fiction", "Drama", "Thriller", "16+"],
+    description:
+      "In the dying days of the Galactic Empire, mathematician Hari Seldon creates the Foundation to preserve knowledge and shorten the dark age that will follow the empire's collapse.",
+    image: "https://cdn.mos.cms.futurecdn.net/wjyM25srHhyGrM9KaZAPa.jpg",
+  },
+  {
+    title: "Arcane",
+    authors: "Riot Games",
+    timeToRead: "7 min read",
+    genres: ["Fantasy", "Drama", "Action", "16+"],
+    description:
+      "In the utopian city of Piltover and the oppressed underground of Zaun, two sisters discover their shared past and the dark secrets of their society.",
+    image:
+      "https://assets.mubicdn.net/images/film/304799/image-w1280.jpg?1638550927",
+  },
 ];
 
 export type TStory = (typeof STORIES)[0];

@@ -14,6 +14,7 @@ import {
 import Progress from "../component/Progress";
 import ControlFrame from "../component/ControlFrame";
 import { STORIES, TStory } from "../Stories";
+import Button from "../component/Button";
 
 function Landing() {
   const setLogoType = useSetRecoilState(logoState);
@@ -22,7 +23,7 @@ function Landing() {
   const [expandSearch, setExpandSearch] = useState(false);
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
   const carouselIndexRef = useRef(0);
-  const [expandStory, setExpandStory] = useState(false);
+  const [expandStory, setExpandStory] = useState(true);
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
@@ -35,16 +36,28 @@ function Landing() {
     return (currentIndex + 1) % STORIES.length;
   };
 
+  const checkItemShouldExpand = (index: number) => {
+    setTimeout(() => {
+      console.log("Checking", index, carouselIndexRef.current);
+
+      if (index === carouselIndexRef.current) {
+        setExpandStory(true);
+      }
+    }, 1000);
+  };
+
   const handleWheel = (event: WheelEvent) => {
     if (isScrollingRef.current) return;
     const scrollingDown = event.deltaY > 0;
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
+      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -54,6 +67,9 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
+    setTimeout(() => {
+      checkItemShouldExpand(carouselIndexRef.current);
+    }, 300);
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -62,7 +78,6 @@ function Landing() {
 
   const handleTouchMove = (event: TouchEvent) => {
     if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
-
     const touchEndY = event.touches[0].clientY;
     const touchDeltaY = touchStartY.current - touchEndY;
     const scrollingDown = touchDeltaY > 0;
@@ -70,10 +85,12 @@ function Landing() {
     isScrollingRef.current = true; // Set the flag to prevent further scrolling
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
+      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -94,6 +111,7 @@ function Landing() {
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
+    checkItemShouldExpand(carouselIndexRef.current);
 
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("touchstart", handleTouchStart);
@@ -145,22 +163,69 @@ function Landing() {
               }}
             >
               <div
-                className="bg-off dark:bg-off-500 dark:text-off flex items-center transition-transform duration-300"
+                className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center transition-transform duration-300"
                 style={{
-                  transform: focusedStoryIndex !== idx ? "scale(75%)" : "",
+                  transform: focusedStoryIndex !== idx ? "scale(50%)" : "",
                 }}
               >
                 <img
                   src={story.image}
                   alt={story.title}
-                  className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
+                  className="h-[40vh] w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white transition-transform duration-300"
+                  style={
+                    expandStory && focusedStoryIndex == idx
+                      ? {}
+                      : { transform: "translateX(20%)" }
+                  }
                 />
-                <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
-                  <div className="text-8xl mt-24">{story.title}</div>
-                  <div className="text-3xl pr-8">{story.authors}</div>
-                  <div className="flex-1 flex justify-end items-end">
-                    <ArrowRight />
+                <div
+                  className={`text-end h-[40vh] flex flex-col items-end transition-transform duration-300 self-end text-black invert mix-blend-difference`}
+                  style={
+                    expandStory && focusedStoryIndex == idx
+                      ? { width: "40vw" }
+                      : { transform: "translateX(-20%)" }
+                  }
+                >
+                  {expandStory && focusedStoryIndex == idx && (
+                    <div className="flex flex-row justify-between px-5 w-full">
+                      <div className="text-2xl">{story.timeToRead}</div>
+                      <div className="text-2xl">
+                        {story.genres.map((genre, idx) => {
+                          if (idx < story.genres.length - 1)
+                            return genre + ", ";
+                          return genre;
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  <div
+                    className={`text-8xl ${
+                      expandStory && focusedStoryIndex == idx
+                        ? "mt-16"
+                        : "mt-24"
+                    }`}
+                  >
+                    {story.title}
                   </div>
+                  <div className="text-3xl pr-8">{story.authors}</div>
+                  {expandStory && focusedStoryIndex == idx ? (
+                    <>
+                      <p className="text-wrap text-center mt-10 px-8">
+                        {story.description}
+                      </p>
+                      <Button
+                        onClick={() => {}}
+                        className="bg-off-500 mt-auto text-off w-[80%] flex flex-row
+                        justify-center self-center py-2"
+                      >
+                        Read <ArrowRight />
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="flex-1 flex justify-end items-end">
+                      <ArrowRight />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
