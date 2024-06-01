@@ -24,6 +24,7 @@ function Landing() {
   const [expandStory, setExpandStory] = useState(false);
   const [storiesToRender, setStoriesToRender] = useState<TStory[]>([]);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const isScrollingRef = useRef(false);
 
   const getPreviousStoryIdx = (currentIndex: number) => {
     return (currentIndex - 1 + STORIES.length) % STORIES.length;
@@ -34,7 +35,9 @@ function Landing() {
   };
 
   const handleWheel = (event: WheelEvent) => {
+    if (isScrollingRef.current) return;
     const scrollingDown = event.deltaY > 0;
+    isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
@@ -45,6 +48,11 @@ function Landing() {
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
     }
+
+    //TODO: Temp fix for scrolling too fast for display to switch from none to flex
+    setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 100);
   };
 
   const carouselTransformMap: { [key: number]: string } = {
@@ -72,7 +80,10 @@ function Landing() {
 
   return (
     <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
-      {/* TODO: Make fix so we dont render all stories at once */}
+      {/* TODO: Make fix so we dont render all stories at once. I couldnt find a way to render three and slide a window left and also rotate
+      its a double movement in opposite directions so the rotate was fast and it always skipped an item
+      
+      maybe make it so it rotates on thirds(or eighths) and you can allow the double up if you add 1/6 of the degrees*/}
       {STORIES.map((story, idx) => (
         <div
           key={idx}
