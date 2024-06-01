@@ -1,3 +1,4 @@
+import { transform } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 const images = [
@@ -11,10 +12,13 @@ const Lab: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [rotationAngle, setRotationAngle] = useState<number>(0);
+  const [focusedItem, setFocusedItem] = useState<number>(0);
+  const [renderedItems, setRenderedItems] = useState<JSX.Element[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const rotateCarousel = (angle: number) => {
     if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateX(-100%) rotate(${angle}deg)`;
+      carouselRef.current.style.transform = `rotate(${angle}deg)`;
     }
   };
 
@@ -44,6 +48,33 @@ const Lab: React.FC = () => {
   }, []);
 
   const renderImages = () => {
+    const itemsToRender = [
+      activeIndex,
+      (activeIndex - 1 + images.length) % images.length,
+      (activeIndex + 1) % images.length,
+    ];
+    const renderedItems = [];
+    for (let index of itemsToRender) {
+      renderedItems.push(
+        <div
+          style={{
+            transformOrigin: "center",
+            transform: `rotate(${-rotationAngle}deg) translateX(100%)`, // Counter-rotate the images
+            ...getSlidePosition(index),
+          }}
+          className="absolute transition-transform duration-500 flex flex-col"
+        >
+          <img
+            src={images[index]}
+            alt={`Slide ${index + 1}`}
+            key={index}
+            className={`h-[40vh] w-[40vh] object-cover`}
+          />
+          <h2 className="w-full p-5 bg-slate-200 text-center">Hello</h2>
+        </div>
+      );
+    }
+    // return renderedItems;
     return images.map((src, index) => {
       if (
         index === activeIndex ||
@@ -51,17 +82,22 @@ const Lab: React.FC = () => {
         index === (activeIndex + 1) % images.length
       ) {
         return (
-          <img
-            src={src}
-            alt={`Slide ${index + 1}`}
-            key={index}
-            className={`absolute h-[40vh] w-[40vh] object-cover transition-transform duration-500`}
+          <div
             style={{
               transformOrigin: "center",
               transform: `rotate(${-rotationAngle}deg)`, // Counter-rotate the images
               ...getSlidePosition(index),
             }}
-          />
+            className="absolute transition-transform duration-500 block"
+          >
+            <img
+              src={src}
+              alt={`Slide ${index + 1}`}
+              key={index}
+              className={`h-[40vh] w-[40vh] object-cover`}
+            />
+            <h2 className="w-full p-5 bg-slate-200 text-center">Hello</h2>
+          </div>
         );
       }
       return null;
@@ -69,9 +105,9 @@ const Lab: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col justify-around items-center overflow-hidden">
+    <div className="h-screen flex flex-col justify-around items-center overflow-hidden relative bg-off z-[-2]">
       <div
-        className="absolute z-[-1] left-0 w-[100vw] h-[100vw] border-[2rem] border-[#eebe97] rounded-full flex justify-center items-center transition-transform duration-1000"
+        className="absolute z-[-1] left-0 w-[120vh] h-[120vh] rounded-full flex justify-center items-center transition-transform duration-1000"
         ref={carouselRef}
       >
         {renderImages()}
@@ -82,10 +118,10 @@ const Lab: React.FC = () => {
 
 const getSlidePosition = (index: number): React.CSSProperties => {
   const positionMap = [
-    { right: "-70vw" },
-    { bottom: "-70vw" },
-    { left: "-70vw" },
-    { top: "-70vw" },
+    { right: "0" },
+    { bottom: "0" },
+    { left: "0" },
+    { top: "0" },
   ];
 
   const relativeIndex = index % 4;
