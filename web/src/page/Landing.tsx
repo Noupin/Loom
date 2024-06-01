@@ -22,9 +22,9 @@ function Landing() {
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
   const carouselIndexRef = useRef(0);
   const [expandStory, setExpandStory] = useState(false);
-  const [storiesToRender, setStoriesToRender] = useState<TStory[]>([]);
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
+  const touchStartY = useRef(0);
 
   const getPreviousStoryIdx = (currentIndex: number) => {
     return (currentIndex - 1 + STORIES.length) % STORIES.length;
@@ -55,6 +55,35 @@ function Landing() {
     }, 100);
   };
 
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartY.current = event.touches[0].clientY;
+  };
+
+  const handleTouchMove = (event: TouchEvent) => {
+    if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
+
+    const touchEndY = event.touches[0].clientY;
+    const touchDeltaY = touchStartY.current - touchEndY;
+    const scrollingDown = touchDeltaY > 0;
+
+    isScrollingRef.current = true; // Set the flag to prevent further scrolling
+
+    if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+      setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
+      carouselIndexRef.current += 1;
+      setRotationAngle((prevAngle) => prevAngle - 90);
+    } else if (!scrollingDown && carouselIndexRef.current > 0) {
+      setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
+      carouselIndexRef.current -= 1;
+      setRotationAngle((prevAngle) => prevAngle + 90);
+    }
+
+    // Use setTimeout to reset the flag after the transition duration
+    setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 100);
+  };
+
   const carouselTransformMap: { [key: number]: string } = {
     0: `rotate(${rotationAngle}deg)`,
     1: `rotate(${rotationAngle + 90}deg)`,
@@ -63,60 +92,20 @@ function Landing() {
   };
 
   useEffect(() => {
-    setStoriesToRender([
-      STORIES[focusedStoryIndex],
-      STORIES[getNextStoryIdx(focusedStoryIndex)],
-    ]);
-  }, [focusedStoryIndex]);
-
-  useEffect(() => {
     setLogoType(TLogo.Logo);
 
     window.addEventListener("wheel", handleWheel);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
   return (
     <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
-      {/* TODO: Make fix so we dont render all stories at once. I couldnt find a way to render three and slide a window left and also rotate
-      its a double movement in opposite directions so the rotate was fast and it always skipped an item
-      
-      maybe make it so it rotates on thirds(or eighths) and you can allow the double up if you add 1/6 of the degrees*/}
-      {STORIES.map((story, idx) => (
-        <div
-          key={idx}
-          className="absolute z-0 w-[100%] h-[100%] transition-transform duration-300 justify-center items-center"
-          style={{
-            transformOrigin: "left center",
-            display:
-              carouselIndexRef.current - 1 <= idx &&
-              idx <= carouselIndexRef.current + 2
-                ? "flex"
-                : "none",
-            transform: `${carouselTransformMap[idx % 4]}`,
-          }}
-        >
-          <div
-            className="bg-off dark:bg-off-500 dark:text-off flex items-center transition-transform duration-300"
-            style={{ transform: focusedStoryIndex !== idx ? "scale(75%)" : "" }}
-          >
-            <img
-              src={story.image}
-              alt={story.title}
-              className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
-            />
-            <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
-              <div className="text-8xl mt-24">{story.title}</div>
-              <div className="text-3xl pr-8">{story.authors}</div>
-              <div className="flex-1 flex justify-end items-end">
-                <ArrowRight />
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-1">
         <div className="flex-1" />
 
@@ -141,6 +130,41 @@ function Landing() {
           </div>
         )}
       </div>
+
+      {STORIES.map(
+        (story, idx) =>
+          carouselIndexRef.current - 1 <= idx &&
+          idx <= carouselIndexRef.current + 1 && (
+            <div
+              key={idx}
+              className="absolute z-0 w-[100%] h-[100%] transition-transform duration-300 flex justify-center items-center"
+              style={{
+                transformOrigin: "left center",
+                transform: `${carouselTransformMap[idx % 4]}`,
+              }}
+            >
+              <div
+                className="bg-off dark:bg-off-500 dark:text-off flex items-center transition-transform duration-300"
+                style={{
+                  transform: focusedStoryIndex !== idx ? "scale(75%)" : "",
+                }}
+              >
+                <img
+                  src={story.image}
+                  alt={story.title}
+                  className="h-[40vh] w-[40vh] object-cover translate-x-[20%] drop-shadow-img dark:drop-shadow-img-white"
+                />
+                <div className="text-black invert mix-blend-difference translate-x-[-20%] text-end h-[40vh] flex flex-col items-end">
+                  <div className="text-8xl mt-24">{story.title}</div>
+                  <div className="text-3xl pr-8">{story.authors}</div>
+                  <div className="flex-1 flex justify-end items-end">
+                    <ArrowRight />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+      )}
       <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
         <MoveVertical strokeWidth={2} className="mr-auto" />
 
@@ -149,7 +173,12 @@ function Landing() {
         </div>
       </div>
       <div className="flex justify-between p-5  relative z-1">
-        <div className="flex font-mono select-none items-end">Frv-01</div>
+        <div className="flex font-mono select-none items-end">
+          {`FRV-${"0".repeat(
+            STORIES.length.toString().length -
+              focusedStoryIndex.toString().length
+          )}${focusedStoryIndex}`}
+        </div>
         <div className="flex flex-col">
           <div className="flex justify-around items-end">
             <ControlFrame
@@ -170,7 +199,7 @@ function Landing() {
             </ControlFrame>
           </div>
           <div className="flex font-barcode text-2xl select-none">
-            No1 27May2024
+            No1 07May2024
           </div>
         </div>
       </div>
