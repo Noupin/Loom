@@ -95,12 +95,13 @@ function Landing() {
               idx <= carouselIndexRef.current + 2
                 ? "flex"
                 : "none",
-            transform: `${carouselTransformMap[idx % 4]} ${
-              focusedStoryIndex !== idx ? "translateX(10%)" : ""
-            } `,
+            transform: `${carouselTransformMap[idx % 4]}`,
           }}
         >
-          <div className="bg-off dark:bg-off-500 dark:text-off flex items-center">
+          <div
+            className="bg-off dark:bg-off-500 dark:text-off flex items-center transition-transform duration-300"
+            style={{ transform: focusedStoryIndex !== idx ? "scale(75%)" : "" }}
+          >
             <img
               src={story.image}
               alt={story.title}
