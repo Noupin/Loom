@@ -47,19 +47,11 @@ function Landing() {
     }
   };
 
-  const carouselTransformMap: { [key: number]: React.CSSProperties } = {
-    0: {
-      transform: `rotate(${rotationAngle}deg)`,
-    },
-    1: {
-      transform: `rotate(${rotationAngle + 90}deg)`,
-    },
-    2: {
-      transform: `rotate(${rotationAngle + 180}deg)`,
-    },
-    3: {
-      transform: `rotate(${rotationAngle + 270}deg)`,
-    },
+  const carouselTransformMap: { [key: number]: string } = {
+    0: `rotate(${rotationAngle}deg)`,
+    1: `rotate(${rotationAngle + 90}deg)`,
+    2: `rotate(${rotationAngle + 180}deg)`,
+    3: `rotate(${rotationAngle + 270}deg)`,
   };
 
   useEffect(() => {
@@ -84,7 +76,7 @@ function Landing() {
       {STORIES.map((story, idx) => (
         <div
           key={idx}
-          className="absolute z-0 w-[100%] h-[100%] border-0 border-orange-400 transition-transform duration-300 justify-center items-center"
+          className="absolute z-0 w-[100%] h-[100%] transition-transform duration-300 justify-center items-center"
           style={{
             transformOrigin: "left center",
             display:
@@ -92,7 +84,9 @@ function Landing() {
               idx <= carouselIndexRef.current + 2
                 ? "flex"
                 : "none",
-            ...carouselTransformMap[idx % 4],
+            transform: `${carouselTransformMap[idx % 4]} ${
+              focusedStoryIndex !== idx ? "translateX(10%)" : ""
+            } `,
           }}
         >
           <div className="bg-off dark:bg-off-500 dark:text-off flex items-center">
