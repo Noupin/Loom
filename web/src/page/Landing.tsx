@@ -303,7 +303,7 @@ function Landing() {
               STORIES.length.toString().length -
                 focusedStoryIndex.toString().length
             )}
-            {focusedStoryIndex} 07May2024
+            {focusedStoryIndex} {STORIES[focusedStoryIndex].datePublished}
           </div>
         </div>
       </div>

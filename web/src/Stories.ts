@@ -8,6 +8,7 @@ export const STORIES = [
       "In the year 2042, a sentient android named Artemis escapes its creators, embarking on a journey of self-discovery and facing the harsh realities of a world wary of artificial intelligence.",
     image:
       "https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg",
+    datePublished: "07Apr2024",
   },
   {
     title: "The Last of Us",
@@ -18,6 +19,7 @@ export const STORIES = [
       "In a post-apocalyptic world ravaged by a fungal infection, a hardened survivor named Joel is tasked with escort",
     image:
       "https://static1.moviewebimages.com/wordpress/wp-content/uploads/2023/01/the-last-of-us-cordyceps.jpg",
+    datePublished: "31Mar2024",
   },
   {
     title: "Blade Runner",
@@ -28,6 +30,7 @@ export const STORIES = [
       "In a dystopian Los Angeles of 2019, retired police officer Rick Deckard is tasked with hunting down a group of rogue replicants, bioengineered beings with a limited lifespan.",
     image:
       "https://cdn.theatlantic.com/thumbor/qMFv8_ojwskcxzZcOC7IqdX-bsk=/93x30:1308x713/960x540/media/img/mt/2017/10/br/original.jpg",
+    datePublished: "24Mar2024",
   },
   {
     title: "Dune",
@@ -38,6 +41,7 @@ export const STORIES = [
       "On the desert planet of Arrakis, young Paul Atreides must navigate the treacherous politics of the noble houses and the mysterious Fremen to secure his family's future and the planet's most valuable resource.",
     image:
       "https://www.indiewire.com/wp-content/uploads/2020/05/0520-Dune-Timothee-Solo-Tout-e1630027112271.jpg",
+    datePublished: "17Mar2024",
   },
   {
     title: "Ready Player One",
@@ -47,6 +51,7 @@ export const STORIES = [
     description:
       "In the year 2045, teenager Wade Watts embarks on a quest to find the hidden Easter egg in the virtual reality world of the OASIS, competing against corporate interests and fellow gamers.",
     image: "https://www.sethetaylor.com/wp-content/uploads/2018/03/ready.jpeg",
+    datePublished: "10Mar2024",
   },
   {
     title: "Foundation",
@@ -56,6 +61,7 @@ export const STORIES = [
     description:
       "In the dying days of the Galactic Empire, mathematician Hari Seldon creates the Foundation to preserve knowledge and shorten the dark age that will follow the empire's collapse.",
     image: "https://cdn.mos.cms.futurecdn.net/wjyM25srHhyGrM9KaZAPa.jpg",
+    datePublished: "03Mar2024",
   },
   {
     title: "Arcane",
@@ -66,6 +72,7 @@ export const STORIES = [
       "In the utopian city of Piltover and the oppressed underground of Zaun, two sisters discover their shared past and the dark secrets of their society.",
     image:
       "https://assets.mubicdn.net/images/film/304799/image-w1280.jpg?1638550927",
+    datePublished: "24Feb2024",
   },
 ];
 
