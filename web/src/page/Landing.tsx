@@ -46,7 +46,7 @@ function Landing() {
       if (index === carouselIndexRef.current) {
         setExpandStory(true);
       }
-    }, SET_IN_PLACE_ANIMATION_TIME + 50);
+    }, SET_IN_PLACE_ANIMATION_TIME);
   };
 
   const carouselRotateTimer = () => {
@@ -55,12 +55,14 @@ function Landing() {
       setCarouselRotating(false);
       console.log("rotation done");
       checkItemShouldExpand(carouselIndexRef.current);
-    }, ROTATION_ANIMATION_TIME + 200); // Offset to allow for the setIn animation to be started after
+    }, ROTATION_ANIMATION_TIME + 200); //TODO: Offset to allow for the setIn animation to be started after
   };
 
   const handleWheel = (event: WheelEvent) => {
     if (isScrollingRef.current) return;
     const scrollingDown = event.deltaY > 0;
+    if (scrollingDown && carouselIndexRef.current >= STORIES.length - 1) return;
+    if (!scrollingDown && carouselIndexRef.current <= 0) return;
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
