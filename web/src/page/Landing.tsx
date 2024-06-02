@@ -199,22 +199,18 @@ function Landing() {
                 <img
                   src={story.image}
                   alt={story.title}
-                  className="h-[40vh] w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white
-                  transition-transform duration-1000"
+                  className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white
+                  transition-[transform, height] duration-1000"
                   style={
                     expandStory && focusedStoryIndex == idx
-                      ? {}
-                      : { transform: "translateX(20%)" }
+                      ? { transform: "translateX(0%)", height: "40vh" }
+                      : { transform: "translateX(20%)", height: "40vh" }
                   }
                 />
                 <div
                   className="h-[40vh] w-[40vw] flex flex-col items-end transition-transform duration-1000
                   self-end text-black invert mix-blend-difference ml-5"
-                  style={
-                    expandStory && focusedStoryIndex == idx
-                      ? {}
-                      : { transform: "translateX(-20%)" }
-                  }
+                  style={expandStory && focusedStoryIndex == idx ? {} : {}}
                 >
                   <div
                     className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
@@ -233,8 +229,24 @@ function Landing() {
                     </div>
                   </div>
 
-                  <div className="text-8xl mt-24">{story.title}</div>
-                  <div className="text-3xl pr-8">{story.authors}</div>
+                  <div
+                    className="transition-[width, transform] text-end duration-1000 self-start min-w-fit"
+                    style={
+                      expandStory && focusedStoryIndex == idx
+                        ? {
+                            width: "100%",
+                            transform: "translateX(0%)",
+                          }
+                        : {
+                            width: "0%",
+                            transform: "translateX(-20%)",
+                          }
+                    }
+                  >
+                    <div className="text-8xl mt-24">{story.title}</div>
+                    <div className="text-3xl pr-8">{story.authors}</div>
+                  </div>
+
                   <p
                     className={`text-wrap text-center mt-10 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
                     style={
@@ -269,12 +281,8 @@ function Landing() {
       </div>
       <div className="flex flex-col relative z-1">
         <div
-          className="flex px-5 transition-[width, transform] duration-150 ease-in-out justify-end"
-          style={
-            leftHandMode
-              ? { width: "0%", transform: "translateX(187.5%)" }
-              : { width: "100%" }
-          }
+          className="flex px-5 transition-[width, transform] duration-150 ease-in-out justify-end min-w-fit"
+          style={leftHandMode ? { width: "0%" } : { width: "100%" }}
         >
           <ControlFrame
             className="p-1 w-fit cursor-pointer mr-2"

@@ -1,4 +1,24 @@
-export const STORIES = [
+export interface IStory {
+  title: string;
+  authors: string;
+  timeToRead: string;
+  genres: string[];
+  description: string;
+  image: string;
+  datePublished: string;
+}
+
+export const STORIES: IStory[] = [
+  {
+    title: "Man of Steel",
+    authors: "John Doe & Jane Smith",
+    timeToRead: "10 min read",
+    genres: ["Science Fiction", "Action", "Adventure", "16+"],
+    description:
+      "In the wake of a devastating alien invasion, a young journalist named Clark Kent discovers his extraterrestrial origins and becomes the hero known as Superman.",
+    image: "https://film-cred.com/wp-content/uploads/2023/06/manofsteel_01.jpg",
+    datePublished: "21Apr2024",
+  },
   {
     title: "Android Tragedy",
     authors: "Jane Doe & Mary Sue",
@@ -6,8 +26,7 @@ export const STORIES = [
     genres: ["Science Fiction", "Drama", "Romance", "16+"],
     description:
       "In the year 2042, a sentient android named Artemis escapes its creators, embarking on a journey of self-discovery and facing the harsh realities of a world wary of artificial intelligence.",
-    image:
-      "https://cdn3.vox-cdn.com/thumbor/eKbukOC7ZHVXSxbUR2sH-NfwoOw=/0x1080/volume-assets.voxmedia.com/production/56997d157bef3ac54865f47e5106dfcd/rogueone.jpg",
+    image: "https://img.freepik.com/premium-photo/woman-rain_869640-17071.jpg",
     datePublished: "07Apr2024",
   },
   {
@@ -75,5 +94,3 @@ export const STORIES = [
     datePublished: "24Feb2024",
   },
 ];
-
-export type TStory = (typeof STORIES)[0];
