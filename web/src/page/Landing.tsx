@@ -19,6 +19,8 @@ import Button from "../component/Button";
 function Landing() {
   const ROTATION_ANIMATION_TIME = 300;
   const SET_IN_PLACE_ANIMATION_TIME = 600;
+  const EXPANDED_STORY_ANIMATION_CLASSES =
+    "transition-colors duration-[1500ms] ease-in-out";
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
@@ -53,7 +55,7 @@ function Landing() {
       setCarouselRotating(false);
       console.log("rotation done");
       checkItemShouldExpand(carouselIndexRef.current);
-    }, ROTATION_ANIMATION_TIME);
+    }, ROTATION_ANIMATION_TIME + 200); // Offset to allow for the setIn animation to be started after
   };
 
   const handleWheel = (event: WheelEvent) => {
@@ -204,54 +206,53 @@ function Landing() {
                   }
                 />
                 <div
-                  className="text-end h-[40vh] flex flex-col items-end transition-all duration-1000
-                  self-end text-black invert mix-blend-difference"
+                  className="h-[40vh] w-[40vw] flex flex-col items-end transition-transform duration-1000
+                  self-end text-black invert mix-blend-difference ml-5"
                   style={
                     expandStory && focusedStoryIndex == idx
-                      ? { width: "40vw" }
+                      ? {}
                       : { transform: "translateX(-20%)" }
                   }
                 >
-                  {expandStory && focusedStoryIndex == idx && (
-                    <div className="flex flex-row justify-between px-5 w-full">
-                      <div className="text-2xl">{story.timeToRead}</div>
-                      <div className="text-2xl">
-                        {story.genres.map((genre, idx) => {
-                          if (idx < story.genres.length - 1)
-                            return genre + ", ";
-                          return genre;
-                        })}
-                      </div>
-                    </div>
-                  )}
                   <div
-                    className={`text-8xl ${
+                    className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                    style={
                       expandStory && focusedStoryIndex == idx
-                        ? "mt-16"
-                        : "mt-24"
-                    }`}
+                        ? { color: "inherit" }
+                        : { color: "transparent" }
+                    }
                   >
-                    {story.title}
-                  </div>
-                  <div className="text-3xl pr-8">{story.authors}</div>
-                  {expandStory && focusedStoryIndex == idx ? (
-                    <>
-                      <p className="text-wrap text-center mt-10 px-8">
-                        {story.description}
-                      </p>
-                      <Button
-                        onClick={() => {}}
-                        className="bg-off-500 mt-auto text-off w-[80%] flex flex-row
-                        justify-center self-center py-2"
-                      >
-                        Read <ArrowRight />
-                      </Button>
-                    </>
-                  ) : (
-                    <div className="flex-1 flex justify-end items-end">
-                      <ArrowRight />
+                    <div className="text-2xl">{story.timeToRead}</div>
+                    <div className="text-2xl">
+                      {story.genres.map((genre, idx) => {
+                        if (idx < story.genres.length - 1) return genre + ", ";
+                        return genre;
+                      })}
                     </div>
-                  )}
+                  </div>
+
+                  <div className="text-8xl mt-24">{story.title}</div>
+                  <div className="text-3xl pr-8">{story.authors}</div>
+                  <p
+                    className={`text-wrap text-center mt-10 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                    style={
+                      expandStory && focusedStoryIndex == idx
+                        ? { color: "inherit" }
+                        : { color: "transparent" }
+                    }
+                  >
+                    {story.description}
+                  </p>
+                  <Button
+                    onClick={() => {}}
+                    className={`${
+                      expandStory && focusedStoryIndex == idx
+                        ? "bg-off-500 text-off"
+                        : "bg-transparent text-transparent"
+                    } mt-auto w-[80%] flex flex-row justify-center self-center py-2 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                  >
+                    Read <ArrowRight />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -292,13 +293,15 @@ function Landing() {
         </div>
         <div className="flex justify-between px-5 pb-5 pt-3">
           <div className="flex font-mono select-none items-end">
-            {`FRV-${"0".repeat(
-              STORIES.length.toString().length -
-                focusedStoryIndex.toString().length
-            )}${focusedStoryIndex}`}
+            FRV-1 07May2024
           </div>
           <div className="flex font-barcode text-2xl select-none">
-            No1 07May2024
+            No
+            {"0".repeat(
+              STORIES.length.toString().length -
+                focusedStoryIndex.toString().length
+            )}
+            {focusedStoryIndex} 07May2024
           </div>
         </div>
       </div>
