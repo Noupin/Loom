@@ -269,8 +269,8 @@ function Landing() {
       </div>
       <div className="flex flex-col relative z-1">
         <div
-          className="flex mx-5 transition duration-300 ease-in-out"
-          style={{ justifyContent: leftHandMode ? "flex-start" : "flex-end" }}
+          className="flex px-5 transition-[width] duration-150 ease-in-out justify-end"
+          style={{ width: leftHandMode ? "7%" : "100%" }}
         >
           <ControlFrame
             className="p-1 w-fit cursor-pointer mr-2"
