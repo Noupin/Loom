@@ -13,10 +13,12 @@ import {
 } from "lucide-react";
 import Progress from "../component/Progress";
 import ControlFrame from "../component/ControlFrame";
-import { STORIES, TStory } from "../Stories";
+import { STORIES } from "../Stories";
 import Button from "../component/Button";
 
 function Landing() {
+  const ROTATION_ANIMATION_TIME = 300;
+  const SET_IN_PLACE_ANIMATION_TIME = 600;
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
@@ -27,6 +29,7 @@ function Landing() {
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
+  const [carouselRotating, setCarouselRotating] = useState(false);
 
   const getPreviousStoryIdx = (currentIndex: number) => {
     return (currentIndex - 1 + STORIES.length) % STORIES.length;
@@ -38,12 +41,19 @@ function Landing() {
 
   const checkItemShouldExpand = (index: number) => {
     setTimeout(() => {
-      console.log("Checking", index, carouselIndexRef.current);
-
       if (index === carouselIndexRef.current) {
         setExpandStory(true);
       }
-    }, 1000);
+    }, SET_IN_PLACE_ANIMATION_TIME + 50);
+  };
+
+  const carouselRotateTimer = () => {
+    setCarouselRotating(true);
+    setTimeout(() => {
+      setCarouselRotating(false);
+      console.log("rotation done");
+      checkItemShouldExpand(carouselIndexRef.current);
+    }, ROTATION_ANIMATION_TIME);
   };
 
   const handleWheel = (event: WheelEvent) => {
@@ -67,9 +77,7 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
-    setTimeout(() => {
-      checkItemShouldExpand(carouselIndexRef.current);
-    }, 300);
+    carouselRotateTimer();
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -100,6 +108,7 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
+    carouselRotateTimer();
   };
 
   const carouselTransformMap: { [key: number]: string } = {
@@ -124,7 +133,10 @@ function Landing() {
   }, []);
 
   return (
-    <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
+    <main
+      className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500
+    font-lateef dark:text-off"
+    >
       <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-1">
         <div className="flex-1" />
 
@@ -139,7 +151,8 @@ function Landing() {
             <Search transform="scale(-1, 1)" />
             <input
               type="text"
-              className="flex-1 ml-1 placeholder-black placeholder-opacity-50 bg-transparent border-none outline-none"
+              className="flex-1 ml-1 placeholder-black placeholder-opacity-50 bg-transparent
+              border-none outline-none"
               placeholder="Search..."
             />
           </div>
@@ -156,22 +169,34 @@ function Landing() {
           idx <= carouselIndexRef.current + 1 && (
             <div
               key={idx}
-              className="absolute z-0 w-[100%] h-[100%] transition-transform duration-300 flex justify-center items-center"
+              className="absolute z-0 w-[100%] h-[100%] transition-transform flex
+              justify-center items-center"
               style={{
                 transformOrigin: "left center",
-                transform: `${carouselTransformMap[idx % 4]}`,
+                transitionDuration: `${ROTATION_ANIMATION_TIME}ms`,
+                transform: `${carouselTransformMap[idx % 4]} ${
+                  carouselIndexRef.current - 1 == idx ? "translateY(-100%)" : ""
+                } ${
+                  carouselIndexRef.current + 1 == idx ? "translateY(100%)" : ""
+                }`,
               }}
             >
               <div
-                className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center transition-transform duration-300"
+                className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center
+                transition-transform duration-[1ms] ease-in-out lg:flex-row md:flex-col origin-center"
                 style={{
-                  transform: focusedStoryIndex !== idx ? "scale(50%)" : "",
+                  transform: focusedStoryIndex !== idx ? "scale(100%)" : "",
+                  animation:
+                    !carouselRotating && focusedStoryIndex === idx
+                      ? `setIntoPlaceFromBottom ${SET_IN_PLACE_ANIMATION_TIME}ms ease-out`
+                      : "",
                 }}
               >
                 <img
                   src={story.image}
                   alt={story.title}
-                  className="h-[40vh] w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white transition-transform duration-300"
+                  className="h-[40vh] w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white
+                  transition-transform duration-1000"
                   style={
                     expandStory && focusedStoryIndex == idx
                       ? {}
@@ -179,7 +204,8 @@ function Landing() {
                   }
                 />
                 <div
-                  className={`text-end h-[40vh] flex flex-col items-end transition-transform duration-300 self-end text-black invert mix-blend-difference`}
+                  className="text-end h-[40vh] flex flex-col items-end transition-all duration-1000
+                  self-end text-black invert mix-blend-difference"
                   style={
                     expandStory && focusedStoryIndex == idx
                       ? { width: "40vw" }
