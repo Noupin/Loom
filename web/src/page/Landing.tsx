@@ -17,21 +17,36 @@ import { STORIES } from "../Stories";
 import Button from "../component/Button";
 
 function Landing() {
-  const ROTATION_ANIMATION_TIME = 300;
-  const SET_IN_PLACE_ANIMATION_TIME = 600;
-  const EXPANDED_STORY_ANIMATION_CLASSES =
-    "transition-colors duration-[1500ms] ease-in-out";
+  const AnimationTiming = {
+    carouselRotation: 600,
+    itemSetInPlace: 300,
+    overlayTransform: 300,
+    overlayWidth: 1200,
+    overlayAnimation: 1000,
+    expandedStoryFade: 1500,
+    quickScrollDelay: 100,
+    offsetForSetInAfterRotation: 200,
+    pageLoadSetInDelay: 500,
+    leftHandSwitch: 200,
+  };
+  const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
   const carouselIndexRef = useRef(0);
-  const [expandStory, setExpandStory] = useState(true);
+  const [expandStory, setExpandStory] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
-  const [carouselRotating, setCarouselRotating] = useState(false);
+  const [isAnimating, setIsAnimating] = useState({
+    carouselRotation: false,
+    itemSetInPlace: false,
+    overlayTransform: false,
+    overlayWidth: false,
+    expandedStoryFade: false,
+  });
 
   const getPreviousStoryIdx = (currentIndex: number) => {
     return (currentIndex - 1 + STORIES.length) % STORIES.length;
@@ -41,28 +56,59 @@ function Landing() {
     return (currentIndex + 1) % STORIES.length;
   };
 
-  const checkItemShouldExpand = (index: number) => {
+  const trackOverlayWidthAndExpandedFade = () => {
+    setIsAnimating({ ...isAnimating, overlayWidth: true });
     setTimeout(() => {
+      setIsAnimating({ ...isAnimating, overlayWidth: false });
+    }, AnimationTiming.overlayWidth);
+
+    setIsAnimating({ ...isAnimating, expandedStoryFade: true });
+    setTimeout(() => {
+      setIsAnimating({ ...isAnimating, expandedStoryFade: false });
+    }, AnimationTiming.expandedStoryFade);
+  };
+
+  const trackOverlayTransform = () => {
+    setIsAnimating({ ...isAnimating, overlayTransform: true });
+    setTimeout(() => {
+      setIsAnimating({ ...isAnimating, overlayTransform: false });
+      trackOverlayWidthAndExpandedFade();
+    }, AnimationTiming.overlayTransform);
+  };
+
+  const trackSetInPlace = (index: number) => {
+    setIsAnimating({ ...isAnimating, itemSetInPlace: true });
+    setTimeout(() => {
+      setIsAnimating({ ...isAnimating, itemSetInPlace: false });
       if (index === carouselIndexRef.current) {
         setExpandStory(true);
       }
-    }, SET_IN_PLACE_ANIMATION_TIME);
+
+      trackOverlayTransform();
+    }, AnimationTiming.itemSetInPlace);
   };
 
-  const carouselRotateTimer = () => {
-    setCarouselRotating(true);
+  const trackCarouselRotate = () => {
+    setIsAnimating({ ...isAnimating, carouselRotation: true });
     setTimeout(() => {
-      setCarouselRotating(false);
-      console.log("rotation done");
-      checkItemShouldExpand(carouselIndexRef.current);
-    }, ROTATION_ANIMATION_TIME + 200); //TODO: Offset to allow for the setIn animation to be started after
+      setIsAnimating({ ...isAnimating, carouselRotation: false });
+      trackSetInPlace(carouselIndexRef.current);
+    }, AnimationTiming.carouselRotation + 200); //TODO: Offset to allow for the setIn animation to be started after
+  };
+
+  const trackAnimations = () => {
+    trackCarouselRotate();
   };
 
   const handleWheel = (event: WheelEvent) => {
-    if (isScrollingRef.current) return;
     const scrollingDown = event.deltaY > 0;
-    if (scrollingDown && carouselIndexRef.current >= STORIES.length - 1) return;
-    if (!scrollingDown && carouselIndexRef.current <= 0) return;
+    if (isScrollingRef.current) return;
+    // If at the end of the carousel or at the beginning, do not scroll
+    if (
+      (scrollingDown && carouselIndexRef.current >= STORIES.length - 1) ||
+      (!scrollingDown && carouselIndexRef.current <= 0)
+    )
+      return;
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
@@ -71,7 +117,7 @@ function Landing() {
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
-      setExpandStory(false);
+      setExpandStory(false); //move into track animations
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -80,8 +126,8 @@ function Landing() {
     //TODO: Temp fix for scrolling too fast for display to switch from none to flex
     setTimeout(() => {
       isScrollingRef.current = false;
-    }, 100);
-    carouselRotateTimer();
+    }, AnimationTiming.quickScrollDelay);
+    trackAnimations();
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -112,7 +158,7 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
-    carouselRotateTimer();
+    trackAnimations();
   };
 
   const carouselTransformMap: { [key: number]: string } = {
@@ -124,7 +170,9 @@ function Landing() {
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
-    checkItemShouldExpand(carouselIndexRef.current);
+    setTimeout(() => {
+      trackSetInPlace(carouselIndexRef.current);
+    }, AnimationTiming.pageLoadSetInDelay);
 
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("touchstart", handleTouchStart);
@@ -177,7 +225,7 @@ function Landing() {
               justify-center items-center"
               style={{
                 transformOrigin: "left center",
-                transitionDuration: `${ROTATION_ANIMATION_TIME}ms`,
+                transitionDuration: `${AnimationTiming.carouselRotation}ms`,
                 transform: `${carouselTransformMap[idx % 4]} ${
                   carouselIndexRef.current - 1 == idx ? "translateY(-100%)" : ""
                 } ${
@@ -191,8 +239,8 @@ function Landing() {
                 style={{
                   transform: focusedStoryIndex !== idx ? "scale(100%)" : "",
                   animation:
-                    !carouselRotating && focusedStoryIndex === idx
-                      ? `setIntoPlaceFromBottom ${SET_IN_PLACE_ANIMATION_TIME}ms ease-out`
+                    !isAnimating.carouselRotation && focusedStoryIndex === idx
+                      ? `setIntoPlaceFromBottom ${AnimationTiming.itemSetInPlace}ms ease-out`
                       : "",
                 }}
               >
@@ -200,25 +248,27 @@ function Landing() {
                   src={story.image}
                   alt={story.title}
                   className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white
-                  transition-[transform, height] duration-1000"
-                  style={
-                    expandStory && focusedStoryIndex == idx
+                  transition-[transform, height]"
+                  style={{
+                    transitionDuration: `${AnimationTiming.overlayTransform}ms`,
+                    ...(expandStory && focusedStoryIndex == idx
                       ? { transform: "translateX(0%)", height: "40vh" }
-                      : { transform: "translateX(20%)", height: "40vh" }
-                  }
+                      : { transform: "translateX(20%)", height: "40vh" }),
+                  }}
                 />
                 <div
-                  className="h-[40vh] w-[40vw] flex flex-col items-end transition-transform duration-1000
+                  className="h-[40vh] w-[40vw] flex flex-col items-end
                   self-end text-black invert mix-blend-difference ml-5"
-                  style={expandStory && focusedStoryIndex == idx ? {} : {}}
                 >
                   <div
                     className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
-                    style={
-                      expandStory && focusedStoryIndex == idx
-                        ? { color: "inherit" }
-                        : { color: "transparent" }
-                    }
+                    style={{
+                      color:
+                        expandStory && focusedStoryIndex == idx
+                          ? "inherit"
+                          : "transparent",
+                      transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+                    }}
                   >
                     <div className="text-2xl">{story.timeToRead}</div>
                     <div className="text-2xl">
@@ -229,31 +279,35 @@ function Landing() {
                     </div>
                   </div>
 
-                  <div
-                    className="transition-[width, transform] text-end duration-1000 self-start min-w-fit"
-                    style={
-                      expandStory && focusedStoryIndex == idx
-                        ? {
-                            width: "100%",
-                            transform: "translateX(0%)",
-                          }
-                        : {
-                            width: "0%",
-                            transform: "translateX(-20%)",
-                          }
-                    }
-                  >
-                    <div className="text-8xl mt-24">{story.title}</div>
-                    <div className="text-3xl pr-8">{story.authors}</div>
+                  <div className="flex w-full flex-1">
+                    <div
+                      className="transition-[transform, flex-grow] ease-in-out text-end self-start justify-end flex flex-col h-full"
+                      style={{
+                        flexGrow:
+                          expandStory && focusedStoryIndex == idx ? "1" : "0",
+                        transform:
+                          expandStory && focusedStoryIndex == idx
+                            ? "translateX(0%)"
+                            : "translateX(-20%)",
+                        transitionDuration: `${AnimationTiming.overlayAnimation}ms`,
+                      }}
+                    >
+                      <div className="text-8xl">{story.title}</div>
+                      <div className="text-3xl -translate-x-5">
+                        {story.authors}
+                      </div>
+                    </div>
                   </div>
 
                   <p
-                    className={`text-wrap text-center mt-10 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
-                    style={
-                      expandStory && focusedStoryIndex == idx
-                        ? { color: "inherit" }
-                        : { color: "transparent" }
-                    }
+                    className={`text-wrap text-center mt-10 mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                    style={{
+                      color:
+                        expandStory && focusedStoryIndex == idx
+                          ? "inherit"
+                          : "transparent",
+                      transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+                    }}
                   >
                     {story.description}
                   </p>
@@ -264,6 +318,9 @@ function Landing() {
                         ? "bg-off-500 text-off"
                         : "bg-transparent text-transparent"
                     } mt-auto w-[80%] flex flex-row justify-center self-center py-2 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                    style={{
+                      transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+                    }}
                   >
                     Read <ArrowRight />
                   </Button>
@@ -281,8 +338,11 @@ function Landing() {
       </div>
       <div className="flex flex-col relative z-1">
         <div
-          className="flex px-5 transition-[width, transform] duration-150 ease-in-out justify-end min-w-fit"
-          style={leftHandMode ? { width: "0%" } : { width: "100%" }}
+          className="flex px-5 transition-[width] ease-in-out justify-end min-w-fit"
+          style={{
+            width: leftHandMode ? "0%" : "100%",
+            transitionDuration: `${AnimationTiming.leftHandSwitch}ms`,
+          }}
         >
           <ControlFrame
             className="p-1 w-fit cursor-pointer mr-2"
