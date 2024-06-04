@@ -19,19 +19,61 @@ import { TAnimateStatus } from "../types/TAnimation";
 import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
 import { runAnimationPipeline } from "../helper/animation";
 
+// Animations
+const AnimationTiming = {
+  carouselRotation: 600,
+  itemSetInPlace: 300,
+  overlayAnimation: 1000,
+  expandedStoryFade: 1500,
+  quickScrollDelay: 100,
+  offsetForSetInAfterRotation: 200,
+  leftHandSwitch: 200,
+  pageLoadSetInDelay: 500,
+  preSetInDelay: 300,
+};
+
+const pageLoadAnimationPipeline = [
+  {
+    animationKeys: ["preSetInDelay"],
+    durations: [AnimationTiming.preSetInDelay],
+  },
+  {
+    animationKeys: ["itemSetInPlace"],
+    durations: [AnimationTiming.itemSetInPlace],
+  },
+  {
+    animationKeys: ["overlayAnimation", "expandedStoryFade"],
+    durations: [
+      AnimationTiming.overlayAnimation,
+      AnimationTiming.expandedStoryFade,
+    ],
+  },
+];
+
+const carouselAnimationPipeline = [
+  {
+    animationKeys: ["carouselRotation"],
+    durations: [AnimationTiming.carouselRotation],
+  },
+  {
+    animationKeys: ["preSetInDelay"],
+    durations: [AnimationTiming.preSetInDelay],
+  },
+  {
+    animationKeys: ["itemSetInPlace"],
+    durations: [AnimationTiming.itemSetInPlace],
+  },
+  {
+    animationKeys: ["overlayAnimation", "expandedStoryFade"],
+    durations: [
+      AnimationTiming.overlayAnimation,
+      AnimationTiming.expandedStoryFade,
+    ],
+  },
+];
+
+// Component
 function Landing() {
-  const AnimationTiming = {
-    carouselRotation: 600,
-    itemSetInPlace: 300,
-    overlayTransform: 300,
-    overlayWidth: 1200,
-    overlayAnimation: 1000,
-    expandedStoryFade: 1500,
-    quickScrollDelay: 100,
-    offsetForSetInAfterRotation: 200,
-    leftHandSwitch: 200,
-    pageLoadSetInDelay: 500,
-  };
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
@@ -44,51 +86,7 @@ function Landing() {
   const touchStartY = useRef(0);
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
-  }>({
-    carouselRotation: TAnimateStatus.START,
-    pageLoadSetInDelay: TAnimateStatus.START,
-    itemSetInPlace: TAnimateStatus.START,
-    overlayTransform: TAnimateStatus.START,
-    overlayWidth: TAnimateStatus.START,
-    overlayAnimation: TAnimateStatus.START,
-    expandedStoryFade: TAnimateStatus.START,
-  });
-
-  const pageLoadAnimationPipeline = [
-    {
-      animationKeys: ["pageLoadSetInDelay"],
-      durations: [AnimationTiming.pageLoadSetInDelay],
-    },
-    {
-      animationKeys: ["itemSetInPlace"],
-      durations: [AnimationTiming.itemSetInPlace],
-    },
-    {
-      animationKeys: ["overlayTransform", "expandedStoryFade"],
-      durations: [
-        AnimationTiming.overlayTransform,
-        AnimationTiming.expandedStoryFade,
-      ],
-    },
-  ];
-
-  const carouselAnimationPipeline = [
-    {
-      animationKeys: ["carouselRotation"],
-      durations: [AnimationTiming.carouselRotation],
-    },
-    {
-      animationKeys: ["itemSetInPlace"],
-      durations: [AnimationTiming.itemSetInPlace],
-    },
-    {
-      animationKeys: ["overlayTransform", "expandedStoryFade"],
-      durations: [
-        AnimationTiming.overlayTransform,
-        AnimationTiming.expandedStoryFade,
-      ],
-    },
-  ];
+  }>({});
 
   const handleWheel = (event: WheelEvent) => {
     const scrollingDown = event.deltaY > 0;
@@ -102,24 +100,12 @@ function Landing() {
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
-      setAnimationState((prev) => ({
-        ...prev,
-        carouselRotation: TAnimateStatus.START,
-        itemSetInPlace: TAnimateStatus.START,
-        overlayTransform: TAnimateStatus.START,
-        expandedStoryFade: TAnimateStatus.START,
-      }));
+      resetCarouselAnimations();
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
-      setAnimationState((prev) => ({
-        ...prev,
-        carouselRotation: TAnimateStatus.START,
-        itemSetInPlace: TAnimateStatus.START,
-        overlayTransform: TAnimateStatus.START,
-        expandedStoryFade: TAnimateStatus.START,
-      }));
+      resetCarouselAnimations();
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -129,7 +115,6 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, AnimationTiming.quickScrollDelay);
-    runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -161,15 +146,13 @@ function Landing() {
     runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
   };
 
-  const carouselTransformMap: { [key: number]: string } = {
-    0: `rotate(${rotationAngle}deg)`,
-    1: `rotate(${rotationAngle + 90}deg)`,
-    2: `rotate(${rotationAngle + 180}deg)`,
-    3: `rotate(${rotationAngle + 270}deg)`,
-  };
-
   useEffect(() => {
     setLogoType(TLogo.Logo);
+    setAnimationState(
+      Object.fromEntries(
+        Object.keys(AnimationTiming).map((key) => [key, TAnimateStatus.START])
+      )
+    );
     runAnimationPipeline(setAnimationState, pageLoadAnimationPipeline);
 
     window.addEventListener("wheel", handleWheel);
@@ -182,12 +165,48 @@ function Landing() {
     };
   }, []);
 
+  const resetCarouselAnimations = () => {
+    setAnimationState((prev) => ({
+      ...prev,
+      carouselRotation: TAnimateStatus.START,
+      preSetInDelay: TAnimateStatus.START,
+      itemSetInPlace: TAnimateStatus.START,
+      overlayTransform: TAnimateStatus.START,
+      expandedStoryFade: TAnimateStatus.START,
+    }));
+  };
+
+  useEffect(() => {
+    if (
+      animationState.carouselRotation === TAnimateStatus.START &&
+      animationState.preSetInDelay === TAnimateStatus.START &&
+      animationState.itemSetInPlace === TAnimateStatus.START &&
+      animationState.overlayTransform === TAnimateStatus.START &&
+      animationState.expandedStoryFade === TAnimateStatus.START
+    ) {
+      runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
+    }
+  }, [
+    animationState.carouselRotation,
+    animationState.preSetInDelay,
+    animationState.itemSetInPlace,
+    animationState.overlayTransform,
+    animationState.expandedStoryFade,
+  ]);
+
+  const carouselTransformMap: { [key: number]: string } = {
+    0: `rotate(${rotationAngle}deg)`,
+    1: `rotate(${rotationAngle + 90}deg)`,
+    2: `rotate(${rotationAngle + 180}deg)`,
+    3: `rotate(${rotationAngle + 270}deg)`,
+  };
+
   return (
     <main
       className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500
     font-lateef dark:text-off"
     >
-      <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-1">
+      <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-[1]">
         <div className="flex-1" />
 
         <div className="flex-[2] flex text-center text-2xl">
@@ -197,18 +216,30 @@ function Landing() {
         </div>
 
         {expandSearch ? (
-          <div className="flex flex-[2] ml-5 px-3 py-2 bg-black bg-opacity-25 rounded-full">
-            <Search transform="scale(-1, 1)" />
-            <input
-              type="text"
-              className="flex-1 ml-1 placeholder-black placeholder-opacity-50 bg-transparent
-              border-none outline-none"
-              placeholder="Search..."
-            />
+          <div
+            className="flex flex-[2] ml-5 justify-end"
+            onMouseLeave={() => setExpandSearch(false)}
+            autoFocus={true}
+          >
+            <div
+              className="flex px-3 py-2 bg-black bg-opacity-25 rounded-full transition-[width]"
+              style={{
+                width: expandSearch ? "75%" : "25px",
+                transitionDuration: "500",
+              }}
+            >
+              <Search transform="scale(-1, 1)" />
+              <input
+                type="text"
+                className="flex-1 ml-1 placeholder-black placeholder-opacity-50 bg-transparent
+                border-none outline-none"
+                placeholder="Search..."
+              />
+            </div>
           </div>
         ) : (
           <div className="flex flex-1 justify-end">
-            <Search />
+            <Search onMouseEnter={() => setExpandSearch(true)} />
           </div>
         )}
       </div>
@@ -235,11 +266,8 @@ function Landing() {
                 className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center
                 transition-transform duration-[1ms] ease-in-out lg:flex-row md:flex-col origin-center"
                 style={{
-                  transform: focusedStoryIndex !== idx ? "scale(100%)" : "",
                   animation:
-                    (animationState.carouselRotation === TAnimateStatus.DONE ||
-                      animationState.pageLoadSetInDelay ===
-                        TAnimateStatus.DONE) &&
+                    animationState.preSetInDelay === TAnimateStatus.DONE &&
                     focusedStoryIndex === idx
                       ? `setIntoPlaceFromBottom ${AnimationTiming.itemSetInPlace}ms ease-out`
                       : "",
@@ -251,7 +279,7 @@ function Landing() {
                   className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white
                   transition-[transform, height]"
                   style={{
-                    transitionDuration: `${AnimationTiming.overlayTransform}ms`,
+                    transitionDuration: `${AnimationTiming.overlayAnimation}ms`,
                     ...(animationState.itemSetInPlace === TAnimateStatus.DONE &&
                     focusedStoryIndex == idx
                       ? { transform: "translateX(0%)", height: "40vh" }
@@ -326,7 +354,7 @@ function Landing() {
                       focusedStoryIndex == idx
                         ? "bg-off-500 text-off"
                         : "bg-transparent text-transparent"
-                    } mt-auto w-[80%] flex flex-row justify-center self-center py-2 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+                    } mt-auto w-[80%] flex flex-row justify-center self-center py-3 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
                     style={{
                       transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
                     }}

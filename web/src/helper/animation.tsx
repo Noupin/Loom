@@ -27,14 +27,14 @@ export const runAnimationPipeline = (
 
       // Start and set timeouts for each animation in this step
       animationKeys.forEach((key, index) => {
-        console.log(`Animation ${key} started`);
+        // console.log(`Animation ${key} started`);
         setIsAnimating((prev) => ({
           ...prev,
           [key]: TAnimateStatus.ANIMATING,
         }));
 
         const timeoutId = setTimeout(() => {
-          console.log(`Animation ${key} finished after ${durations[index]}ms`);
+          // console.log(`Animation ${key} finished after ${durations[index]}ms`);
           setIsAnimating((prev) => ({
             ...prev,
             [key]: TAnimateStatus.DONE,
