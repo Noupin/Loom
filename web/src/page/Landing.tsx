@@ -183,6 +183,7 @@ function Landing() {
     };
   }, []);
 
+  // Reset carousel animation dependency states to START state
   const resetCarouselAnimations = () => {
     const newState: { [key: string]: TAnimateStatus } = {};
     carouselAnimationDependencies.forEach((key) => {
@@ -194,6 +195,7 @@ function Landing() {
     }));
   };
 
+  // Checking if all carousel animations are in START state
   useEffect(
     () => {
       if (
