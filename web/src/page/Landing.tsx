@@ -15,6 +15,9 @@ import Progress from "../component/Progress";
 import ControlFrame from "../component/ControlFrame";
 import { STORIES } from "../Stories";
 import Button from "../component/Button";
+import { TAnimateStatus } from "../types/TAnimation";
+import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
+import { runAnimationPipeline } from "../helper/animation";
 
 function Landing() {
   const AnimationTiming = {
@@ -26,8 +29,8 @@ function Landing() {
     expandedStoryFade: 1500,
     quickScrollDelay: 100,
     offsetForSetInAfterRotation: 200,
-    pageLoadSetInDelay: 500,
     leftHandSwitch: 200,
+    pageLoadSetInDelay: 500,
   };
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const setLogoType = useSetRecoilState(logoState);
@@ -36,69 +39,56 @@ function Landing() {
   const [expandSearch, setExpandSearch] = useState(false);
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
   const carouselIndexRef = useRef(0);
-  const [expandStory, setExpandStory] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
-  const [isAnimating, setIsAnimating] = useState({
-    carouselRotation: false,
-    itemSetInPlace: false,
-    overlayTransform: false,
-    overlayWidth: false,
-    expandedStoryFade: false,
+  const [animationState, setAnimationState] = useState<{
+    [key: string]: TAnimateStatus;
+  }>({
+    carouselRotation: TAnimateStatus.START,
+    pageLoadSetInDelay: TAnimateStatus.START,
+    itemSetInPlace: TAnimateStatus.START,
+    overlayTransform: TAnimateStatus.START,
+    overlayWidth: TAnimateStatus.START,
+    overlayAnimation: TAnimateStatus.START,
+    expandedStoryFade: TAnimateStatus.START,
   });
 
-  const getPreviousStoryIdx = (currentIndex: number) => {
-    return (currentIndex - 1 + STORIES.length) % STORIES.length;
-  };
+  const pageLoadAnimationPipeline = [
+    {
+      animationKeys: ["pageLoadSetInDelay"],
+      durations: [AnimationTiming.pageLoadSetInDelay],
+    },
+    {
+      animationKeys: ["itemSetInPlace"],
+      durations: [AnimationTiming.itemSetInPlace],
+    },
+    {
+      animationKeys: ["overlayTransform", "expandedStoryFade"],
+      durations: [
+        AnimationTiming.overlayTransform,
+        AnimationTiming.expandedStoryFade,
+      ],
+    },
+  ];
 
-  const getNextStoryIdx = (currentIndex: number) => {
-    return (currentIndex + 1) % STORIES.length;
-  };
-
-  const trackOverlayWidthAndExpandedFade = () => {
-    setIsAnimating({ ...isAnimating, overlayWidth: true });
-    setTimeout(() => {
-      setIsAnimating({ ...isAnimating, overlayWidth: false });
-    }, AnimationTiming.overlayWidth);
-
-    setIsAnimating({ ...isAnimating, expandedStoryFade: true });
-    setTimeout(() => {
-      setIsAnimating({ ...isAnimating, expandedStoryFade: false });
-    }, AnimationTiming.expandedStoryFade);
-  };
-
-  const trackOverlayTransform = () => {
-    setIsAnimating({ ...isAnimating, overlayTransform: true });
-    setTimeout(() => {
-      setIsAnimating({ ...isAnimating, overlayTransform: false });
-      trackOverlayWidthAndExpandedFade();
-    }, AnimationTiming.overlayTransform);
-  };
-
-  const trackSetInPlace = (index: number) => {
-    setIsAnimating({ ...isAnimating, itemSetInPlace: true });
-    setTimeout(() => {
-      setIsAnimating({ ...isAnimating, itemSetInPlace: false });
-      if (index === carouselIndexRef.current) {
-        setExpandStory(true);
-      }
-
-      trackOverlayTransform();
-    }, AnimationTiming.itemSetInPlace);
-  };
-
-  const trackCarouselRotate = () => {
-    setIsAnimating({ ...isAnimating, carouselRotation: true });
-    setTimeout(() => {
-      setIsAnimating({ ...isAnimating, carouselRotation: false });
-      trackSetInPlace(carouselIndexRef.current);
-    }, AnimationTiming.carouselRotation + 200); //TODO: Offset to allow for the setIn animation to be started after
-  };
-
-  const trackAnimations = () => {
-    trackCarouselRotate();
-  };
+  const carouselAnimationPipeline = [
+    {
+      animationKeys: ["carouselRotation"],
+      durations: [AnimationTiming.carouselRotation],
+    },
+    {
+      animationKeys: ["itemSetInPlace"],
+      durations: [AnimationTiming.itemSetInPlace],
+    },
+    {
+      animationKeys: ["overlayTransform", "expandedStoryFade"],
+      durations: [
+        AnimationTiming.overlayTransform,
+        AnimationTiming.expandedStoryFade,
+      ],
+    },
+  ];
 
   const handleWheel = (event: WheelEvent) => {
     const scrollingDown = event.deltaY > 0;
@@ -112,12 +102,24 @@ function Landing() {
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
-      setExpandStory(false);
+      setAnimationState((prev) => ({
+        ...prev,
+        carouselRotation: TAnimateStatus.START,
+        itemSetInPlace: TAnimateStatus.START,
+        overlayTransform: TAnimateStatus.START,
+        expandedStoryFade: TAnimateStatus.START,
+      }));
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
-      setExpandStory(false); //move into track animations
+      setAnimationState((prev) => ({
+        ...prev,
+        carouselRotation: TAnimateStatus.START,
+        itemSetInPlace: TAnimateStatus.START,
+        overlayTransform: TAnimateStatus.START,
+        expandedStoryFade: TAnimateStatus.START,
+      }));
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -127,7 +129,7 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, AnimationTiming.quickScrollDelay);
-    trackAnimations();
+    runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -143,12 +145,10 @@ function Landing() {
     isScrollingRef.current = true; // Set the flag to prevent further scrolling
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
-      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
-      setExpandStory(false);
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -158,7 +158,7 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
-    trackAnimations();
+    runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
   };
 
   const carouselTransformMap: { [key: number]: string } = {
@@ -170,9 +170,7 @@ function Landing() {
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
-    setTimeout(() => {
-      trackSetInPlace(carouselIndexRef.current);
-    }, AnimationTiming.pageLoadSetInDelay);
+    runAnimationPipeline(setAnimationState, pageLoadAnimationPipeline);
 
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("touchstart", handleTouchStart);
@@ -239,7 +237,10 @@ function Landing() {
                 style={{
                   transform: focusedStoryIndex !== idx ? "scale(100%)" : "",
                   animation:
-                    !isAnimating.carouselRotation && focusedStoryIndex === idx
+                    (animationState.carouselRotation === TAnimateStatus.DONE ||
+                      animationState.pageLoadSetInDelay ===
+                        TAnimateStatus.DONE) &&
+                    focusedStoryIndex === idx
                       ? `setIntoPlaceFromBottom ${AnimationTiming.itemSetInPlace}ms ease-out`
                       : "",
                 }}
@@ -251,7 +252,8 @@ function Landing() {
                   transition-[transform, height]"
                   style={{
                     transitionDuration: `${AnimationTiming.overlayTransform}ms`,
-                    ...(expandStory && focusedStoryIndex == idx
+                    ...(animationState.itemSetInPlace === TAnimateStatus.DONE &&
+                    focusedStoryIndex == idx
                       ? { transform: "translateX(0%)", height: "40vh" }
                       : { transform: "translateX(20%)", height: "40vh" }),
                   }}
@@ -264,7 +266,8 @@ function Landing() {
                     className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
                     style={{
                       color:
-                        expandStory && focusedStoryIndex == idx
+                        animationState.itemSetInPlace === TAnimateStatus.DONE &&
+                        focusedStoryIndex == idx
                           ? "inherit"
                           : "transparent",
                       transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
@@ -284,9 +287,13 @@ function Landing() {
                       className="transition-[transform, flex-grow] ease-in-out text-end self-start justify-end flex flex-col h-full"
                       style={{
                         flexGrow:
-                          expandStory && focusedStoryIndex == idx ? "1" : "0",
+                          animationState.itemSetInPlace ===
+                            TAnimateStatus.DONE && focusedStoryIndex == idx
+                            ? "1"
+                            : "0",
                         transform:
-                          expandStory && focusedStoryIndex == idx
+                          animationState.itemSetInPlace ===
+                            TAnimateStatus.DONE && focusedStoryIndex == idx
                             ? "translateX(0%)"
                             : "translateX(-20%)",
                         transitionDuration: `${AnimationTiming.overlayAnimation}ms`,
@@ -303,7 +310,8 @@ function Landing() {
                     className={`text-wrap text-center mt-10 mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
                     style={{
                       color:
-                        expandStory && focusedStoryIndex == idx
+                        animationState.itemSetInPlace === TAnimateStatus.DONE &&
+                        focusedStoryIndex == idx
                           ? "inherit"
                           : "transparent",
                       transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
@@ -314,7 +322,8 @@ function Landing() {
                   <Button
                     onClick={() => {}}
                     className={`${
-                      expandStory && focusedStoryIndex == idx
+                      animationState.itemSetInPlace === TAnimateStatus.DONE &&
+                      focusedStoryIndex == idx
                         ? "bg-off-500 text-off"
                         : "bg-transparent text-transparent"
                     } mt-auto w-[80%] flex flex-row justify-center self-center py-2 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
