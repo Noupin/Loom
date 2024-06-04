@@ -19,61 +19,8 @@ import { TAnimateStatus } from "../types/TAnimation";
 import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
 import { runAnimationPipeline } from "../helper/animation";
 
-// Animations
-const AnimationTiming = {
-  carouselRotation: 600,
-  itemSetInPlace: 300,
-  overlayAnimation: 1000,
-  expandedStoryFade: 1500,
-  quickScrollDelay: 100,
-  offsetForSetInAfterRotation: 200,
-  leftHandSwitch: 200,
-  pageLoadSetInDelay: 500,
-  preSetInDelay: 300,
-};
-
-const pageLoadAnimationPipeline = [
-  {
-    animationKeys: ["preSetInDelay"],
-    durations: [AnimationTiming.preSetInDelay],
-  },
-  {
-    animationKeys: ["itemSetInPlace"],
-    durations: [AnimationTiming.itemSetInPlace],
-  },
-  {
-    animationKeys: ["overlayAnimation", "expandedStoryFade"],
-    durations: [
-      AnimationTiming.overlayAnimation,
-      AnimationTiming.expandedStoryFade,
-    ],
-  },
-];
-
-const carouselAnimationPipeline = [
-  {
-    animationKeys: ["carouselRotation"],
-    durations: [AnimationTiming.carouselRotation],
-  },
-  {
-    animationKeys: ["preSetInDelay"],
-    durations: [AnimationTiming.preSetInDelay],
-  },
-  {
-    animationKeys: ["itemSetInPlace"],
-    durations: [AnimationTiming.itemSetInPlace],
-  },
-  {
-    animationKeys: ["overlayAnimation", "expandedStoryFade"],
-    durations: [
-      AnimationTiming.overlayAnimation,
-      AnimationTiming.expandedStoryFade,
-    ],
-  },
-];
-
-// Component
 function Landing() {
+  // State
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const setLogoType = useSetRecoilState(logoState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
@@ -84,9 +31,83 @@ function Landing() {
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
+
+  // Animation
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
-  }>({});
+  }>({
+    carouselRotation: TAnimateStatus.DONE,
+    preSetInDelay: TAnimateStatus.START,
+    itemSetInPlace: TAnimateStatus.START,
+    overlayAnimation: TAnimateStatus.START,
+    expandedStoryFade: TAnimateStatus.START,
+  });
+  const [AnimationTiming, setAnimationTiming] = useState({
+    carouselRotation: 600,
+    itemSetInPlace: 300,
+    overlayAnimation: 1000,
+    expandedStoryFade: 1500,
+    quickScrollDelay: 100,
+    offsetForSetInAfterRotation: 200,
+    leftHandSwitch: 200,
+    preSetInDelay: 500,
+  });
+
+  const pageLoadAnimationPipeline = [
+    {
+      animationKeys: ["preSetInDelay"],
+      durations: [AnimationTiming.preSetInDelay],
+    },
+    {
+      animationKeys: ["itemSetInPlace"],
+      durations: [AnimationTiming.itemSetInPlace],
+      callbacks: [
+        () => {
+          setAnimationTiming((prev) => ({
+            ...prev,
+            preSetInDelay: AnimationTiming.offsetForSetInAfterRotation,
+          }));
+        },
+      ],
+    },
+    {
+      animationKeys: ["overlayAnimation", "expandedStoryFade"],
+      durations: [
+        AnimationTiming.overlayAnimation,
+        AnimationTiming.expandedStoryFade,
+      ],
+    },
+  ];
+
+  const carouselAnimationPipeline = [
+    {
+      animationKeys: ["carouselRotation"],
+      durations: [AnimationTiming.carouselRotation],
+    },
+    {
+      animationKeys: ["preSetInDelay"],
+      durations: [AnimationTiming.preSetInDelay],
+    },
+    {
+      animationKeys: ["itemSetInPlace"],
+      durations: [AnimationTiming.itemSetInPlace],
+    },
+    {
+      animationKeys: ["overlayAnimation", "expandedStoryFade"],
+      durations: [
+        AnimationTiming.overlayAnimation,
+        AnimationTiming.expandedStoryFade,
+      ],
+    },
+  ];
+
+  const carouselAnimationDependencies = [
+    "carouselRotation",
+    "preSetInDelay",
+    "itemSetInPlace",
+    "overlayTransform",
+    "expandedStoryFade",
+  ];
 
   const handleWheel = (event: WheelEvent) => {
     const scrollingDown = event.deltaY > 0;
@@ -130,10 +151,12 @@ function Landing() {
     isScrollingRef.current = true; // Set the flag to prevent further scrolling
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+      resetCarouselAnimations();
       setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
+      resetCarouselAnimations();
       setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
@@ -148,11 +171,6 @@ function Landing() {
 
   useEffect(() => {
     setLogoType(TLogo.Logo);
-    setAnimationState(
-      Object.fromEntries(
-        Object.keys(AnimationTiming).map((key) => [key, TAnimateStatus.START])
-      )
-    );
     runAnimationPipeline(setAnimationState, pageLoadAnimationPipeline);
 
     window.addEventListener("wheel", handleWheel);
@@ -166,33 +184,28 @@ function Landing() {
   }, []);
 
   const resetCarouselAnimations = () => {
+    const newState: { [key: string]: TAnimateStatus } = {};
+    carouselAnimationDependencies.forEach((key) => {
+      newState[key] = TAnimateStatus.START;
+    });
     setAnimationState((prev) => ({
       ...prev,
-      carouselRotation: TAnimateStatus.START,
-      preSetInDelay: TAnimateStatus.START,
-      itemSetInPlace: TAnimateStatus.START,
-      overlayTransform: TAnimateStatus.START,
-      expandedStoryFade: TAnimateStatus.START,
+      ...newState,
     }));
   };
 
-  useEffect(() => {
-    if (
-      animationState.carouselRotation === TAnimateStatus.START &&
-      animationState.preSetInDelay === TAnimateStatus.START &&
-      animationState.itemSetInPlace === TAnimateStatus.START &&
-      animationState.overlayTransform === TAnimateStatus.START &&
-      animationState.expandedStoryFade === TAnimateStatus.START
-    ) {
-      runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
-    }
-  }, [
-    animationState.carouselRotation,
-    animationState.preSetInDelay,
-    animationState.itemSetInPlace,
-    animationState.overlayTransform,
-    animationState.expandedStoryFade,
-  ]);
+  useEffect(
+    () => {
+      if (
+        carouselAnimationDependencies.every(
+          (key) => animationState[key] === TAnimateStatus.START
+        )
+      ) {
+        runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
+      }
+    },
+    carouselAnimationDependencies.map((key) => animationState[key])
+  );
 
   const carouselTransformMap: { [key: number]: string } = {
     0: `rotate(${rotationAngle}deg)`,
