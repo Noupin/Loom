@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { IStory } from "../Stories";
 import { TAnimateStatus } from "../types/TAnimation";
 import Button from "./Button";
+import { getAnimationTiming } from "../helper/animation";
 
 interface LandingTextileProps {
   story: IStory;
@@ -54,7 +55,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
         className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center transition-transform duration-[1ms] ease-in-out lg:flex-row md:flex-col origin-center"
         style={{
           animation: preSetInDelay
-            ? `setIntoPlaceFromBottom ${AnimationTiming.itemSetInPlace}ms ease-out`
+            ? `setIntoPlaceFromBottom ${getAnimationTiming(
+                "itemSetInPlace",
+                AnimationTiming,
+                preSetInDelay
+              )}ms ease-out`
             : "",
         }}
       >
@@ -63,7 +68,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
           alt={story.title}
           className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white transition-[transform, height]"
           style={{
-            transitionDuration: `${AnimationTiming.overlayAnimation}ms`,
+            transitionDuration: `${getAnimationTiming(
+              "overlayAnimation",
+              AnimationTiming,
+              itemSetInPlace
+            )}ms`,
             transform: itemSetInPlace ? "translateX(0%)" : "translateX(20%)",
             height: "40vh",
           }}
@@ -73,7 +82,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               color: itemSetInPlace ? "inherit" : "transparent",
-              transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+              transitionDuration: `${getAnimationTiming(
+                "expandedStoryFade",
+                AnimationTiming,
+                itemSetInPlace
+              )}ms`,
             }}
           >
             <div className="text-2xl">{story.timeToRead}</div>
@@ -87,7 +100,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 transform: itemSetInPlace
                   ? "translateX(0%)"
                   : "translateX(-20%)",
-                transitionDuration: `${AnimationTiming.overlayAnimation}ms`,
+                transitionDuration: `${getAnimationTiming(
+                  "overlayAnimation",
+                  AnimationTiming,
+                  itemSetInPlace
+                )}ms`,
               }}
             >
               <div className="text-8xl">{story.title}</div>
@@ -98,7 +115,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             className={`text-wrap text-center mt-10 mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               color: itemSetInPlace ? "inherit" : "transparent",
-              transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+              transitionDuration: `${getAnimationTiming(
+                "expandedStoryFade",
+                AnimationTiming,
+                itemSetInPlace
+              )}ms`,
             }}
           >
             {story.description}
@@ -111,7 +132,11 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 : "bg-transparent text-transparent"
             } mt-auto w-[80%] flex flex-row justify-center self-center py-3 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
-              transitionDuration: `${AnimationTiming.expandedStoryFade}ms`,
+              transitionDuration: `${getAnimationTiming(
+                "expandedStoryFade",
+                AnimationTiming,
+                itemSetInPlace
+              )}ms`,
             }}
           >
             Read <ArrowRight />

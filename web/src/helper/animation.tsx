@@ -73,3 +73,11 @@ export const runAnimationPipeline = (
 
   runNextAnimation();
 };
+
+export const getAnimationTiming = (
+  key: string,
+  timings: { [key: string]: number },
+  isFocused: boolean
+) => {
+  return isFocused ? timings[key] : timings[key] / 10;
+};
