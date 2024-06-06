@@ -32,7 +32,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     expandSearch: TAnimateStatus.START,
     fadeSearchText: TAnimateStatus.START,
   });
-  const AnimationTimings = {
+  const AnimationTiming = {
     flipSearchIcon: 200,
     expandSearch: 300,
     fadeSearchText: 100,
@@ -40,15 +40,15 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   const animations = [
     {
       animationKeys: ["flipSearchIcon"],
-      durations: [AnimationTimings.flipSearchIcon],
+      durations: [AnimationTiming.flipSearchIcon],
     },
     {
       animationKeys: ["expandSearch"],
-      durations: [AnimationTimings.expandSearch],
+      durations: [AnimationTiming.expandSearch],
     },
     {
       animationKeys: ["fadeSearchText"],
-      durations: [AnimationTimings.fadeSearchText],
+      durations: [AnimationTiming.fadeSearchText],
     },
   ];
 
@@ -91,7 +91,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
         className="flex ml-5 justify-end transition-[flex-grow] ease-in-out"
         style={{
           flexGrow: expandSearchCondition ? 2 : 1,
-          transitionDuration: `${AnimationTimings.expandSearch}ms`,
+          transitionDuration: `${AnimationTiming.expandSearch}ms`,
         }}
       >
         <div
@@ -99,7 +99,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
           text-clip items center ease-in-out"
           style={{
             width: expandSearchCondition ? "80%" : "25px",
-            transitionDuration: `${AnimationTimings.expandSearch}ms`,
+            transitionDuration: `${AnimationTiming.expandSearch}ms`,
             backgroundColor: expandSearchCondition
               ? darkMode
                 ? "rgba(255, 255, 255, 0.15)"
@@ -117,7 +117,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
           <Search
             className="transition-transform"
             style={{
-              transitionDuration: `${AnimationTimings.flipSearchIcon}ms`,
+              transitionDuration: `${AnimationTiming.flipSearchIcon}ms`,
             }}
             transform={flipSearchIconCondition ? "scale(-1, 1)" : "scale(1, 1)"}
           />
@@ -131,7 +131,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
             style={{
               display: fadeSearchTextCondition ? "flex" : "none",
               flexGrow: fadeSearchTextCondition ? 1 : 0,
-              transitionDuration: `${AnimationTimings.fadeSearchText}ms`,
+              transitionDuration: `${AnimationTiming.fadeSearchText}ms`,
             }}
             value={searchTerm}
             onChange={(e) => {

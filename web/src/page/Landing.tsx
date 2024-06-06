@@ -51,6 +51,7 @@ function Landing() {
     leftHandSwitch: 200,
     preSetInDelay: 500,
     darkModeSwitch: 300,
+    flipLeftHandModeIcon: 500,
   });
 
   const pageLoadAnimationPipeline = [

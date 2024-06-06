@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRightToLine, ArrowLeftToLine, Moon, Sun } from "lucide-react";
+import { ArrowRightToLine, Moon, Sun } from "lucide-react";
 import ControlFrame from "./ControlFrame";
 import { STORIES } from "../Stories";
 
@@ -32,11 +32,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         className="p-1 w-fit cursor-pointer mr-2"
         onClick={() => setLeftHandMode((current) => !current)}
       >
-        {leftHandMode ? (
-          <ArrowRightToLine height={20} width={20} strokeWidth={1} />
-        ) : (
-          <ArrowLeftToLine height={20} width={20} strokeWidth={1} />
-        )}
+        <ArrowRightToLine
+          height={20}
+          width={20}
+          strokeWidth={1}
+          className="transition-transform"
+          style={{
+            transitionDuration: `${AnimationTiming.flipLeftHandModeIcon}ms`,
+          }}
+          transform={leftHandMode ? "scale(1, 1)" : "scale(-1, 1)"}
+        />
       </ControlFrame>
       <ControlFrame
         className="p-1 w-fit cursor-pointer ml-2"
