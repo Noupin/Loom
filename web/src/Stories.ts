@@ -1,6 +1,6 @@
 export interface IStory {
   title: string;
-  authors: string;
+  contributors: string[];
   timeToRead: string;
   genres: string[];
   description: string;
@@ -11,8 +11,20 @@ export interface IStory {
 
 export const STORIES: IStory[] = [
   {
+    title: "My X, the Vampire Slayer",
+    contributors: ["Alexandre Cabello", "Noah Perkins"],
+    timeToRead: "6 min read",
+    genres: ["Gothic", "16+"],
+    description:
+      "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love, only to face a transformative and tragic twist.",
+    image:
+      "https://s3.amazonaws.com/static.rogerebert.com/uploads/review/primary_image/reviews/abraham-lincoln-vampire-hunter-2012/EB20120620REVIEWS120629989AR.jpg",
+    datePublished: "06June2024",
+    link: "/my-x-the-vampire-slayer",
+  },
+  {
     title: "Man of Steel",
-    authors: "John Doe & Jane Smith",
+    contributors: ["John Doe", "Jane Smith", "Mary Johnson"],
     timeToRead: "10 min read",
     genres: ["Science Fiction", "Action", "Adventure", "16+"],
     description:
@@ -23,7 +35,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Android Tragedy",
-    authors: "Jane Doe & Mary Sue",
+    contributors: ["Jane Doe", "Mary Sue"],
     timeToRead: "13 min read",
     genres: ["Science Fiction", "Drama", "Romance", "16+"],
     description:
@@ -34,7 +46,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "The Last of Us",
-    authors: "John Doe & Mary Smith",
+    contributors: ["John Doe", "Mary Smith"],
     timeToRead: "8 min read",
     genres: ["Horror", "Thriller", "Survival", "16+"],
     description:
@@ -46,7 +58,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Blade Runner",
-    authors: "Philip K.",
+    contributors: ["Philip K."],
     timeToRead: "10 min read",
     genres: ["Science Fiction", "Drama", "Thriller", "16+"],
     description:
@@ -58,7 +70,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Dune",
-    authors: "Frank Herbert",
+    contributors: ["Frank Herbert"],
     timeToRead: "12 min read",
     genres: ["Science Fiction", "Adventure", "Drama", "16+"],
     description:
@@ -70,7 +82,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Ready Player One",
-    authors: "Ernest Cline",
+    contributors: ["Ernest Cline"],
     timeToRead: "9 min read",
     genres: ["Science Fiction", "Adventure", "Drama", "16+"],
     description:
@@ -81,7 +93,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Foundation",
-    authors: "Isaac Asimov",
+    contributors: ["Isaac Asimov"],
     timeToRead: "11 min read",
     genres: ["Science Fiction", "Drama", "Thriller", "16+"],
     description:
@@ -92,7 +104,7 @@ export const STORIES: IStory[] = [
   },
   {
     title: "Arcane",
-    authors: "Riot Games",
+    contributors: ["Riot Games"],
     timeToRead: "7 min read",
     genres: ["Fantasy", "Drama", "Action", "16+"],
     description:

@@ -5,6 +5,7 @@ import { TAnimateStatus } from "../types/TAnimation";
 import Button from "./Button";
 import { getAnimationTiming } from "../helper/animation";
 import { useNavigate } from "react-router-dom";
+import { formatContributors } from "../helper/formatting";
 
 interface LandingTextileProps {
   story: IStory;
@@ -116,7 +117,9 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
               }}
             >
               <div className="text-8xl">{story.title}</div>
-              <div className="text-3xl -translate-x-5">{story.authors}</div>
+              <div className="text-3xl -translate-x-5">
+                {formatContributors([...story.contributors])}
+              </div>
             </div>
           </div>
           <p

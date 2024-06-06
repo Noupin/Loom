@@ -27,7 +27,9 @@ function Landing() {
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredStories, setFilteredStories] = useState<IStory[]>(STORIES);
+  const [filteredStories, setFilteredStories] = useState<IStory[]>([
+    ...STORIES,
+  ]);
   const runAnimationPipeline = useAnimationPipeline(
     cancelState,
     setCancelState,
@@ -242,7 +244,7 @@ function Landing() {
 
   useEffect(() => {
     if (searchTerm === "") {
-      setFilteredStories(STORIES);
+      setFilteredStories([...STORIES]);
       return;
     }
     resetCarousel();

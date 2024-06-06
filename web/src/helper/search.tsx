@@ -11,11 +11,28 @@ const normalizeString = (str: string): string => {
 export const fuzzySearchStories = (query: string): IStory[] => {
   const normalizedQuery = normalizeString(query);
 
-  return STORIES.filter((story) => {
-    const haystack = `${story.title} ${story.authors} ${story.genres.join(
+  return [...STORIES].filter((story) => {
+    const haystack = `${story.title} ${story.contributors.join(
       " "
-    )} ${story.description}`;
+    )} ${story.genres.join(" ")} ${story.description}`;
     const normalizedHaystack = normalizeString(haystack);
     return normalizedHaystack.includes(normalizedQuery);
   });
+};
+
+export const autoCompleteSearchStories = (
+  query: string,
+  limit: number
+): IStory[] => {
+  const normalizedQuery = normalizeString(query);
+
+  return [...STORIES]
+    .filter((story) => {
+      const normalizedTitle = normalizeString(story.title);
+      const contributorsMatch = story.contributors.some((contributor) =>
+        normalizeString(contributor).startsWith(normalizedQuery)
+      );
+      return normalizedTitle.startsWith(normalizedQuery) || contributorsMatch;
+    })
+    .slice(0, limit);
 };
