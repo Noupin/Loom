@@ -7,7 +7,7 @@ import Progress from "../component/Progress";
 import { STORIES } from "../Stories";
 import { TAnimateStatus } from "../types/TAnimation";
 import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
-import { runAnimationPipeline } from "../helper/animation";
+import { useAnimationPipeline } from "../helper/animation";
 import LandingNavigation from "../component/LandingNavigation";
 import LandingTextile from "../component/LandingTextile";
 import LandingControls from "../component/LandingControls";
@@ -23,6 +23,13 @@ function Landing() {
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
+  const isPipelineRunning = useRef(false);
+  const [cancelState, setCancelState] = useState(false);
+  const runAnimationPipeline = useAnimationPipeline(
+    cancelState,
+    setCancelState,
+    isPipelineRunning
+  );
 
   // Animation
   const [animationState, setAnimationState] = useState<{
@@ -110,6 +117,10 @@ function Landing() {
       (!scrollingDown && carouselIndexRef.current <= 0)
     )
       return;
+
+    if (isPipelineRunning.current) {
+      setCancelState(true);
+    }
     isScrollingRef.current = true;
 
     if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {

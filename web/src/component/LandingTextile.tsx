@@ -8,7 +8,9 @@ import { getAnimationTiming } from "../helper/animation";
 interface LandingTextileProps {
   story: IStory;
   idx: number;
-  animationState: any; // Replace 'any' with the appropriate type
+  animationState: {
+    [key: string]: TAnimateStatus;
+  };
   focusedStoryIndex: number;
   carouselIndexRef: React.MutableRefObject<number>;
   AnimationTiming: { [key: string]: number };
@@ -27,10 +29,12 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const itemSetInPlace =
     animationState.itemSetInPlace === TAnimateStatus.DONE &&
-    focusedStoryIndex === idx;
+    focusedStoryIndex === idx &&
+    idx === carouselIndexRef.current;
   const preSetInDelay =
     animationState.preSetInDelay === TAnimateStatus.DONE &&
-    focusedStoryIndex === idx;
+    focusedStoryIndex === idx &&
+    idx === carouselIndexRef.current;
 
   const carouselTransformMap: { [key: number]: string } = {
     0: `rotate(${rotationAngle}deg)`,
@@ -68,13 +72,13 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
           alt={story.title}
           className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white transition-[transform, height]"
           style={{
+            transform: itemSetInPlace ? "translateX(0%)" : "translateX(20%)",
+            height: "40vh",
             transitionDuration: `${getAnimationTiming(
               "overlayAnimation",
               AnimationTiming,
               itemSetInPlace
             )}ms`,
-            transform: itemSetInPlace ? "translateX(0%)" : "translateX(20%)",
-            height: "40vh",
           }}
         />
         <div className="h-[40vh] w-[40vw] flex flex-col items-end self-end text-black invert mix-blend-difference ml-5">
