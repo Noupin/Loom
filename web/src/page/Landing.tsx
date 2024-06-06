@@ -2,15 +2,16 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { darkModeState, leftHandModeState, logoState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
-import { MoveVertical } from "lucide-react";
+import { ArrowDown, MoveVertical } from "lucide-react";
 import Progress from "../component/Progress";
-import { STORIES } from "../Stories";
+import { IStory, STORIES } from "../Stories";
 import { TAnimateStatus } from "../types/TAnimation";
 import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
 import { useAnimationPipeline } from "../helper/animation";
 import LandingNavigation from "../component/LandingNavigation";
 import LandingTextile from "../component/LandingTextile";
 import LandingControls from "../component/LandingControls";
+import { fuzzySearchStories } from "../helper/search";
 
 function Landing() {
   // State
@@ -25,6 +26,8 @@ function Landing() {
   const touchStartY = useRef(0);
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredStories, setFilteredStories] = useState<IStory[]>(STORIES);
   const runAnimationPipeline = useAnimationPipeline(
     cancelState,
     setCancelState,
@@ -51,7 +54,7 @@ function Landing() {
     leftHandSwitch: 200,
     preSetInDelay: 500,
     darkModeSwitch: 300,
-    flipLeftHandModeIcon: 500,
+    flipLeftHandModeIcon: 350,
     moreStoriesOpacity: 200,
   });
 
@@ -116,7 +119,8 @@ function Landing() {
     if (isScrollingRef.current) return;
     // If at the end of the carousel or at the beginning, do not scroll
     if (
-      (scrollingDown && carouselIndexRef.current >= STORIES.length - 1) ||
+      (scrollingDown &&
+        carouselIndexRef.current >= filteredStories.length - 1) ||
       (!scrollingDown && carouselIndexRef.current <= 0)
     )
       return;
@@ -126,14 +130,21 @@ function Landing() {
     }
     isScrollingRef.current = true;
 
-    if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+    if (
+      scrollingDown &&
+      carouselIndexRef.current < filteredStories.length - 1
+    ) {
       resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
+      setFocusedStoryIndex((currentIndex) =>
+        getNextStoryIdx(currentIndex, filteredStories)
+      );
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
       resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
+      setFocusedStoryIndex((currentIndex) =>
+        getPreviousStoryIdx(currentIndex, filteredStories)
+      );
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
     }
@@ -156,14 +167,21 @@ function Landing() {
 
     isScrollingRef.current = true; // Set the flag to prevent further scrolling
 
-    if (scrollingDown && carouselIndexRef.current < STORIES.length - 1) {
+    if (
+      scrollingDown &&
+      carouselIndexRef.current < filteredStories.length - 1
+    ) {
       resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) => getNextStoryIdx(currentIndex));
+      setFocusedStoryIndex((currentIndex) =>
+        getNextStoryIdx(currentIndex, filteredStories)
+      );
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
     } else if (!scrollingDown && carouselIndexRef.current > 0) {
       resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) => getPreviousStoryIdx(currentIndex));
+      setFocusedStoryIndex((currentIndex) =>
+        getPreviousStoryIdx(currentIndex, filteredStories)
+      );
       carouselIndexRef.current -= 1;
       setRotationAngle((prevAngle) => prevAngle + 90);
     }
@@ -177,7 +195,9 @@ function Landing() {
   useEffect(() => {
     setLogoType(TLogo.Logo);
     runAnimationPipeline(setAnimationState, pageLoadAnimationPipeline);
+  }, []);
 
+  useEffect(() => {
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove);
@@ -186,7 +206,7 @@ function Landing() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
     };
-  }, []);
+  }, [filteredStories]);
 
   // Reset carousel animation dependency states to START state
   const resetCarouselAnimations = () => {
@@ -214,6 +234,21 @@ function Landing() {
     carouselAnimationDependencies.map((key) => animationState[key])
   );
 
+  const resetCarousel = () => {
+    carouselIndexRef.current = 0;
+    setFocusedStoryIndex(0);
+    setRotationAngle(0);
+  };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredStories(STORIES);
+      return;
+    }
+    resetCarousel();
+    setFilteredStories(fuzzySearchStories(searchTerm));
+  }, [searchTerm]);
+
   return (
     <main
       className="z-[-2] relative flex animate flex-col w-full h-full bg-off
@@ -225,29 +260,51 @@ function Landing() {
       <LandingNavigation
         expandSearch={expandSearch}
         setExpandSearch={setExpandSearch}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
-      {STORIES.map(
-        (story, idx) =>
-          carouselIndexRef.current - 1 <= idx &&
-          idx <= carouselIndexRef.current + 1 && (
-            <LandingTextile
-              key={idx}
-              story={story}
-              idx={idx}
-              animationState={animationState}
-              focusedStoryIndex={focusedStoryIndex}
-              carouselIndexRef={carouselIndexRef}
-              AnimationTiming={AnimationTiming}
-              rotationAngle={rotationAngle}
-            />
-          )
-      )}
+      {filteredStories.length > 0 &&
+        filteredStories.map(
+          (story, idx) =>
+            carouselIndexRef.current - 1 <= idx &&
+            idx <= carouselIndexRef.current + 1 && (
+              <LandingTextile
+                key={idx}
+                story={story}
+                idx={idx}
+                animationState={animationState}
+                focusedStoryIndex={focusedStoryIndex}
+                carouselIndexRef={carouselIndexRef}
+                AnimationTiming={AnimationTiming}
+                rotationAngle={rotationAngle}
+              />
+            )
+        )}
       <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
-        <MoveVertical strokeWidth={2} className="mr-auto" />
-        <div className="ml-auto">
+        <div className="flex-1 flex justify-start">
+          <MoveVertical strokeWidth={2} />
+        </div>
+        <div
+          className="flex-1 flex flex-col text-center transition-[opacity] items-center"
+          style={{
+            opacity: filteredStories.length === 0 ? 1 : 0,
+            transitionDuration: `${AnimationTiming.moreStoriesOpacity}ms`,
+          }}
+        >
+          <span
+            className="text-black dark:text-white text-3xl transition-colors"
+            style={{
+              transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+            }}
+          >
+            No results found but look down
+          </span>
+          <ArrowDown strokeWidth={2} />
+        </div>
+        <div className="flex-1 flex justify-end">
           <Progress
             current={focusedStoryIndex}
-            max={STORIES.length - 1}
+            max={Math.max(filteredStories.length - 1, 0)}
             transitionDuration={AnimationTiming.darkModeSwitch}
           />
         </div>
@@ -259,6 +316,7 @@ function Landing() {
         setDarkMode={setDarkMode}
         AnimationTiming={AnimationTiming}
         focusedStoryIndex={focusedStoryIndex}
+        filteredStories={filteredStories}
       />
     </main>
   );

@@ -11,9 +11,14 @@ const Progress: React.FC<ProgressProps> = ({
   max,
   transitionDuration = 300,
 }) => {
-  const heightPercentage = Math.max(100 / (max + 1), 30);
-  const progressPercentage =
-    (current / max) * 100 * ((100 - heightPercentage) / heightPercentage);
+  let heightPercentage = 0;
+  let progressPercentage = 100;
+
+  if (max !== 0) {
+    heightPercentage = Math.max(100 / (max + 1), 30);
+    progressPercentage =
+      (current / max) * 100 * ((100 - heightPercentage) / heightPercentage);
+  }
 
   return (
     <div

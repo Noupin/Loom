@@ -8,14 +8,17 @@ import { darkModeState } from "../State";
 interface LandingNavigationProps {
   expandSearch: boolean;
   setExpandSearch: React.Dispatch<React.SetStateAction<boolean>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const LandingNavigation: React.FC<LandingNavigationProps> = ({
   expandSearch,
   setExpandSearch,
+  searchTerm,
+  setSearchTerm,
 }) => {
   const darkMode = useRecoilValue(darkModeState);
-  const [searchTerm, setSearchTerm] = useState("");
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
   const runAnimationPipeline = useAnimationPipeline(

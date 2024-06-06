@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRightToLine, Moon, Sun } from "lucide-react";
 import ControlFrame from "./ControlFrame";
-import { STORIES } from "../Stories";
+import { IStory } from "../Stories";
 
 interface ControlPanelProps {
   leftHandMode: boolean;
@@ -10,6 +10,7 @@ interface ControlPanelProps {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   AnimationTiming: { [key: string]: number };
   focusedStoryIndex: number;
+  filteredStories: IStory[];
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -19,6 +20,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   setDarkMode,
   AnimationTiming,
   focusedStoryIndex,
+  filteredStories,
 }) => (
   <div className="flex flex-col relative z-1">
     <div
@@ -55,14 +57,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       </ControlFrame>
     </div>
     <div className="flex justify-between px-5 pb-5 pt-3">
-      <div className="flex font-mono select-none items-end">
+      <div className="flex-1 flex font-mono select-none items-end">
         FRV-1 07May2024
       </div>
       <div
-        className="transition-[opacity]"
+        className="flex-1 flex justify-center transition-[opacity]"
         style={{
           transitionDuration: `${AnimationTiming.moreStoriesOpacity}ms`,
-          opacity: focusedStoryIndex === STORIES.length - 1 ? 1 : 0,
+          opacity:
+            focusedStoryIndex === Math.max(filteredStories.length - 1, 0)
+              ? 1
+              : 0,
         }}
       >
         <div
@@ -74,12 +79,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           More Stories Coming Soon
         </div>
       </div>
-      <div className="flex font-barcode text-2xl select-none">
-        No
-        {"0".repeat(
-          STORIES.length.toString().length - focusedStoryIndex.toString().length
-        )}
-        {focusedStoryIndex} {STORIES[focusedStoryIndex].datePublished}
+      <div className="flex-1 flex font-barcode text-2xl select-none justify-end items-end">
+        {/* Fix number value when stories are filtered */}
+        {filteredStories.length === 0
+          ? "undefined"
+          : `No${"0".repeat(
+              filteredStories.length.toString().length -
+                focusedStoryIndex.toString().length
+            )}${focusedStoryIndex} ${
+              filteredStories[focusedStoryIndex].datePublished
+            }`}
       </div>
     </div>
   </div>

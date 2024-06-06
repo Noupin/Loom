@@ -9,7 +9,6 @@ import ExampleStory from "./page/ExampleStory";
 import { useRecoilValue } from "recoil";
 import {
   darkModeState,
-  leftHandModeState,
   logoCustomColorState,
   logoState,
   tempLogoState,

@@ -4,6 +4,7 @@ import { IStory } from "../Stories";
 import { TAnimateStatus } from "../types/TAnimation";
 import Button from "./Button";
 import { getAnimationTiming } from "../helper/animation";
+import { useNavigate } from "react-router-dom";
 
 interface LandingTextileProps {
   story: IStory;
@@ -26,6 +27,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
   AnimationTiming,
   rotationAngle,
 }) => {
+  const navigate = useNavigate();
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const itemSetInPlace =
     animationState.itemSetInPlace === TAnimateStatus.DONE &&
@@ -131,7 +133,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             {story.description}
           </p>
           <Button
-            onClick={() => {}}
+            onClick={() => navigate(story.link)}
             className={`${
               itemSetInPlace
                 ? "bg-off-500 text-off"
