@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useAnimationPipeline } from "../helper/animation";
 import { TAnimateStatus } from "../types/TAnimation";
+import { useRecoilValue } from "recoil";
+import { darkModeState } from "../State";
 
 interface LandingNavigationProps {
   expandSearch: boolean;
@@ -12,6 +14,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   expandSearch,
   setExpandSearch,
 }) => {
+  const darkMode = useRecoilValue(darkModeState);
   const [searchTerm, setSearchTerm] = useState("");
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
@@ -20,6 +23,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     setCancelState,
     isPipelineRunning
   );
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
@@ -48,6 +52,13 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     },
   ];
 
+  const expandSearchCondition =
+    animationState.expandSearch === TAnimateStatus.DONE && expandSearch;
+  const flipSearchIconCondition =
+    animationState.flipSearchIcon === TAnimateStatus.DONE && expandSearch;
+  const fadeSearchTextCondition =
+    animationState.fadeSearchText === TAnimateStatus.DONE && expandSearch;
+
   useEffect(() => {
     if (!expandSearch) {
       setCancelState(true);
@@ -62,12 +73,11 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     runAnimationPipeline(setAnimationState, animations);
   }, [expandSearch]);
 
-  const expandSearchCondition =
-    animationState.expandSearch === TAnimateStatus.DONE && expandSearch;
-  const flipSearchIconCondition =
-    animationState.flipSearchIcon === TAnimateStatus.DONE && expandSearch;
-  const fadeSearchTextCondition =
-    animationState.fadeSearchText === TAnimateStatus.DONE && expandSearch;
+  useEffect(() => {
+    if (fadeSearchTextCondition) {
+      searchInputRef.current?.focus();
+    }
+  }, [fadeSearchTextCondition]);
 
   return (
     <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-[1]">
@@ -85,12 +95,14 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
         }}
       >
         <div
-          className="flex justify-start px-3 py-2 box-content rounded-full transition-[width] text-clip"
+          className="flex justify-start px-3 py-2 box-content rounded-full transition-[width] text-clip items center"
           style={{
-            width: expandSearchCondition ? "75%" : "25px",
+            width: expandSearchCondition ? "80%" : "25px",
             transitionDuration: `${AnimationTimings.expandSearch}ms`,
             backgroundColor: expandSearchCondition
-              ? "rgba(0, 0, 0, 0.15)"
+              ? darkMode
+                ? "rgba(255, 255, 255, 0.15)"
+                : "rgba(0, 0, 0, 0.15)"
               : "transparent",
           }}
           onMouseLeave={() => {
@@ -109,10 +121,11 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
             transform={flipSearchIconCondition ? "scale(-1, 1)" : "scale(1, 1)"}
           />
           <input
+            ref={searchInputRef}
             type="text"
-            className="transition-[flex-grow] ml-1 placeholder-black placeholder-opacity-50 bg-transparent border-none outline-none"
+            className="transition-[flex-grow] ml-1 placeholder-black placeholder-opacity-50 dark:placeholder-white dark:placeholder-opacity-50 bg-transparent border-none outline-none"
             placeholder="Search..."
-            autoFocus={true}
+            autoFocus
             style={{
               display: fadeSearchTextCondition ? "flex" : "none",
               flexGrow: fadeSearchTextCondition ? 1 : 0,
