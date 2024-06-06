@@ -58,6 +58,22 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       <div className="flex font-mono select-none items-end">
         FRV-1 07May2024
       </div>
+      <div
+        className="transition-[opacity]"
+        style={{
+          transitionDuration: `${AnimationTiming.moreStoriesOpacity}ms`,
+          opacity: focusedStoryIndex === STORIES.length - 1 ? 1 : 0,
+        }}
+      >
+        <div
+          className="z-[2] text-black text-opacity-65 dark:text-white dark:text-opacity-50 text-2xl transition-colors"
+          style={{
+            transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+          }}
+        >
+          More Stories Coming Soon
+        </div>
+      </div>
       <div className="flex font-barcode text-2xl select-none">
         No
         {"0".repeat(

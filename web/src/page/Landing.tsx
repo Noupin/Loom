@@ -52,6 +52,7 @@ function Landing() {
     preSetInDelay: 500,
     darkModeSwitch: 300,
     flipLeftHandModeIcon: 500,
+    moreStoriesOpacity: 200,
   });
 
   const pageLoadAnimationPipeline = [
