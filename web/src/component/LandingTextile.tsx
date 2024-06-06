@@ -56,7 +56,8 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
       }}
     >
       <div
-        className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center transition-transform duration-[1ms] ease-in-out lg:flex-row md:flex-col origin-center"
+        className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center
+        lg:flex-row md:flex-col origin-center transition-colors"
         style={{
           animation: preSetInDelay
             ? `setIntoPlaceFromBottom ${getAnimationTiming(
@@ -65,6 +66,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 preSetInDelay
               )}ms ease-out`
             : "",
+          transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
         }}
       >
         <img

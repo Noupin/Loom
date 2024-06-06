@@ -50,6 +50,7 @@ function Landing() {
     offsetForSetInAfterRotation: 200,
     leftHandSwitch: 200,
     preSetInDelay: 500,
+    darkModeSwitch: 300,
   });
 
   const pageLoadAnimationPipeline = [
@@ -169,7 +170,6 @@ function Landing() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 100);
-    runAnimationPipeline(setAnimationState, carouselAnimationPipeline);
   };
 
   useEffect(() => {
@@ -213,7 +213,13 @@ function Landing() {
   );
 
   return (
-    <main className="z-[-2] relative flex animate flex-col w-full h-full bg-off dark:bg-off-500 font-lateef dark:text-off">
+    <main
+      className="z-[-2] relative flex animate flex-col w-full h-full bg-off
+    dark:bg-off-500 font-lateef dark:text-off transition-colors"
+      style={{
+        transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+      }}
+    >
       <LandingNavigation
         expandSearch={expandSearch}
         setExpandSearch={setExpandSearch}
@@ -237,7 +243,11 @@ function Landing() {
       <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
         <MoveVertical strokeWidth={2} className="mr-auto" />
         <div className="ml-auto">
-          <Progress current={focusedStoryIndex} max={STORIES.length - 1} />
+          <Progress
+            current={focusedStoryIndex}
+            max={STORIES.length - 1}
+            transitionDuration={AnimationTiming.darkModeSwitch}
+          />
         </div>
       </div>
       <LandingControls

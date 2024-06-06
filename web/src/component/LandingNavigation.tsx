@@ -88,14 +88,15 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
         <div className="flex-1">Platform</div>
       </div>
       <div
-        className="flex ml-5 justify-end transition-[flex-grow]"
+        className="flex ml-5 justify-end transition-[flex-grow] ease-in-out"
         style={{
           flexGrow: expandSearchCondition ? 2 : 1,
           transitionDuration: `${AnimationTimings.expandSearch}ms`,
         }}
       >
         <div
-          className="flex justify-start px-3 py-2 box-content rounded-full transition-[width] text-clip items center"
+          className="flex justify-start px-3 py-2 box-content rounded-full transition-[width]
+          text-clip items center ease-in-out"
           style={{
             width: expandSearchCondition ? "80%" : "25px",
             transitionDuration: `${AnimationTimings.expandSearch}ms`,
@@ -123,7 +124,8 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
           <input
             ref={searchInputRef}
             type="text"
-            className="transition-[flex-grow] ml-1 placeholder-black placeholder-opacity-50 dark:placeholder-white dark:placeholder-opacity-50 bg-transparent border-none outline-none"
+            className="transition-[flex-grow] ml-1 placeholder-black placeholder-opacity-50
+            dark:placeholder-white dark:placeholder-opacity-50 bg-transparent border-none outline-none"
             placeholder="Search..."
             autoFocus
             style={{
