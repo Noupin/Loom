@@ -29,10 +29,7 @@ export const autoCompleteSearchStories = (
   return [...STORIES]
     .filter((story) => {
       const normalizedTitle = normalizeString(story.title);
-      const contributorsMatch = story.contributors.some((contributor) =>
-        normalizeString(contributor).startsWith(normalizedQuery)
-      );
-      return normalizedTitle.startsWith(normalizedQuery) || contributorsMatch;
+      return normalizedTitle.startsWith(normalizedQuery);
     })
     .slice(0, limit);
 };

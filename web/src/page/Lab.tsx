@@ -1,30 +1,80 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, ChangeEvent } from "react";
 
-const Lab = () => {
-  const [initialWidth, setInitialWidth] = useState("auto");
-  const [animate, setAnimate] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+interface AutocompleteProps {
+  suggestions: string[];
+}
+
+const Autocomplete: React.FC<AutocompleteProps> = ({ suggestions }) => {
+  const [query, setQuery] = useState<string>("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [dropdownHeight, setDropdownHeight] = useState<number>(0);
+  const resultsRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (ref.current) {
-      const measuredWidth = ref.current.scrollWidth;
-      setInitialWidth(`${measuredWidth}px`);
+    if (resultsRef.current) {
+      setDropdownHeight(resultsRef.current.scrollHeight);
     }
-  }, [ref]);
+  }, [filteredSuggestions]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+    setFilteredSuggestions(
+      suggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
 
   return (
-    <div className="inline-block whitespace-nowrap w-full h-full bg-slate-300">
+    <div className="relative w-64">
+      <input
+        type="text"
+        value={query}
+        onChange={handleInputChange}
+        className="w-full p-2 border border-gray-300 rounded"
+        placeholder="Search..."
+      />
       <div
-        ref={ref}
-        className={`transition-all bg-blue-200 duration-1000 ease-in-out overflow-hidden ${
-          animate ? "w-full" : "fit-content"
-        }`}
-        style={{ width: animate ? "100%" : initialWidth }}
-        onMouseEnter={() => setAnimate(true)}
-        onMouseLeave={() => setAnimate(false)}
+        className={`absolute mt-1 w-full bg-white border border-gray-300 rounded shadow-lg overflow-hidden transition-all duration-300`}
+        style={{
+          maxHeight:
+            filteredSuggestions.length > 0 ? `${dropdownHeight}px` : "0",
+          transitionProperty: "max-height",
+        }}
       >
-        Your content here that needs to expand from fit-content to 100% width.
+        <ul ref={resultsRef} className="divide-y divide-gray-200">
+          {filteredSuggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => setQuery(suggestion)}
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
       </div>
+    </div>
+  );
+};
+
+const Lab = () => {
+  const suggestions = [
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Date",
+    "Elderberry",
+    "Fig",
+    "Grape",
+    "Honeydew",
+  ];
+
+  return (
+    <div className="flex w-screen h-screen justify-center items-center flex-col">
+      <h1 className="text-xl mb-4">Autocomplete Search Box</h1>
+      <Autocomplete suggestions={suggestions} />
     </div>
   );
 };

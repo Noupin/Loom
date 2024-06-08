@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowRightToLine, Moon, Sun } from "lucide-react";
 import ControlFrame from "./ControlFrame";
 import { IStory } from "../Stories";
+import { Config } from "../Config";
 
 interface ControlPanelProps {
   leftHandMode: boolean;
@@ -73,7 +74,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div
           className="z-[2] text-black text-opacity-65 dark:text-white dark:text-opacity-50 text-2xl transition-colors"
           style={{
-            transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+            transitionDuration: `${Config.darkModeSwitchDuration}ms`,
           }}
         >
           More Stories Coming Soon

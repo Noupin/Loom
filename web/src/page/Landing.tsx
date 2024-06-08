@@ -12,6 +12,7 @@ import LandingNavigation from "../component/LandingNavigation";
 import LandingTextile from "../component/LandingTextile";
 import LandingControls from "../component/LandingControls";
 import { fuzzySearchStories } from "../helper/search";
+import { Config } from "../Config";
 
 function Landing() {
   // State
@@ -52,10 +53,9 @@ function Landing() {
     overlayAnimation: 1000,
     expandedStoryFade: 1500,
     quickScrollDelay: 100,
-    offsetForSetInAfterRotation: 200,
+    offsetForSetInAfterRotation: 100,
     leftHandSwitch: 200,
     preSetInDelay: 500,
-    darkModeSwitch: 300,
     flipLeftHandModeIcon: 350,
     moreStoriesOpacity: 200,
   });
@@ -256,7 +256,7 @@ function Landing() {
       className="z-[-2] relative flex animate flex-col w-full h-full bg-off
     dark:bg-off-500 font-lateef dark:text-off transition-colors"
       style={{
-        transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+        transitionDuration: `${Config.darkModeSwitchDuration}ms`,
       }}
     >
       <LandingNavigation
@@ -296,7 +296,7 @@ function Landing() {
           <span
             className="text-black dark:text-white text-3xl transition-colors"
             style={{
-              transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+              transitionDuration: `${Config.darkModeSwitchDuration}ms`,
             }}
           >
             No results found but look down
@@ -307,7 +307,7 @@ function Landing() {
           <Progress
             current={focusedStoryIndex}
             max={Math.max(filteredStories.length - 1, 0)}
-            transitionDuration={AnimationTiming.darkModeSwitch}
+            transitionDuration={Config.darkModeSwitchDuration}
           />
         </div>
       </div>

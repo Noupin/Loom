@@ -4,6 +4,10 @@ import { useAnimationPipeline } from "../helper/animation";
 import { TAnimateStatus } from "../types/TAnimation";
 import { useRecoilValue } from "recoil";
 import { darkModeState } from "../State";
+import { autoCompleteSearchStories } from "../helper/search";
+import { Config } from "../Config";
+import { IStory } from "../Stories";
+import { useNavigate } from "react-router-dom";
 
 interface LandingNavigationProps {
   expandSearch: boolean;
@@ -18,15 +22,22 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   searchTerm,
   setSearchTerm,
 }) => {
+  const navigate = useNavigate();
   const darkMode = useRecoilValue(darkModeState);
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
+  const [autoCompleteResults, setAutoCompleteResults] = useState<IStory[]>([]);
   const runAnimationPipeline = useAnimationPipeline(
     cancelState,
     setCancelState,
     isPipelineRunning
   );
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [mouseInSearchArea, setMouseInSearchArea] = useState(false);
+  const [mouseInResultsArea, setMouseInResultsArea] = useState(false);
+  const [searchResultsHeight, setSearchResultsHeight] = useState(0);
+  const [previousAutoCompleteResults, setPreviousAutoCompleteResults] =
+    useState<IStory[]>([]);
 
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
@@ -34,11 +45,14 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     flipSearchIcon: TAnimateStatus.START,
     expandSearch: TAnimateStatus.START,
     fadeSearchText: TAnimateStatus.START,
+    searchResultsHeight: TAnimateStatus.START,
   });
   const AnimationTiming = {
     flipSearchIcon: 200,
     expandSearch: 300,
     fadeSearchText: 100,
+    resultHoverBackgroundChange: 300,
+    searchResultsHeight: 1000,
   };
   const animations = [
     {
@@ -52,6 +66,13 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     {
       animationKeys: ["fadeSearchText"],
       durations: [AnimationTiming.fadeSearchText],
+    },
+  ];
+
+  const searchResultsAnimations = [
+    {
+      animationKeys: ["searchResultsHeight"],
+      durations: [AnimationTiming.searchResultsHeight],
     },
   ];
 
@@ -82,6 +103,39 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     }
   }, [fadeSearchTextCondition]);
 
+  useEffect(() => {
+    if (isPipelineRunning.current) setCancelState(true);
+    if (searchTerm.length === 0) {
+      setPreviousAutoCompleteResults([]);
+      setAutoCompleteResults([]);
+      return;
+    }
+
+    const searchResults = autoCompleteSearchStories(
+      searchTerm,
+      Config.autoCompleteSearchResultLimit
+    );
+    setPreviousAutoCompleteResults(autoCompleteResults);
+    setAutoCompleteResults(searchResults);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (autoCompleteResults.length === 0) {
+      setSearchResultsHeight(0);
+      return;
+    }
+
+    setSearchResultsHeight(
+      autoCompleteResults.length * Config.searchResultItemHeight +
+        Config.searchResultsPaddingAndMarginHeight
+    );
+  }, [autoCompleteResults]);
+
+  useEffect(() => {
+    if (searchResultsHeight === 0) return;
+    runAnimationPipeline(setAnimationState, searchResultsAnimations);
+  }, [searchResultsHeight]);
+
   return (
     <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-[1]">
       <div className="flex-1" />
@@ -91,18 +145,18 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
         <div className="flex-1">Platform</div>
       </div>
       <div
-        className="flex ml-5 justify-end transition-[flex-grow] ease-in-out"
+        className="flex flex-col ml-5 justify-end items-end transition-[flex-grow] ease-in-out"
         style={{
           flexGrow: expandSearchCondition ? 2 : 1,
           transitionDuration: `${AnimationTiming.expandSearch}ms`,
         }}
       >
         <div
-          className="flex justify-start px-3 py-2 box-content rounded-full transition-[width]
+          className="relative flex justify-start px-3 py-2 box-content rounded-full transition-[width]
           text-clip items center ease-in-out"
           style={{
             width: expandSearchCondition ? "80%" : "25px",
-            transitionDuration: `${AnimationTiming.expandSearch}ms`,
+            transitionDuration: `${Config.darkModeSwitchDuration}ms`,
             backgroundColor: expandSearchCondition
               ? darkMode
                 ? "rgba(255, 255, 255, 0.15)"
@@ -110,11 +164,13 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
               : "transparent",
           }}
           onMouseLeave={() => {
+            setMouseInSearchArea(false);
             if (searchTerm.length > 0) return;
             setExpandSearch(false);
           }}
           onMouseEnter={() => {
             setExpandSearch(true);
+            setMouseInSearchArea(true);
           }}
         >
           <Search
@@ -139,9 +195,55 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              if (e.target.value.length === 0) setExpandSearch(false);
+              if (
+                e.target.value.length === 0 &&
+                (!mouseInSearchArea || mouseInResultsArea)
+              )
+                setExpandSearch(false);
             }}
           />
+
+          <div
+            className="absolute top-[100%] mt-3 w-full left-0"
+            style={{
+              transitionDuration: `${AnimationTiming.searchResultsHeight}ms`,
+              opacity: autoCompleteResults.length > 0 ? 1 : 0,
+            }}
+          >
+            <div
+              className="bg-black bg-opacity-15 rounded-3xl dark:bg-white dark:bg-opacity-15
+            transition-[background-color]"
+              style={{
+                transitionDuration: `${Config.darkModeSwitchDuration}ms`,
+              }}
+            >
+              <div
+                className=" flex flex-col  transition-[height]
+              overflow-hidden rounded-3xl p-2"
+                style={{
+                  transitionDuration: `${AnimationTiming.searchResultsHeight}ms`,
+                  height: `${searchResultsHeight}px`,
+                }}
+                onMouseEnter={() => setMouseInResultsArea(true)}
+                onMouseLeave={() => setMouseInResultsArea(false)}
+              >
+                {autoCompleteResults.map((result, idx) => (
+                  <div
+                    key={idx}
+                    className="hover:bg-black hover:bg-opacity-10 dark:hover:bg-white dark:hover:bg-opacity-10
+                cursor-pointer px-3 py-1 rounded-3xl transition-[background-color, opacity, color] ease-in-out
+                text-black dark:text-white"
+                    style={{
+                      transitionDuration: `${AnimationTiming.resultHoverBackgroundChange}ms`,
+                    }}
+                    onClick={() => navigate(result.link)}
+                  >
+                    {result.title}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import Button from "./Button";
 import { getAnimationTiming } from "../helper/animation";
 import { useNavigate } from "react-router-dom";
 import { formatContributors } from "../helper/formatting";
+import { Config } from "../Config";
 
 interface LandingTextileProps {
   story: IStory;
@@ -69,7 +70,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 preSetInDelay
               )}ms ease-out`
             : "",
-          transitionDuration: `${AnimationTiming.darkModeSwitch}ms`,
+          transitionDuration: `${Config.darkModeSwitchDuration}ms`,
         }}
       >
         <img
@@ -86,7 +87,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             )}ms`,
           }}
         />
-        <div className="h-[40vh] w-[40vw] flex flex-col items-end self-end text-black invert mix-blend-difference ml-5">
+        <div className="h-fit w-[40vw] flex flex-col items-end self-end text-black invert mix-blend-difference ml-5">
           <div
             className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
