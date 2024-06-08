@@ -36,8 +36,6 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   const [mouseInSearchArea, setMouseInSearchArea] = useState(false);
   const [mouseInResultsArea, setMouseInResultsArea] = useState(false);
   const [searchResultsHeight, setSearchResultsHeight] = useState(0);
-  const [previousAutoCompleteResults, setPreviousAutoCompleteResults] =
-    useState<IStory[]>([]);
 
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
@@ -52,7 +50,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     expandSearch: 300,
     fadeSearchText: 100,
     resultHoverBackgroundChange: 300,
-    searchResultsHeight: 1000,
+    searchResultsHeight: 350,
   };
   const animations = [
     {
@@ -106,7 +104,6 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   useEffect(() => {
     if (isPipelineRunning.current) setCancelState(true);
     if (searchTerm.length === 0) {
-      setPreviousAutoCompleteResults([]);
       setAutoCompleteResults([]);
       return;
     }
@@ -115,7 +112,6 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
       searchTerm,
       Config.autoCompleteSearchResultLimit
     );
-    setPreviousAutoCompleteResults(autoCompleteResults);
     setAutoCompleteResults(searchResults);
   }, [searchTerm]);
 
