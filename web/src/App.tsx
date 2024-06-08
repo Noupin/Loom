@@ -16,6 +16,7 @@ import {
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
 import Lab from "./page/Lab";
+import MyXTheVampireSlayer from "./Story/MyXTheVampireSlayer";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
@@ -61,6 +62,15 @@ export default function App() {
           element={
             <StoryTemplate>
               <ExampleStory />
+            </StoryTemplate>
+          }
+        />
+
+        <Route
+          path="/my-x-the-vampire-slayer"
+          element={
+            <StoryTemplate>
+              <MyXTheVampireSlayer />
             </StoryTemplate>
           }
         />
