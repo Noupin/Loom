@@ -21,6 +21,7 @@ import Lab from "./page/Lab";
 import MyXTheVampireSlayer from "./Story/MyXTheVampireSlayer";
 import { useWindowSize } from "./hook/windowSize";
 import { TScreenSize } from "./types/TScreenSize";
+import AndroidTragedy from "./Story/AndroidTragedy";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
@@ -80,14 +81,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
 
-        <Route
+        {/* <Route
           path="/TestStory"
           element={
             <StoryTemplate>
               <ExampleStory />
             </StoryTemplate>
           }
-        />
+        /> */}
 
         <Route
           path="/my-x-the-vampire-slayer"
@@ -97,8 +98,16 @@ export default function App() {
             </StoryTemplate>
           }
         />
+        <Route
+          path="/android-tragedy"
+          element={
+            <StoryTemplate>
+              <AndroidTragedy />
+            </StoryTemplate>
+          }
+        />
 
-        <Route path="/lab" element={<Lab />} />
+        {/* <Route path="/lab" element={<Lab />} /> */}
       </Routes>
     </BrowserRouter>
   );
