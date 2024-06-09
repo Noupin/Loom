@@ -23,16 +23,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   focusedStoryIndex,
   filteredStories,
 }) => (
-  <div className="flex flex-col relative z-1">
+  <div className="flex flex-col relative px-2 md:px-5 z-[1]">
     <div
-      className="flex px-5 transition-[width] ease-in-out justify-end min-w-fit"
+      className="flex flex-col md:flex-row transition-[width] ease-in-out items-end justify-end min-w-fit"
       style={{
         width: leftHandMode ? "0%" : "100%",
         transitionDuration: `${AnimationTiming.leftHandSwitch}ms`,
       }}
     >
       <ControlFrame
-        className="p-1 w-fit cursor-pointer mr-2"
+        className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
         onClick={() => setLeftHandMode((current) => !current)}
       >
         <ArrowRightToLine
@@ -47,7 +47,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         />
       </ControlFrame>
       <ControlFrame
-        className="p-1 w-fit cursor-pointer ml-2"
+        className="p-1 w-fit cursor-pointer"
         onClick={() => setDarkMode((current) => !current)}
       >
         {darkMode ? (
@@ -57,8 +57,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         )}
       </ControlFrame>
     </div>
-    <div className="flex justify-between px-5 pb-5 pt-3">
-      <div className="flex-1 flex font-mono select-none items-end">
+    <div className="flex justify-between pb-5 pt-3 px-1 items-center">
+      <div className="flex font-mono select-none items-end text-sm md:text-lg">
         FRV-1 07May2024
       </div>
       <div
@@ -72,7 +72,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         }}
       >
         <div
-          className="z-[2] text-black text-opacity-65 dark:text-white dark:text-opacity-50 text-2xl transition-colors"
+          className="z-[2] text-black text-opacity-65 self-center justify-self-center
+          dark:text-white dark:text-opacity-50 transition-colors text-lg md:text-2xl"
           style={{
             transitionDuration: `${Config.darkModeSwitchDuration}ms`,
           }}
@@ -80,7 +81,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           More Stories Coming Soon
         </div>
       </div>
-      <div className="flex-1 flex font-barcode text-2xl select-none justify-end items-end">
+      <div className="flex font-barcode text-md md:text-2xl select-none justify-end items-end">
         {/* Fix number value when stories are filtered */}
         {filteredStories.length === 0
           ? "undefined"

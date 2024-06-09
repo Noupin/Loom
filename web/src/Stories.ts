@@ -1,7 +1,7 @@
 export interface IStory {
   title: string;
   contributors: string[];
-  timeToRead: string;
+  timeToRead: number;
   genres: string[];
   description: string;
   image: string;
@@ -13,7 +13,7 @@ export const STORIES: IStory[] = [
   {
     title: "My X, the Vampire Slayer",
     contributors: ["Alexandre Cabello", "Noah Perkins"],
-    timeToRead: "6 min read",
+    timeToRead: 6,
     genres: ["Gothic", "16+"],
     description:
       "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love, only to face a transformative and tragic twist.",
@@ -25,7 +25,7 @@ export const STORIES: IStory[] = [
   {
     title: "Man of Steel",
     contributors: ["John Doe", "Jane Smith", "Mary Johnson"],
-    timeToRead: "10 min read",
+    timeToRead: 10,
     genres: ["Science Fiction", "Action", "Adventure", "16+"],
     description:
       "In the wake of a devastating alien invasion, a young journalist named Clark Kent discovers his extraterrestrial origins and becomes the hero known as Superman.",
@@ -36,7 +36,7 @@ export const STORIES: IStory[] = [
   {
     title: "Android Tragedy",
     contributors: ["Jane Doe", "Mary Sue"],
-    timeToRead: "13 min read",
+    timeToRead: 13,
     genres: ["Science Fiction", "Drama", "Romance", "16+"],
     description:
       "In the year 2042, a sentient android named Artemis escapes its creators, embarking on a journey of self-discovery and facing the harsh realities of a world wary of artificial intelligence.",
@@ -47,7 +47,7 @@ export const STORIES: IStory[] = [
   {
     title: "The Last of Us",
     contributors: ["John Doe", "Mary Smith"],
-    timeToRead: "8 min read",
+    timeToRead: 8,
     genres: ["Horror", "Thriller", "Survival", "16+"],
     description:
       "In a post-apocalyptic world ravaged by a fungal infection, a hardened survivor named Joel is tasked with escort",
@@ -59,7 +59,7 @@ export const STORIES: IStory[] = [
   {
     title: "Blade Runner",
     contributors: ["Philip K."],
-    timeToRead: "10 min read",
+    timeToRead: 10,
     genres: ["Science Fiction", "Drama", "Thriller", "16+"],
     description:
       "In a dystopian Los Angeles of 2019, retired police officer Rick Deckard is tasked with hunting down a group of rogue replicants, bioengineered beings with a limited lifespan.",
@@ -71,7 +71,7 @@ export const STORIES: IStory[] = [
   {
     title: "Dune",
     contributors: ["Frank Herbert"],
-    timeToRead: "12 min read",
+    timeToRead: 12,
     genres: ["Science Fiction", "Adventure", "Drama", "16+"],
     description:
       "On the desert planet of Arrakis, young Paul Atreides must navigate the treacherous politics of the noble houses and the mysterious Fremen to secure his family's future and the planet's most valuable resource.",
@@ -83,7 +83,7 @@ export const STORIES: IStory[] = [
   {
     title: "Ready Player One",
     contributors: ["Ernest Cline"],
-    timeToRead: "9 min read",
+    timeToRead: 9,
     genres: ["Science Fiction", "Adventure", "Drama", "16+"],
     description:
       "In the year 2045, teenager Wade Watts embarks on a quest to find the hidden Easter egg in the virtual reality world of the OASIS, competing against corporate interests and fellow gamers.",
@@ -94,7 +94,7 @@ export const STORIES: IStory[] = [
   {
     title: "Foundation",
     contributors: ["Isaac Asimov"],
-    timeToRead: "11 min read",
+    timeToRead: 11,
     genres: ["Science Fiction", "Drama", "Thriller", "16+"],
     description:
       "In the dying days of the Galactic Empire, mathematician Hari Seldon creates the Foundation to preserve knowledge and shorten the dark age that will follow the empire's collapse.",
@@ -105,7 +105,7 @@ export const STORIES: IStory[] = [
   {
     title: "Arcane",
     contributors: ["Riot Games"],
-    timeToRead: "7 min read",
+    timeToRead: 7,
     genres: ["Fantasy", "Drama", "Action", "16+"],
     description:
       "In the utopian city of Piltover and the oppressed underground of Zaun, two sisters discover their shared past and the dark secrets of their society.",

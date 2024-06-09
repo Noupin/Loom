@@ -23,6 +23,8 @@ module.exports = {
       dropShadow: {
         img: "8px 8px 16px rgba(0, 0, 0, 0.25)",
         "img-white": "8px 8px 16px rgba(255, 255, 255, 0.175)",
+        "img-mobile": "0px 8px 16px rgba(0, 0, 0, 0.25)",
+        "img-white-mobile": "0px 8px 16px rgba(255, 255, 255, 0.175)",
       },
     },
     fontFamily: {

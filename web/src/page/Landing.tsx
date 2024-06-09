@@ -253,7 +253,7 @@ function Landing() {
 
   return (
     <main
-      className="z-[-2] relative flex animate flex-col w-full h-full bg-off
+      className="z-[-1] relative flex animate flex-col w-full h-full bg-off
     dark:bg-off-500 font-lateef dark:text-off transition-colors"
       style={{
         transitionDuration: `${Config.darkModeSwitchDuration}ms`,
@@ -282,8 +282,8 @@ function Landing() {
               />
             )
         )}
-      <div className="flex-1 justify-center items-center p-5 flex flex-row relative z-[-1]">
-        <div className="flex-1 flex justify-start">
+      <div className="flex-1 justify-center items-center p-2 md:p-5 flex flex-row relative z-[1]">
+        <div className="flex-1 flex justify-start opacity-0 lg:opacity-100">
           <MoveVertical strokeWidth={2} />
         </div>
         <div

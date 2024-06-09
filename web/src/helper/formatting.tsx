@@ -5,3 +5,7 @@ export const formatContributors = (contributors: string[]): string => {
   const lastContributor = contributors.pop();
   return `${contributors.join(", ")} & ${lastContributor}`;
 };
+
+export const formatTimeToRead = (timeToRead: number): string => {
+  return `${timeToRead} min`;
+};

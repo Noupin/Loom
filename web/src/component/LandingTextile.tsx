@@ -5,8 +5,11 @@ import { TAnimateStatus } from "../types/TAnimation";
 import Button from "./Button";
 import { getAnimationTiming } from "../helper/animation";
 import { useNavigate } from "react-router-dom";
-import { formatContributors } from "../helper/formatting";
+import { formatContributors, formatTimeToRead } from "../helper/formatting";
 import { Config } from "../Config";
+import { deviceScreenSizeState } from "../State";
+import { useRecoilValue } from "recoil";
+import { TScreenSize } from "../types/TScreenSize";
 
 interface LandingTextileProps {
   story: IStory;
@@ -30,6 +33,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
   rotationAngle,
 }) => {
   const navigate = useNavigate();
+  const deviceScreenSize = useRecoilValue(deviceScreenSizeState);
   const EXPANDED_STORY_ANIMATION_CLASSES = "transition-colors ease-in-out";
   const itemSetInPlace =
     animationState.itemSetInPlace === TAnimateStatus.DONE &&
@@ -61,7 +65,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
     >
       <div
         className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center
-        lg:flex-row md:flex-col origin-center transition-colors"
+        flex-col lg:flex-row origin-center transition-colors"
         style={{
           animation: preSetInDelay
             ? `setIntoPlaceFromBottom ${getAnimationTiming(
@@ -76,10 +80,18 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
         <img
           src={story.image}
           alt={story.title}
-          className="w-[40vh] my-5 object-cover drop-shadow-img dark:drop-shadow-img-white transition-[transform, height]"
+          className="w-[30vh] my-5 object-cover drop-shadow-img-mobile dark:drop-shadow-img-white-mobile
+          lg:drop-shadow-img lg:dark:drop-shadow-img-white transition-[transform, height] lg:w-[40vh]"
           style={{
-            transform: itemSetInPlace ? "translateX(0%)" : "translateX(20%)",
-            height: "40vh",
+            transform:
+              deviceScreenSize === TScreenSize.Large
+                ? itemSetInPlace
+                  ? "translateX(0%)"
+                  : "translateX(20%)"
+                : itemSetInPlace
+                ? "translateY(0%)"
+                : "translateY(25%)",
+            height: deviceScreenSize === TScreenSize.Large ? "40vh" : "30vh",
             transitionDuration: `${getAnimationTiming(
               "overlayAnimation",
               AnimationTiming,
@@ -87,7 +99,10 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             )}ms`,
           }}
         />
-        <div className="h-fit w-[40vw] flex flex-col items-end self-end text-black invert mix-blend-difference ml-5">
+        <div
+          className="h-fit w-[80vw] flex flex-col items-end self-end text-black invert mix-blend-difference
+          m-0 lg:ml-5 lg:w-[40vw] "
+        >
           <div
             className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
@@ -99,17 +114,32 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
               )}ms`,
             }}
           >
-            <div className="text-2xl">{story.timeToRead}</div>
-            <div className="text-2xl">{story.genres.join(", ")}</div>
+            <div className="md:text-2xl text-md text-start">
+              {formatTimeToRead(story.timeToRead)}
+            </div>
+            <div className="md:text-2xl text-md text-end">
+              {story.genres.join(", ")}
+            </div>
           </div>
           <div className="flex w-full flex-1">
             <div
-              className="transition-[transform, flex-grow] ease-in-out text-end self-start justify-end flex flex-col h-full"
+              className="transition-[transform, flex-grow] ease-in-out text-center lg:text-end
+              self-start justify-end flex flex-col h-full"
               style={{
-                flexGrow: itemSetInPlace ? "1" : "0",
-                transform: itemSetInPlace
-                  ? "translateX(0%)"
-                  : "translateX(-20%)",
+                flexGrow:
+                  deviceScreenSize === TScreenSize.Large
+                    ? itemSetInPlace
+                      ? "1"
+                      : "0"
+                    : 1,
+                transform:
+                  deviceScreenSize === TScreenSize.Large
+                    ? itemSetInPlace
+                      ? "translateX(0%)"
+                      : "translateX(-20%)"
+                    : itemSetInPlace
+                    ? "translateY(0%)"
+                    : "translateY(-25%)",
                 transitionDuration: `${getAnimationTiming(
                   "overlayAnimation",
                   AnimationTiming,
@@ -117,14 +147,16 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 )}ms`,
               }}
             >
-              <div className="text-8xl">{story.title}</div>
-              <div className="text-3xl -translate-x-5">
+              <div className="lg:text-8xl md:text-6xl text-4xl">
+                {story.title}
+              </div>
+              <div className="lg:text-3xl md:text-2xl text-xl lg:-translate-x-5">
                 {formatContributors([...story.contributors])}
               </div>
             </div>
           </div>
           <p
-            className={`text-wrap text-center mt-10 mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+            className={`text-wrap text-center mt-5 mb-2 md:mt-10 md:mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               color: itemSetInPlace ? "inherit" : "transparent",
               transitionDuration: `${getAnimationTiming(
@@ -142,7 +174,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
               itemSetInPlace
                 ? "bg-off-500 text-off"
                 : "bg-transparent text-transparent"
-            } mt-auto w-[80%] flex flex-row justify-center self-center py-3 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+            } mt-auto w-[80%] flex flex-row justify-center self-center py-2 md:py-3 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               transitionDuration: `${getAnimationTiming(
                 "expandedStoryFade",

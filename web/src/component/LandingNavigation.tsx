@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { useAnimationPipeline } from "../helper/animation";
 import { TAnimateStatus } from "../types/TAnimation";
 import { useRecoilValue } from "recoil";
-import { darkModeState } from "../State";
+import { darkModeState, logoDimensionState } from "../State";
 import { autoCompleteSearchStories } from "../helper/search";
 import { Config } from "../Config";
 import { IStory } from "../Stories";
@@ -24,6 +24,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
 }) => {
   const navigate = useNavigate();
   const darkMode = useRecoilValue(darkModeState);
+  const logoDimension = useRecoilValue(logoDimensionState);
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
   const [autoCompleteResults, setAutoCompleteResults] = useState<IStory[]>([]);
@@ -133,9 +134,17 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
   }, [searchResultsHeight]);
 
   return (
-    <div className="h-[50px] flex mt-[25px] mx-[25px] items-center relative z-[1]">
+    <div
+      className="flex items-center relative z-[1]"
+      style={{
+        height: `${logoDimension}px`,
+        marginTop: `${logoDimension / 2}px`,
+        marginLeft: `${logoDimension / 2}px`,
+        marginRight: `${logoDimension / 2}px`,
+      }}
+    >
       <div className="flex-1" />
-      <div className="flex-[2] flex text-center text-2xl">
+      <div className="flex-[2] flex text-center text-2xl flex-col lg:flex-row opacity-0 lg:opacity-100">
         <div className="flex-1">Textiles</div>
         <div className="flex-1">Genres</div>
         <div className="flex-1">Platform</div>
@@ -176,10 +185,11 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
             }}
             transform={flipSearchIconCondition ? "scale(-1, 1)" : "scale(1, 1)"}
           />
+          {/* Fix animation time for darkmode switch */}
           <input
             ref={searchInputRef}
             type="text"
-            className="transition-[flex-grow] ml-1 placeholder-black placeholder-opacity-50
+            className="transition-[flex-grow, background-color, opacity] ml-1 placeholder-black placeholder-opacity-50
             dark:placeholder-white dark:placeholder-opacity-50 bg-transparent border-none outline-none"
             placeholder="Search..."
             autoFocus

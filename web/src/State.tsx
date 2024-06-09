@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import { TLogo } from "./types/TLogo";
+import { TScreenSize } from "./types/TScreenSize";
 
 export const logoState = atom<TLogo>({
   key: "logoState",
@@ -24,4 +25,14 @@ export const darkModeState = atom({
 export const leftHandModeState = atom({
   key: "leftHandModeState",
   default: false,
+});
+
+export const deviceScreenSizeState = atom<TScreenSize>({
+  key: "deviceScreenSize",
+  default: TScreenSize.Large,
+});
+
+export const logoDimensionState = atom({
+  key: "logoDimensionsState",
+  default: 50,
 });
