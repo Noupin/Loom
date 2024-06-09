@@ -29,7 +29,7 @@ export const leftHandModeState = atom({
 
 export const deviceScreenSizeState = atom<TScreenSize>({
   key: "deviceScreenSize",
-  default: TScreenSize.Large,
+  default: TScreenSize.ExtraLarge,
 });
 
 export const logoDimensionState = atom({

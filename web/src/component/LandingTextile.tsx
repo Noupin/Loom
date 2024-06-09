@@ -65,7 +65,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
     >
       <div
         className="bg-off dark:bg-off-500 dark:text-off flex items-center justify-center
-        flex-col lg:flex-row origin-center transition-colors"
+        flex-col xl:flex-row origin-center transition-colors"
         style={{
           animation: preSetInDelay
             ? `setIntoPlaceFromBottom ${getAnimationTiming(
@@ -81,17 +81,18 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
           src={story.image}
           alt={story.title}
           className="w-[30vh] my-5 object-cover drop-shadow-img-mobile dark:drop-shadow-img-white-mobile
-          lg:drop-shadow-img lg:dark:drop-shadow-img-white transition-[transform, height] lg:w-[40vh]"
+          xl:drop-shadow-img xl:dark:drop-shadow-img-white transition-[transform, height] xl:w-[40vh]"
           style={{
             transform:
-              deviceScreenSize === TScreenSize.Large
+              deviceScreenSize === TScreenSize.ExtraLarge
                 ? itemSetInPlace
                   ? "translateX(0%)"
                   : "translateX(20%)"
                 : itemSetInPlace
                 ? "translateY(0%)"
                 : "translateY(25%)",
-            height: deviceScreenSize === TScreenSize.Large ? "40vh" : "30vh",
+            height:
+              deviceScreenSize === TScreenSize.ExtraLarge ? "40vh" : "30vh",
             transitionDuration: `${getAnimationTiming(
               "overlayAnimation",
               AnimationTiming,
@@ -100,8 +101,8 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
           }}
         />
         <div
-          className="h-fit w-[80vw] flex flex-col items-end self-end text-black invert mix-blend-difference
-          m-0 lg:ml-5 lg:w-[40vw] "
+          className="h-fit w-[80vw] flex flex-col items-center xl:items-end self-end text-black invert mix-blend-difference
+          m-0 xl:ml-5 xl:w-[40vw] "
         >
           <div
             className={`flex flex-row justify-between px-5 w-full ${EXPANDED_STORY_ANIMATION_CLASSES}`}
@@ -123,17 +124,17 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
           </div>
           <div className="flex w-full flex-1">
             <div
-              className="transition-[transform, flex-grow] ease-in-out text-center lg:text-end
+              className="transition-[transform, flex-grow] ease-in-out text-center xl:text-end
               self-start justify-end flex flex-col h-full"
               style={{
                 flexGrow:
-                  deviceScreenSize === TScreenSize.Large
+                  deviceScreenSize === TScreenSize.ExtraLarge
                     ? itemSetInPlace
                       ? "1"
                       : "0"
                     : 1,
                 transform:
-                  deviceScreenSize === TScreenSize.Large
+                  deviceScreenSize === TScreenSize.ExtraLarge
                     ? itemSetInPlace
                       ? "translateX(0%)"
                       : "translateX(-20%)"
@@ -147,16 +148,16 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
                 )}ms`,
               }}
             >
-              <div className="lg:text-8xl md:text-6xl text-4xl">
+              <div className="xl:text-8xl md:text-6xl text-4xl">
                 {story.title}
               </div>
-              <div className="lg:text-3xl md:text-2xl text-xl lg:-translate-x-5">
+              <div className="xl:text-3xl md:text-2xl text-xl xl:-translate-x-5">
                 {formatContributors([...story.contributors])}
               </div>
             </div>
           </div>
           <p
-            className={`text-wrap text-center mt-5 mb-2 md:mt-10 md:mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
+            className={`text-wrap text-md lg:text-xl text-center mt-5 mb-2 md:mt-10 md:mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               color: itemSetInPlace ? "inherit" : "transparent",
               transitionDuration: `${getAnimationTiming(

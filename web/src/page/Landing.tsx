@@ -283,7 +283,7 @@ function Landing() {
             )
         )}
       <div className="flex-1 justify-center items-center p-2 md:p-5 flex flex-row relative z-[1]">
-        <div className="flex-1 flex justify-start opacity-0 lg:opacity-100">
+        <div className="flex-1 flex justify-start opacity-0 xl:opacity-100">
           <MoveVertical strokeWidth={2} />
         </div>
         <div

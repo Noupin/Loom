@@ -56,8 +56,11 @@ export default function App() {
     } else if (windowSize.width < 1024) {
       setDeviceScreenSize(TScreenSize.Medium);
       setLogoDimension(50);
-    } else {
+    } else if (windowSize.width < 1280) {
       setDeviceScreenSize(TScreenSize.Large);
+      setLogoDimension(50);
+    } else {
+      setDeviceScreenSize(TScreenSize.ExtraLarge);
       setLogoDimension(50);
     }
   }, [windowSize]);
