@@ -5,7 +5,6 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 // Pages
 import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
-import ExampleStory from "./page/ExampleStory";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   darkModeState,
@@ -17,7 +16,6 @@ import {
 } from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useState } from "react";
-import Lab from "./page/Lab";
 import MyXTheVampireSlayer from "./Story/MyXTheVampireSlayer";
 import { useWindowSize } from "./hook/windowSize";
 import { TScreenSize } from "./types/TScreenSize";
@@ -81,15 +79,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
 
-        {/* <Route
-          path="/TestStory"
-          element={
-            <StoryTemplate>
-              <ExampleStory />
-            </StoryTemplate>
-          }
-        /> */}
-
         <Route
           path="/my-x-the-vampire-slayer"
           element={
@@ -106,8 +95,6 @@ export default function App() {
             </StoryTemplate>
           }
         />
-
-        {/* <Route path="/lab" element={<Lab />} /> */}
       </Routes>
     </BrowserRouter>
   );

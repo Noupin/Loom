@@ -11,8 +11,8 @@ export default function StoryTemplate({
   // Component state
   const [mainVolume, setMainVolume] = useState(50);
   const [wpm, setWpm] = useState(183);
-  const [autoscroll, setAutoscroll] = useState(false);
-  const [muteMain, setMuteMain] = useState(false);
+  // const [autoscroll, setAutoscroll] = useState(false);
+  // const [muteMain, setMuteMain] = useState(false);
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value;
