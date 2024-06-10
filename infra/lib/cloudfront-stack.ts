@@ -10,7 +10,6 @@ import {
   SecurityPolicyProtocol,
   ViewerProtocolPolicy,
   Function,
-  FunctionCode,
   FunctionEventType,
 } from "aws-cdk-lib/aws-cloudfront";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
