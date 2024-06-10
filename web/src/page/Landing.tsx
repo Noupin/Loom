@@ -117,8 +117,8 @@ function Landing() {
   ];
 
   const handleWheel = (event: WheelEvent) => {
+    if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
     const scrollingDown = event.deltaY > 0;
-    if (isScrollingRef.current) return;
     // If at the end of the carousel or at the beginning, do not scroll
     if (
       (scrollingDown &&
@@ -167,7 +167,18 @@ function Landing() {
     const touchDeltaY = touchStartY.current - touchEndY;
     const scrollingDown = touchDeltaY > 0;
 
-    isScrollingRef.current = true; // Set the flag to prevent further scrolling
+    // If at the end of the carousel or at the beginning, do not scroll
+    if (
+      (scrollingDown &&
+        carouselIndexRef.current >= filteredStories.length - 1) ||
+      (!scrollingDown && carouselIndexRef.current <= 0)
+    )
+      return;
+
+    if (isPipelineRunning.current) {
+      setCancelState(true);
+    }
+    isScrollingRef.current = true;
 
     if (
       scrollingDown &&
@@ -188,10 +199,10 @@ function Landing() {
       setRotationAngle((prevAngle) => prevAngle + 90);
     }
 
-    // Use setTimeout to reset the flag after the transition duration
+    //TODO: Temp fix for scrolling too fast for display to switch from none to flex
     setTimeout(() => {
       isScrollingRef.current = false;
-    }, 100);
+    }, AnimationTiming.quickScrollDelay);
   };
 
   useEffect(() => {
