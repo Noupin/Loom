@@ -47,8 +47,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               className="transition-transform"
               style={{
                 transitionDuration: `${AnimationTiming.flipHandModeIcon}ms`,
+                transform: leftHandMode ? "scale(1, 1)" : "scale(-1, 1)",
               }}
-              transform={leftHandMode ? "scale(1, 1)" : "scale(-1, 1)"}
             />
           </ControlFrame>
           <ControlFrame
