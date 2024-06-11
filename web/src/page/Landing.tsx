@@ -1,5 +1,5 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { darkModeState, leftHandModeState, logoState } from "../State";
+import { darkModeState, logoState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import { ArrowDown, MoveVertical } from "lucide-react";
@@ -17,7 +17,6 @@ import { Config } from "../Config";
 function Landing() {
   // State
   const setLogoType = useSetRecoilState(logoState);
-  const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
   const [focusedStoryIndex, setFocusedStoryIndex] = useState(0);
@@ -54,10 +53,8 @@ function Landing() {
     expandedStoryFade: 1500,
     quickScrollDelay: 100,
     offsetForSetInAfterRotation: 100,
-    leftHandSwitch: 200,
     preSetInDelay: 500,
-    flipLeftHandModeIcon: 350,
-    moreStoriesOpacity: 200,
+    noResults: 200,
   });
 
   const pageLoadAnimationPipeline = [
@@ -293,7 +290,7 @@ function Landing() {
               />
             )
         )}
-      <div className="flex-1 justify-center items-center p-2 md:p-5 flex flex-row relative z-[-1]">
+      <div className="flex-1 justify-center items-center p-2 md:p-5 flex flex-row">
         <div className="flex justify-start opacity-0 xl:opacity-100">
           <MoveVertical strokeWidth={2} />
         </div>
@@ -301,7 +298,7 @@ function Landing() {
           className="flex-1 flex flex-col text-center transition-[opacity] items-center"
           style={{
             opacity: filteredStories.length === 0 ? 1 : 0,
-            transitionDuration: `${AnimationTiming.moreStoriesOpacity}ms`,
+            transitionDuration: `${AnimationTiming.noResults}ms`,
           }}
         >
           <span
@@ -323,11 +320,8 @@ function Landing() {
         </div>
       </div>
       <LandingControls
-        leftHandMode={leftHandMode}
-        setLeftHandMode={setLeftHandMode}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
-        AnimationTiming={AnimationTiming}
         focusedStoryIndex={focusedStoryIndex}
         filteredStories={filteredStories}
       />

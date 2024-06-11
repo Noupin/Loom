@@ -47,7 +47,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     searchResultsHeight: TAnimateStatus.START,
   });
   const AnimationTiming = {
-    flipSearchIcon: 200,
+    flipSearchIcon: 100,
     expandSearch: 300,
     fadeSearchText: 100,
     resultHoverBackgroundChange: 300,
@@ -182,8 +182,10 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
             className="transition-transform"
             style={{
               transitionDuration: `${AnimationTiming.flipSearchIcon}ms`,
+              transform: flipSearchIconCondition
+                ? "rotate(90deg)"
+                : "rotate(0deg)",
             }}
-            transform={flipSearchIconCondition ? "scale(-1, 1)" : "scale(1, 1)"}
           />
           {/* Fix animation time for darkmode switch */}
           <input
