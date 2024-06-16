@@ -22,5 +22,9 @@
   },
 
   // Configure Jest to run tests in the integrated terminal
-  "jest.runInTerminal": true
+  "jest.runInTerminal": true,
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  },
+  "svg.preview.background": "white"
 }

@@ -21,6 +21,16 @@ import { useWindowSize } from "./hook/windowSize";
 import { TScreenSize } from "./types/TScreenSize";
 import AndroidTragedy from "./Story/AndroidTragedy";
 
+const getComputedBackgroundColor = (className: string) => {
+  const tempElement = document.createElement("div");
+  tempElement.className = className;
+  document.body.appendChild(tempElement);
+  const style = getComputedStyle(tempElement);
+  const backgroundColor = style.backgroundColor;
+  document.body.removeChild(tempElement);
+  return backgroundColor;
+};
+
 export default function App() {
   const logoType = useRecoilValue(logoState);
   const tempLogoType = useRecoilValue(tempLogoState);
@@ -33,10 +43,20 @@ export default function App() {
   const [logoSrc, setLogoSrc] = useState("");
 
   useEffect(() => {
+    const themeColorMeta = document.getElementById("theme-color-meta");
+
     if (darkMode) {
       document.body.classList.add("dark");
+      themeColorMeta?.setAttribute(
+        "content",
+        getComputedBackgroundColor("bg-off-500")
+      );
     } else {
       document.body.classList.remove("dark");
+      themeColorMeta?.setAttribute(
+        "content",
+        getComputedBackgroundColor("bg-off")
+      );
     }
   }, [darkMode]);
 
