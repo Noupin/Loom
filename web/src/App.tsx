@@ -9,13 +9,14 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   darkModeState,
   deviceScreenSizeState,
+  leftHandModeState,
   logoCustomColorState,
   logoDimensionState,
   logoState,
   tempLogoState,
 } from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MyXTheVampireSlayer from "./Story/MyXTheVampireSlayer";
 import { useWindowSize } from "./hook/windowSize";
 import { TScreenSize } from "./types/TScreenSize";
@@ -35,12 +36,35 @@ export default function App() {
   const logoType = useRecoilValue(logoState);
   const tempLogoType = useRecoilValue(tempLogoState);
   const logoCustomColor = useRecoilValue(logoCustomColorState);
-  const darkMode = useRecoilValue(darkModeState);
+  const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const setDeviceScreenSize = useSetRecoilState(deviceScreenSizeState);
   const windowSize = useWindowSize();
+  const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [logoDimension, setLogoDimension] = useRecoilState(logoDimensionState);
+  const initialPageLoadRef = useRef(true);
 
   const [logoSrc, setLogoSrc] = useState("");
+
+  useEffect(() => {
+    if (initialPageLoadRef.current) {
+      initialPageLoadRef.current = false;
+
+      const storedDarkMode = localStorage.getItem("darkMode");
+      if (storedDarkMode) {
+        const parsedDarkMode = JSON.parse(storedDarkMode);
+        setDarkMode(parsedDarkMode);
+      }
+      const storedLeftHandMode = localStorage.getItem("leftHandMode");
+      if (storedLeftHandMode) {
+        const parsedLeftHandMode = JSON.parse(storedLeftHandMode);
+        setLeftHandMode(parsedLeftHandMode);
+      }
+      return;
+    }
+
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+    localStorage.setItem("leftHandMode", JSON.stringify(leftHandMode));
+  }, [darkMode, leftHandMode]);
 
   useEffect(() => {
     const themeColorMeta = document.getElementById("theme-color-meta");
