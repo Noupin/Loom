@@ -16,7 +16,7 @@ export const STORIES: IStory[] = [
     timeToRead: 6,
     genres: ["Gothic", "16+"],
     description:
-      "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love, only to face a transformative and tragic twist.",
+      "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love.",
     image:
       "https://s3.amazonaws.com/static.rogerebert.com/uploads/review/primary_image/reviews/abraham-lincoln-vampire-hunter-2012/EB20120620REVIEWS120629989AR.jpg",
     datePublished: "20June2024",

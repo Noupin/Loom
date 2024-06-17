@@ -157,7 +157,7 @@ const LandingTextile: React.FC<LandingTextileProps> = ({
             </div>
           </div>
           <p
-            className={`w-ful text-wrap text-md lg:text-xl text-center mt-5 mb-2 md:mt-10
+            className={`w-full text-wrap text-md lg:text-xl text-center mt-5 mb-2 md:mt-10
             md:mb-5 px-8 ${EXPANDED_STORY_ANIMATION_CLASSES}`}
             style={{
               color: itemSetInPlace ? "inherit" : "transparent",
