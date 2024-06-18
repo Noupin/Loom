@@ -86,7 +86,11 @@ export default function MyXTheVampireSlayer() {
       <div className="flex-1"></div>
       <div className="flex-[7] bg-white bg-opacity-5 rounded-lg m-5 px-5 py-4">
         <div className="flex flex-col justify-center items-center w-full h-full">
-          <TypewriterEffect words={words} className="text-off" />
+          <TypewriterEffect
+            words={words}
+            className="text-off"
+            cursorClassName="bg-red-600"
+          />
         </div>
       </div>
       <div className="flex-1"></div>
