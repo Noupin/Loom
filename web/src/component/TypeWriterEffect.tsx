@@ -6,6 +6,7 @@ export const TypewriterEffect = ({
   words,
   className,
   cursorClassName,
+  textSpeed = 0.1,
 }: {
   words: {
     text: string;
@@ -13,6 +14,7 @@ export const TypewriterEffect = ({
   }[];
   className?: string;
   cursorClassName?: string;
+  textSpeed?: number;
 }) => {
   // split text inside of words into array of characters
   const wordsArray = words.map((word) => {
@@ -35,7 +37,7 @@ export const TypewriterEffect = ({
         },
         {
           duration: 0.3,
-          delay: stagger(0.1),
+          delay: stagger(textSpeed),
           ease: "easeInOut",
         }
       );

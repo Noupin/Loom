@@ -33,9 +33,13 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
   const [wpm, setWpm] = useState(183);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
-  const [autoscroll, setAutoscroll] = useState(false);
-  const [muteMain, setMuteMain] = useState(false);
+  const [, setAutoscroll] = useState(false);
+  const [_, setMuteMain] = useState(false);
   const [showExpandedControls, setShowExpandedControls] = useState(false);
+
+  const AnimationTiming = {
+    controlsGrow: 300,
+  };
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value;
@@ -99,8 +103,6 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
     };
   }, [darkMode]);
 
-  useEffect(() => {}, [autoscroll, muteMain]); // Just to remove the warning
-
   return (
     <>
       <div className="absolute bottom-[40px] w-full px-[20px] flex flex-row">
@@ -112,10 +114,14 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
           }}
         />
 
-        <div className="flex flex-col shrink-0 dark:text-off">
+        <div className="flex flex-col transition-[width] dark:text-off overflow-hidden">
           <div
-            className="mb-[10px]"
-            style={{ display: showExpandedControls ? "flex" : "none" }}
+            className="flex mb-[10px] transition-opacity"
+            style={{
+              opacity: showExpandedControls ? "100%" : "0%",
+              width: showExpandedControls ? "100%" : "0%",
+              transitionDuration: `${AnimationTiming.controlsGrow}ms`,
+            }}
           >
             <ControlFrame className="p-1 w-fit cursor-pointer">
               <Button
@@ -150,8 +156,8 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
             </ControlFrame>
           </div>
           <div
-            className="mb-[10px]"
-            style={{ display: showExpandedControls ? "flex" : "none" }}
+            className="mb-[10px] hidden"
+            // style={{ display: showExpandedControls ? "flex" : "none" }}
           >
             <ControlFrame className="p-1 w-fit cursor-pointer">
               <Button
@@ -187,9 +193,18 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
               <span className="mr-2">%</span>
             </ControlFrame>
           </div>
-          <div className="flex self-end">
+          <div
+            className="flex w-full"
+            style={{
+              justifyContent: leftHandMode ? "flex-start" : "flex-end",
+            }}
+          >
             <ControlFrame
-              className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
+              className="flex p-1 cursor-pointer mb-2 md:mr-2 md:mb-0 transition-[flex-grow]"
+              style={{
+                flexGrow: showExpandedControls ? 1 : 0,
+                transitionDuration: `${AnimationTiming.controlsGrow}ms`,
+              }}
               onClick={() => setLeftHandMode((current) => !current)}
             >
               <ArrowRightToLine
@@ -204,7 +219,11 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
               />
             </ControlFrame>
             <ControlFrame
-              className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
+              className="flex p-1 cursor-pointer mb-2 md:mb-0 transition-[flex-grow]"
+              style={{
+                flexGrow: showExpandedControls ? 1 : 0,
+                transitionDuration: `${AnimationTiming.controlsGrow}ms`,
+              }}
               onClick={() => setShowExpandedControls((current) => !current)}
             >
               <ChevronsUp
@@ -222,7 +241,8 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
             </ControlFrame>
             {allowDarkMode && (
               <ControlFrame
-                className="p-1 w-fit cursor-pointer"
+                className="flex p-1 cursor-pointer transition-[flex-grow]"
+                style={{ flexGrow: showExpandedControls ? 1 : 0 }}
                 onClick={() => setDarkMode((current) => !current)}
               >
                 {darkMode ? (
