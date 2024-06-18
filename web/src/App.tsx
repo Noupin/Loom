@@ -126,7 +126,7 @@ export default function App() {
         <Route
           path="/my-x-the-vampire-slayer"
           element={
-            <StoryTemplate>
+            <StoryTemplate allowDarkMode={false} useLightColorControls={true}>
               <MyXTheVampireSlayer />
             </StoryTemplate>
           }

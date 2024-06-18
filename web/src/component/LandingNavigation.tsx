@@ -187,7 +187,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
                 : "rotate(0deg)",
             }}
           />
-          {/* Fix animation time for darkmode switch */}
+          {/* TODO: Fix animation time for dark mode switch */}
           <input
             ref={searchInputRef}
             type="text"

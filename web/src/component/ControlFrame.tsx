@@ -5,9 +5,7 @@ interface ControlFrameProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {
-  children: JSX.Element;
-}
+  > {}
 
 const ControlFrame: React.FC<ControlFrameProps> = ({
   children,

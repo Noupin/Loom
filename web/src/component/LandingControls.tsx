@@ -20,8 +20,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 }) => {
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const AnimationTiming = {
-    handSwitch: 300,
-    flipHandModeIcon: 350,
     moreStoriesOpacity: 200,
   };
 
@@ -32,7 +30,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           className="ease-in-out"
           style={{
             flexGrow: leftHandMode ? 0 : 1,
-            transitionDuration: `${AnimationTiming.handSwitch}ms`,
+            transitionDuration: `${Config.leftHandModeSwitchDuration}ms`,
           }}
         />
         <div className="flex flex-col md:flex-row min-w-fit px-2 md:px-5 z-[1]">
@@ -46,7 +44,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               strokeWidth={1}
               className="transition-transform"
               style={{
-                transitionDuration: `${AnimationTiming.flipHandModeIcon}ms`,
+                transitionDuration: `${Config.lefHandIconFlipDuration}ms`,
                 transform: leftHandMode ? "scale(1, 1)" : "scale(-1, 1)",
               }}
             />

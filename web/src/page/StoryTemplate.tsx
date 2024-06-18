@@ -1,18 +1,41 @@
-import { ChevronDown, ChevronUp, Gauge, Mouse, Volume2 } from "lucide-react";
+import {
+  ArrowRightToLine,
+  ChevronDown,
+  ChevronUp,
+  ChevronsUp,
+  Gauge,
+  Moon,
+  Mouse,
+  Sun,
+  Volume2,
+} from "lucide-react";
 import Button from "../component/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
+import { useRecoilState } from "recoil";
+import { darkModeState, leftHandModeState } from "../State";
+import { Config } from "../Config";
+import ControlFrame from "../component/ControlFrame";
 
-export default function StoryTemplate({
-  children,
-}: {
+interface IStoryTemplate {
   children: React.ReactNode;
-}) {
+  allowDarkMode?: boolean;
+  useLightColorControls?: boolean;
+}
+
+const StoryTemplate: React.FC<IStoryTemplate> = ({
+  children,
+  allowDarkMode = false,
+  useLightColorControls = false,
+}) => {
   // Component state
   const [mainVolume, setMainVolume] = useState(50);
   const [wpm, setWpm] = useState(183);
-  // const [autoscroll, setAutoscroll] = useState(false);
-  // const [muteMain, setMuteMain] = useState(false);
+  const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
+  const [darkMode, setDarkMode] = useRecoilState(darkModeState);
+  const [autoscroll, setAutoscroll] = useState(false);
+  const [muteMain, setMuteMain] = useState(false);
+  const [showExpandedControls, setShowExpandedControls] = useState(false);
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value;
@@ -58,26 +81,62 @@ export default function StoryTemplate({
     setWpm((current) => Math.max(0, current - 1));
   };
 
+  useEffect(() => {
+    if (!allowDarkMode) {
+      document.body.classList.remove("dark");
+    }
+
+    if (useLightColorControls) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+
+    return () => {
+      if (darkMode) {
+        document.body.classList.add("dark");
+      }
+    };
+  }, [darkMode]);
+
+  useEffect(() => {}, [autoscroll, muteMain]); // Just to remove the warning
+
   return (
     <>
-      <div className="absolute left-[40px] bottom-[40px] flex flex-col">
-        <div className="showChild">
-          <div className="flex mb-[10px]">
-            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-off">
-              <Button className="" onClick={() => {}}>
-                <Mouse />
+      <div className="absolute bottom-[40px] w-full px-[20px] flex flex-row">
+        <div
+          className="ease-in-out"
+          style={{
+            flexGrow: leftHandMode ? 0 : 1,
+            transitionDuration: `${Config.leftHandModeSwitchDuration}ms`,
+          }}
+        />
+
+        <div className="flex flex-col shrink-0 dark:text-off">
+          <div
+            className="mb-[10px]"
+            style={{ display: showExpandedControls ? "flex" : "none" }}
+          >
+            <ControlFrame className="p-1 w-fit cursor-pointer">
+              <Button
+                className=""
+                onClick={() => {
+                  setAutoscroll((current) => !current);
+                }}
+              >
+                <Mouse height={20} width={20} strokeWidth={1} />
               </Button>
-              <div className="child mx-2">Autoscroll</div>
-            </div>
-            <div className="child flex ml-2 p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-off">
-              <Gauge />
+              <div className="mx-2">Autoscroll</div>
+            </ControlFrame>
+            <ControlFrame className="p-1 ml-2 w-fit cursor-pointer">
+              <Gauge height={20} width={20} strokeWidth={1} />
               <input
                 type="number"
                 value={wpm}
                 min={0}
                 max={999}
                 onChange={handleWpmChange}
-                className="box-border appearance-none mx-2 px-1 bg-black bg-opacity-25 border-none outline-none text-white rounded min-w-[25px] max-w-[38px] text-center"
+                className="box-border appearance-none mx-2 px-1 bg-black bg-opacity-25 border-none outline-none text-off-500 dark:text-off rounded min-w-[25px] max-w-[38px] text-center"
               />
               <span>wpm</span>
               <div className="flex flex-col mx-2">
@@ -88,15 +147,22 @@ export default function StoryTemplate({
                   <ChevronDown width={12} height={12} />
                 </Button>
               </div>
-            </div>
+            </ControlFrame>
           </div>
-          <div className="flex">
-            <div className="flex p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 hover:bg-opacity-50 text-off">
-              <Button className="" onClick={() => {}}>
-                <Volume2 />
+          <div
+            className="mb-[10px]"
+            style={{ display: showExpandedControls ? "flex" : "none" }}
+          >
+            <ControlFrame className="p-1 w-fit cursor-pointer">
+              <Button
+                onClick={() => {
+                  setMuteMain((current) => !current);
+                }}
+              >
+                <Volume2 height={20} width={20} strokeWidth={1} />
               </Button>
-            </div>
-            <div className="child ml-2 flex  p-[7.5px] bg-black bg-opacity-25 rounded-full items-center justify-center border-2 border-white border-opacity-50 text-off w-full">
+            </ControlFrame>
+            <ControlFrame className="p-1 ml-2 cursor-pointer w-full">
               <Slider.Root
                 className="relative flex w-full touch-none select-none items-center"
                 orientation="horizontal"
@@ -105,9 +171,9 @@ export default function StoryTemplate({
                 max={100}
               >
                 <Slider.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-black bg-opacity-25 border-off">
-                  <Slider.Range className="absolute h-full bg-[#1c2125]" />
+                  <Slider.Range className="absolute h-full bg-off-500 dark:bg-off" />
                 </Slider.Track>
-                <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-off bg-[#1c2125] ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+                <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-off dark:border-off-500 bg-off-500 dark:bg-off ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
               </Slider.Root>
 
               <input
@@ -116,10 +182,56 @@ export default function StoryTemplate({
                 min={0}
                 max={100}
                 onChange={handleVolumeChange}
-                className="box-border mx-2 bg-black bg-opacity-25 border-none outline-none text-white rounded min-w-[25px] max-w-[38px] text-center"
+                className="box-border mx-2 bg-black bg-opacity-25 border-none outline-none text-off-500 dark:text-off rounded min-w-[25px] max-w-[38px] text-center"
               />
               <span className="mr-2">%</span>
-            </div>
+            </ControlFrame>
+          </div>
+          <div className="flex self-end">
+            <ControlFrame
+              className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
+              onClick={() => setLeftHandMode((current) => !current)}
+            >
+              <ArrowRightToLine
+                height={20}
+                width={20}
+                strokeWidth={1}
+                className="transition-transform"
+                style={{
+                  transitionDuration: `${Config.lefHandIconFlipDuration}ms`,
+                  transform: leftHandMode ? "scale(1, 1)" : "scale(-1, 1)",
+                }}
+              />
+            </ControlFrame>
+            <ControlFrame
+              className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
+              onClick={() => setShowExpandedControls((current) => !current)}
+            >
+              <ChevronsUp
+                height={20}
+                width={20}
+                strokeWidth={1}
+                className="transition-transform"
+                style={{
+                  transitionDuration: `${Config.lefHandIconFlipDuration}ms`,
+                  transform: showExpandedControls
+                    ? "scale(1, -1)"
+                    : "scale(1, 1)",
+                }}
+              />
+            </ControlFrame>
+            {allowDarkMode && (
+              <ControlFrame
+                className="p-1 w-fit cursor-pointer"
+                onClick={() => setDarkMode((current) => !current)}
+              >
+                {darkMode ? (
+                  <Moon height={20} width={20} strokeWidth={1} />
+                ) : (
+                  <Sun height={20} width={20} strokeWidth={1} />
+                )}
+              </ControlFrame>
+            )}
           </div>
         </div>
       </div>
@@ -127,4 +239,6 @@ export default function StoryTemplate({
       {children}
     </>
   );
-}
+};
+
+export default StoryTemplate;
