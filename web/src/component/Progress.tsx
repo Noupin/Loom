@@ -1,31 +1,33 @@
 import React from "react";
+import { Config } from "../Config";
 
 interface ProgressProps {
   current: number;
   max: number;
   transitionDuration?: number;
+  scaleHeightBy?: number;
 }
 
-const Progress: React.FC<ProgressProps> = ({
-  current,
-  max,
-  transitionDuration = 300,
-}) => {
+const Progress: React.FC<ProgressProps> = ({ current, max, scaleHeightBy }) => {
   let heightPercentage = 0;
   let progressPercentage = 100;
 
   if (max !== 0) {
-    heightPercentage = Math.max(100 / (max + 1), 30);
+    heightPercentage = Math.max(
+      100 / (max + 1) / (scaleHeightBy || 1),
+      30 / (scaleHeightBy || 1)
+    );
     progressPercentage =
       (current / max) * 100 * ((100 - heightPercentage) / heightPercentage);
   }
 
   return (
     <div
-      className="w-2 h-20 bg-black dark:bg-white dark:bg-opacity-25 bg-opacity-25
+      className="w-2 bg-black dark:bg-white dark:bg-opacity-25 bg-opacity-25
     rounded-full flex items-start transition-colors"
       style={{
-        transitionDuration: `${transitionDuration}ms`,
+        height: `${Math.floor((scaleHeightBy || 1) * 5)}rem`,
+        transitionDuration: `${Config.darkModeSwitchDuration}ms`,
       }}
     >
       <div
@@ -38,7 +40,7 @@ const Progress: React.FC<ProgressProps> = ({
         <div
           className="w-full h-full bg-black rounded-full dark:bg-white transition-colors"
           style={{
-            transitionDuration: `${transitionDuration}ms`,
+            transitionDuration: `${Config.darkModeSwitchDuration}ms`,
           }}
         />
       </div>
