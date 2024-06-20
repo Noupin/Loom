@@ -262,7 +262,7 @@ function Landing() {
   return (
     <main
       className="z-[-1] relative flex animate flex-col w-full h-full bg-off
-    dark:bg-off-500 font-lateef dark:text-off transition-colors"
+    dark:bg-off-500 font-lateef dark:text-off transition-colors overflow-hidden"
       style={{
         transitionDuration: `${Config.darkModeSwitchDuration}ms`,
       }}
