@@ -33,6 +33,8 @@ module.exports = {
     fontFamily: {
       barcode: ["'Libre Barcode 128 Text'"],
       lateef: ["'Lateef'"],
+      ebGaramond: ["'EB Garamond'"],
+      cormorant: ["'Cormorant'"],
     },
   },
   plugins: ["tailwindcss-animate", addVariablesForColors],
