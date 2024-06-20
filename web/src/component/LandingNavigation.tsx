@@ -137,10 +137,8 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     <div
       className="flex items-center relative z-[1]"
       style={{
-        height: `${logoDimension}px`,
-        marginTop: `${logoDimension / 2}px`,
-        marginLeft: `${logoDimension / 2}px`,
-        marginRight: `${logoDimension / 2}px`,
+        height: `${logoDimension * 2}px`,
+        padding: `${logoDimension / 2}px`,
       }}
     >
       <div className="flex-1" />
