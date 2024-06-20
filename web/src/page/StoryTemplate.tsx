@@ -10,7 +10,7 @@ import {
   Volume2,
 } from "lucide-react";
 import Button from "../component/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { useRecoilState } from "recoil";
 import { darkModeState, leftHandModeState } from "../State";
@@ -36,6 +36,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
   const [, setAutoscroll] = useState(false);
   const [_, setMuteMain] = useState(false);
   const [showExpandedControls, setShowExpandedControls] = useState(false);
+  const incomingDarkModeRef = useRef(darkMode);
 
   const AnimationTiming = {
     controlsGrow: 300,
@@ -86,26 +87,23 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
   };
 
   useEffect(() => {
-    if (!allowDarkMode) {
-      document.body.classList.remove("dark");
+    incomingDarkModeRef.current = darkMode;
+    if (!allowDarkMode || !useLightColorControls) {
+      setDarkMode(true);
     }
 
     if (useLightColorControls) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
+      setDarkMode(true);
     }
 
     return () => {
-      if (darkMode) {
-        document.body.classList.add("dark");
-      }
+      setDarkMode(incomingDarkModeRef.current);
     };
   }, [darkMode]);
 
   return (
     <>
-      <div className="absolute bottom-[40px] w-full px-[20px] flex flex-row">
+      <div className="absolute bottom-[40px] w-full px-[20px] flex flex-row z-[1]">
         <div
           className="ease-in-out"
           style={{
@@ -200,7 +198,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
             }}
           >
             <ControlFrame
-              className="flex p-1 cursor-pointer mb-2 md:mr-2 md:mb-0 transition-[flex-grow]"
+              className="flex p-1 cursor-pointer mb-2 mr-2 md:mb-0 transition-[flex-grow]"
               style={{
                 flexGrow: showExpandedControls ? 1 : 0,
                 transitionDuration: `${AnimationTiming.controlsGrow}ms`,
