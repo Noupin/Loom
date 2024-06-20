@@ -21,16 +21,7 @@ import MyXTheVampireSlayer from "./Story/MyXTheVampireSlayer";
 import { useWindowSize } from "./hook/windowSize";
 import { TScreenSize } from "./types/TScreenSize";
 import AndroidTragedy from "./Story/AndroidTragedy";
-
-const getComputedBackgroundColor = (className: string) => {
-  const tempElement = document.createElement("div");
-  tempElement.className = className;
-  document.body.appendChild(tempElement);
-  const style = getComputedStyle(tempElement);
-  const backgroundColor = style.backgroundColor;
-  document.body.removeChild(tempElement);
-  return backgroundColor;
-};
+import { getComputedBackgroundColor } from "./helper/color";
 
 export default function App() {
   const logoType = useRecoilValue(logoState);
@@ -116,7 +107,11 @@ export default function App() {
           alt="Logo"
           height={logoDimension}
           width={logoDimension}
-          className="absolute top-[25px] left-[25px] cursor-pointer"
+          className="absolute cursor-pointer z-[1]"
+          style={{
+            top: logoDimension / 2,
+            left: logoDimension / 2,
+          }}
         />
       </Link>
 

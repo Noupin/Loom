@@ -39,3 +39,13 @@ export function componentToHex(c: number): string {
   const hex = c.toString(16);
   return hex.length === 1 ? "0" + hex : hex;
 }
+
+export const getComputedBackgroundColor = (className: string) => {
+  const tempElement = document.createElement("div");
+  tempElement.className = className;
+  document.body.appendChild(tempElement);
+  const style = getComputedStyle(tempElement);
+  const backgroundColor = style.backgroundColor;
+  document.body.removeChild(tempElement);
+  return backgroundColor;
+};
