@@ -13,6 +13,11 @@ interface IEffectTransition {
   effect: JSX.Element;
 }
 
+interface IStoryPart {
+  text: string;
+  effect?: JSX.Element;
+}
+
 const storyParts = [
   "My skin is shredded from the recent encounter with a vampire I've been tracking. He managed to escape, but next time he won't be so lucky.",
   "Next time, I will dust that bloodsucker.",
@@ -103,20 +108,20 @@ export default function MyXTheVampireSlayer() {
 
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
-    { index: 0, color: "#991b1b" },
-    { index: 2, color: "#431407" },
-    { index: 4, color: "#422006" },
-    { index: 8, color: "#7c2d12" },
-    { index: 13, color: "#111827" },
-    { index: 27, color: "#030712" },
-    { index: 28, color: "#000000" },
-    { index: 30, color: "#9a3412" },
-    { index: 40, color: "#450a0a" },
-    { index: 42, color: "#030712" },
-    { index: 49, color: "#450a0a" },
-    { index: 54, color: "#0f172a" },
-    { index: 55, color: "#030712" },
-    { index: 65, color: "#292524" },
+    { index: 0, color: "#7f1d1d" },
+    { index: 5, color: "#450a0a" },
+    // { index: 4, color: "#422006" },
+    // { index: 8, color: "#7c2d12" },
+    // { index: 13, color: "#111827" },
+    // { index: 27, color: "#030712" },
+    // { index: 28, color: "#000000" },
+    // { index: 30, color: "#9a3412" },
+    // { index: 40, color: "#450a0a" },
+    // { index: 42, color: "#030712" },
+    // { index: 49, color: "#450a0a" },
+    // { index: 54, color: "#0f172a" },
+    // { index: 55, color: "#030712" },
+    // { index: 65, color: "#292524" },
   ];
   const bgTransitionIndexes = bgTransitions.map(
     (transition) => transition.index
@@ -142,7 +147,7 @@ export default function MyXTheVampireSlayer() {
             background="transparent"
             minSize={0.3}
             maxSize={1}
-            particleDensity={75}
+            particleDensity={125}
             className="w-full h-full"
             particleColor="#57534e"
           />
@@ -272,8 +277,8 @@ export default function MyXTheVampireSlayer() {
                   : `${AnimationTiming.fadeTextOut}ms`,
             }}
           >
-            <h2
-              className="text-4xl text-center"
+            <p
+              className="text-lg lg:text-3xl text-center"
               style={{
                 transitionDuration:
                   index === storyPart
@@ -285,7 +290,7 @@ export default function MyXTheVampireSlayer() {
               }}
             >
               {part}
-            </h2>
+            </p>
           </div>
         ))}
 
