@@ -7,7 +7,9 @@ import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
 import { SparklesCore } from "../component/Sparkles";
 import { Vortex } from "../component/Vortex";
-import { blendColors } from "../helper/color";
+import { AuroraBackground } from "../component/Aurora";
+import { motion } from "framer-motion";
+import { STORIES } from "../Stories";
 
 interface IEffectTransition {
   startTransition: number;
@@ -112,11 +114,11 @@ export default function MyXTheVampireSlayer() {
   const bgTransitions = [
     { index: 0, color: "#7f1d1d" },
     { index: 5, color: "#450a0a" },
-    { index: 17, color: "#3b0764" },
-    // { index: 8, color: "#7c2d12" },
-    // { index: 13, color: "#111827" },
-    // { index: 27, color: "#030712" },
-    // { index: 28, color: "#000000" },
+    { index: 17, color: "#1e293b" },
+    { index: 26, color: "#030712" },
+    { index: 27, color: "#991b1b" },
+    { index: 28, color: "#431407" },
+    { index: 29, color: "#1c1917" },
     // { index: 30, color: "#9a3412" },
     // { index: 40, color: "#450a0a" },
     // { index: 42, color: "#030712" },
@@ -139,7 +141,9 @@ export default function MyXTheVampireSlayer() {
     fadeTextOut: 200,
     translateTextIn: 300,
     translateTextOut: 200,
-    purpleVortexFade: 1000,
+    purpleVortexFade: 1500,
+    bgColorTransition: 1000,
+    auroraFade: 1000,
   };
 
   const effectTransitions: IEffectTransition[] = [
@@ -148,7 +152,8 @@ export default function MyXTheVampireSlayer() {
       endTransition: 1,
       effect: (
         <div
-          className="absolute z-[-1] top-0 left-0 transition-opacity duration-100 flex w-full h-full justify-center items-center"
+          className="absolute z-[-1] top-0 left-0 transition-opacity duration-100 flex w-full
+          h-full justify-center items-center"
           style={{
             opacity: storyPart === 1 ? 1 : 0,
           }}
@@ -166,22 +171,69 @@ export default function MyXTheVampireSlayer() {
     },
     {
       startTransition: 17,
-      endTransition: 20,
+      endTransition: 18,
       effect: (
         <div
           className="absolute z-[-1] top-0 left-0 transition-opacity
         flex w-full h-full justify-center items-center"
           style={{
             transitionDuration: `${AnimationTiming.purpleVortexFade}ms`,
-            opacity: storyPart >= 17 && storyPart <= 19 ? 1 : 0,
+            opacity: storyPart >= 17 && storyPart <= 18 ? 1 : 0,
           }}
         >
           <Vortex
             rangeY={800}
             particleCount={500}
             baseHue={273}
-            opacity={(20 - storyPart) / (20 - 17)}
+            opacity={(20 - storyPart) / (19 - 17)}
             backgroundColor="transparent"
+          />
+        </div>
+      ),
+    },
+    {
+      startTransition: 27,
+      endTransition: 28,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity
+        flex w-full h-full justify-center items-center"
+          style={{
+            transitionDuration: `${AnimationTiming.auroraFade}ms`,
+            opacity: storyPart >= 27 && storyPart <= 28 ? 1 : 0,
+          }}
+        >
+          <AuroraBackground
+            className="h-full w-full"
+            style={{
+              backgroundColor: bgColor,
+              transitionDuration: `${AnimationTiming.bgColorTransition}ms`,
+            }}
+          />
+        </div>
+      ),
+    },
+    {
+      startTransition: 30,
+      endTransition: 31,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity
+        flex w-full h-full justify-center items-center"
+          style={{
+            transitionDuration: `${AnimationTiming.bgColorTransition}ms`,
+            opacity: storyPart >= 30 && storyPart <= 31 ? 1 : 0,
+          }}
+        >
+          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60" />
+          <img
+            src={
+              STORIES.filter(
+                (item) => item.link === "/my-x-the-vampire-slayer"
+              )[0].image
+            }
+            alt="Cover photo"
+            className="w-full h-full object-cover"
           />
         </div>
       ),
@@ -270,9 +322,13 @@ export default function MyXTheVampireSlayer() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   console.log(storyPart);
+  // }, [storyPart]);
+
   useEffect(() => {
-    console.log((19 - storyPart) / (19 - 17));
-  }, [storyPart]);
+    console.log(bgColor);
+  }, [bgColor]);
 
   useAnimateColor(
     colorFrom,
@@ -285,9 +341,11 @@ export default function MyXTheVampireSlayer() {
 
   return (
     <main
-      className="h-full w-full flex flex-row font-cormorant text-off justify-center items-center px-2 relative z-[-2]"
+      className="h-full w-full flex flex-row font-cormorant text-off justify-center
+      items-center px-2 relative z-[-2] transition-[background-color]"
       style={{
         backgroundColor: bgColor,
+        transitionDuration: `${AnimationTiming.bgColorTransition}ms`,
       }}
     >
       <div />
@@ -296,7 +354,8 @@ export default function MyXTheVampireSlayer() {
         {storyParts.map((part, index) => (
           <div
             key={index}
-            className="absolute left-0 right-0 top-0 px-12 h-full flex items-center justify-center transition-opacity overflow-hidden"
+            className="absolute left-0 right-0 top-0 px-12 h-full flex items-center
+            justify-center transition-opacity overflow-hidden"
             style={{
               zIndex: storyPart === index ? 1 : 0,
               opacity: index === storyPart ? 1 : 0,
