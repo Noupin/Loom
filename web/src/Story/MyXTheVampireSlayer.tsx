@@ -6,6 +6,8 @@ import Progress from "../component/Progress";
 import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
 import { SparklesCore } from "../component/Sparkles";
+import { Vortex } from "../component/Vortex";
+import { blendColors } from "../helper/color";
 
 interface IEffectTransition {
   startTransition: number;
@@ -110,7 +112,7 @@ export default function MyXTheVampireSlayer() {
   const bgTransitions = [
     { index: 0, color: "#7f1d1d" },
     { index: 5, color: "#450a0a" },
-    // { index: 4, color: "#422006" },
+    { index: 17, color: "#3b0764" },
     // { index: 8, color: "#7c2d12" },
     // { index: 13, color: "#111827" },
     // { index: 27, color: "#030712" },
@@ -131,6 +133,14 @@ export default function MyXTheVampireSlayer() {
   const [colorFrom, setColorFrom] = useState(bgTransitions[0].color);
   const [colorTo, setColorTo] = useState(bgTransitions[1].color);
   const [animateColorProgress, setAnimateColorProgress] = useState(0);
+
+  const AnimationTiming = {
+    fadeTextIn: 500,
+    fadeTextOut: 200,
+    translateTextIn: 300,
+    translateTextOut: 200,
+    purpleVortexFade: 1000,
+  };
 
   const effectTransitions: IEffectTransition[] = [
     {
@@ -154,14 +164,29 @@ export default function MyXTheVampireSlayer() {
         </div>
       ),
     },
+    {
+      startTransition: 17,
+      endTransition: 20,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity
+        flex w-full h-full justify-center items-center"
+          style={{
+            transitionDuration: `${AnimationTiming.purpleVortexFade}ms`,
+            opacity: storyPart >= 17 && storyPart <= 19 ? 1 : 0,
+          }}
+        >
+          <Vortex
+            rangeY={800}
+            particleCount={500}
+            baseHue={273}
+            opacity={(20 - storyPart) / (20 - 17)}
+            backgroundColor="transparent"
+          />
+        </div>
+      ),
+    },
   ];
-
-  const AnimationTiming = {
-    fadeTextIn: 500,
-    fadeTextOut: 200,
-    translateTextIn: 300,
-    translateTextOut: 200,
-  };
 
   const handleWheel = (event: WheelEvent) => {
     if (scrollDirectionChanged) {
@@ -244,6 +269,10 @@ export default function MyXTheVampireSlayer() {
       // window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
+
+  useEffect(() => {
+    console.log((19 - storyPart) / (19 - 17));
+  }, [storyPart]);
 
   useAnimateColor(
     colorFrom,
