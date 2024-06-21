@@ -15,7 +15,6 @@ interface IEffectTransition {
 
 const storyParts = [
   "My skin is shredded from the recent encounter with a vampire I've been tracking. He managed to escape, but next time he won't be so lucky.",
-  // Bring particles effect under "dust"
   "Next time, I will dust that bloodsucker.",
   //Fade in a yellow lamp
   "I open the door to our home just in time to see Claire crushing sleeping pills and mixing them in a glass of water. Part of the routine—she always knows just what I need to recover.",
@@ -123,34 +122,34 @@ export default function MyXTheVampireSlayer() {
     (transition) => transition.index
   );
 
+  const [bgColor, setBgColor] = useState(bgTransitions[0].color);
+  const [colorFrom, setColorFrom] = useState(bgTransitions[0].color);
+  const [colorTo, setColorTo] = useState(bgTransitions[1].color);
+  const [animateColorProgress, setAnimateColorProgress] = useState(0);
+
   const effectTransitions: IEffectTransition[] = [
     {
       startTransition: 1,
       endTransition: 1,
       effect: (
         <div
-          className="transition-opacity duration-100 flex w-full h-full justify-center items-center"
+          className="absolute z-[-1] top-0 left-0 transition-opacity duration-100 flex w-full h-full justify-center items-center"
           style={{
             opacity: storyPart === 1 ? 1 : 0,
           }}
         >
           <SparklesCore
             background="transparent"
-            minSize={0.4}
+            minSize={0.3}
             maxSize={1}
-            particleDensity={1200}
-            className="w-full h-[50%]"
+            particleDensity={75}
+            className="w-full h-full"
             particleColor="#57534e"
           />
         </div>
       ),
     },
   ];
-
-  const [bgColor, setBgColor] = useState(bgTransitions[0].color);
-  const [colorFrom, setColorFrom] = useState(bgTransitions[0].color);
-  const [colorTo, setColorTo] = useState(bgTransitions[1].color);
-  const [animateColorProgress, setAnimateColorProgress] = useState(0);
 
   const AnimationTiming = {
     fadeTextIn: 500,
@@ -252,7 +251,7 @@ export default function MyXTheVampireSlayer() {
 
   return (
     <main
-      className="h-full w-full flex flex-row font-cormorant text-off justify-center items-center px-2"
+      className="h-full w-full flex flex-row font-cormorant text-off justify-center items-center px-2 relative z-[-2]"
       style={{
         backgroundColor: bgColor,
       }}
@@ -265,6 +264,7 @@ export default function MyXTheVampireSlayer() {
             key={index}
             className="absolute left-0 right-0 top-0 px-12 h-full flex items-center justify-center transition-opacity overflow-hidden"
             style={{
+              zIndex: storyPart === index ? 1 : 0,
               opacity: index === storyPart ? 1 : 0,
               transitionDuration:
                 index === storyPart
