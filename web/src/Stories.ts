@@ -19,7 +19,7 @@ export const STORIES: IStory[] = [
       "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love.",
     image:
       "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/dca445d6-e85b-4a14-b31a-5df34fca1ee4/width=1536,quality=90/ComfyUI_00801_2.jpeg",
-    datePublished: "20June2024",
+    datePublished: "21June2024",
     link: "/my-x-the-vampire-slayer",
   },
   {
@@ -29,18 +29,18 @@ export const STORIES: IStory[] = [
     genres: ["Science Fiction", "Romance", "16+"],
     description: "Ha! You wish there was a summary ready.",
     image: "https://img.freepik.com/premium-photo/woman-rain_869640-17071.jpg",
-    datePublished: "23Aug2024",
+    datePublished: "undefined",
     link: "/android-tragedy",
   },
-  {
-    title: "Angel Of Death",
-    contributors: ["Noah Perkins"],
-    timeToRead: 13,
-    genres: ["Science Fiction", "Romance", "16+"],
-    description: "Ha! You wish there was a summary ready.",
-    image:
-      "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/12a08fcb-037a-48ac-8550-661ca3ef5853/width=896,quality=90/ComfyUI_00217_.jpeg",
-    datePublished: "23Aug2024",
-    link: "/android-tragedy",
-  },
+  // {
+  //   title: "Angel Of Death",
+  //   contributors: ["Noah Perkins"],
+  //   timeToRead: 13,
+  //   genres: ["Science Fiction", "Romance", "16+"],
+  //   description: "Ha! You wish there was a summary ready.",
+  //   image:
+  //     "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/12a08fcb-037a-48ac-8550-661ca3ef5853/width=896,quality=90/ComfyUI_00217_.jpeg",
+  //   datePublished: "undefined",
+  //   link: "/android-tragedy",
+  // },
 ];

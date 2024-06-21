@@ -2,9 +2,16 @@ import { useSetRecoilState } from "recoil";
 import { logoState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
-import { TypewriterEffect } from "../component/TypeWriterEffect";
 import Progress from "../component/Progress";
 import { useAnimateColor } from "../hook/animateColor";
+import { TScrollDirection } from "../types/TScrollDirection";
+import { SparklesCore } from "../component/Sparkles";
+
+interface IEffectTransition {
+  startTransition: number;
+  endTransition: number;
+  effect: JSX.Element;
+}
 
 const storyParts = [
   "My skin is shredded from the recent encounter with a vampire I've been tracking. He managed to escape, but next time he won't be so lucky.",
@@ -91,10 +98,10 @@ const storyParts = [
 
 export default function MyXTheVampireSlayer() {
   const setLogoType = useSetRecoilState(logoState);
+  const scrollDirection = useRef(TScrollDirection.Down);
+  const scrollDirectionChanged = useRef(false);
   const [storyPart, setStoryPart] = useState(0);
-  const [bgColor, setBgColor] = useState("#991b1b");
-  const [colorFrom, setColorFrom] = useState("#991b1b");
-  const [colorTo, setColorTo] = useState("#431407");
+
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
     { index: 0, color: "#991b1b" },
@@ -116,6 +123,35 @@ export default function MyXTheVampireSlayer() {
     (transition) => transition.index
   );
 
+  const effectTransitions: IEffectTransition[] = [
+    {
+      startTransition: 1,
+      endTransition: 1,
+      effect: (
+        <div
+          className="transition-opacity duration-100 flex w-full h-full justify-center items-center"
+          style={{
+            opacity: storyPart === 1 ? 1 : 0,
+          }}
+        >
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={1200}
+            className="w-full h-[50%]"
+            particleColor="#57534e"
+          />
+        </div>
+      ),
+    },
+  ];
+
+  const [bgColor, setBgColor] = useState(bgTransitions[0].color);
+  const [colorFrom, setColorFrom] = useState(bgTransitions[0].color);
+  const [colorTo, setColorTo] = useState(bgTransitions[1].color);
+  const [animateColorProgress, setAnimateColorProgress] = useState(0);
+
   const AnimationTiming = {
     fadeTextIn: 500,
     fadeTextOut: 200,
@@ -124,23 +160,73 @@ export default function MyXTheVampireSlayer() {
   };
 
   const handleWheel = (event: WheelEvent) => {
+    if (scrollDirectionChanged) {
+      scrollDirectionChanged.current = false;
+    }
+
     if (event.deltaY > 0) {
+      if (scrollDirection.current === TScrollDirection.Up) {
+        scrollDirectionChanged.current = true;
+      }
+      scrollDirection.current = TScrollDirection.Down;
       setStoryPart((current) => Math.min(current + 1, storyParts.length - 1));
     } else {
+      if (scrollDirection.current === TScrollDirection.Down) {
+        scrollDirectionChanged.current = true;
+      }
+      scrollDirection.current = TScrollDirection.Up;
       setStoryPart((current) => Math.max(current - 1, 0));
     }
   };
 
   useEffect(() => {
-    // Make colors work for going backwards
     if (
       bgTransitionIndexes.includes(storyPart) &&
+      storyPart != 0 &&
+      scrollDirection.current === TScrollDirection.Down &&
       bgTransitionIndex.current + 2 < bgTransitions.length
     ) {
+      bgTransitionIndex.current++;
       setColorFrom(bgTransitions[bgTransitionIndex.current].color);
       setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
-      bgTransitionIndex.current++;
+    } else if (
+      bgTransitionIndexes.includes(storyPart) &&
+      storyPart != bgTransitionIndexes[bgTransitionIndexes.length - 1] &&
+      scrollDirection.current === TScrollDirection.Up &&
+      bgTransitionIndex.current > 0
+    ) {
+      bgTransitionIndex.current--;
+      setColorFrom(bgTransitions[bgTransitionIndex.current].color);
+      setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
+    } else if (scrollDirectionChanged.current) {
+      if (
+        scrollDirection.current === TScrollDirection.Up &&
+        bgTransitionIndex.current > 0 &&
+        storyPart < bgTransitionIndexes[bgTransitionIndex.current]
+      ) {
+        setColorFrom(bgTransitions[bgTransitionIndex.current - 1].color);
+        setColorTo(bgTransitions[bgTransitionIndex.current].color);
+        bgTransitionIndex.current--;
+      }
+      if (
+        scrollDirection.current === TScrollDirection.Down &&
+        bgTransitionIndex.current + 2 < bgTransitions.length &&
+        storyPart > bgTransitionIndexes[bgTransitionIndex.current + 1]
+      ) {
+        setColorFrom(bgTransitions[bgTransitionIndex.current + 1].color);
+        setColorTo(bgTransitions[bgTransitionIndex.current + 2].color);
+        bgTransitionIndex.current++;
+      }
     }
+
+    setAnimateColorProgress(
+      Math.min(
+        (storyPart - bgTransitionIndexes[bgTransitionIndex.current]) /
+          (bgTransitionIndexes[bgTransitionIndex.current + 1] -
+            bgTransitionIndexes[bgTransitionIndex.current]),
+        1
+      )
+    );
   }, [storyPart]);
 
   useEffect(() => {
@@ -161,9 +247,7 @@ export default function MyXTheVampireSlayer() {
     setBgColor,
     false,
     0,
-    (storyPart - bgTransitionIndexes[bgTransitionIndex.current]) /
-      (bgTransitionIndexes[bgTransitionIndex.current + 1] -
-        bgTransitionIndexes[bgTransitionIndex.current])
+    animateColorProgress
   );
 
   return (
@@ -204,6 +288,8 @@ export default function MyXTheVampireSlayer() {
             </h2>
           </div>
         ))}
+
+        {effectTransitions.map((transition) => transition.effect)}
       </div>
 
       <div>

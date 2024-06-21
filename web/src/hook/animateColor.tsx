@@ -18,8 +18,8 @@ export function useAnimateColor(
 
   useEffect(() => {
     if (progress !== undefined) {
-      const opacityOne = progress;
-      const opacityTwo = 1 - opacityOne;
+      const opacityOne = 1 - progress;
+      const opacityTwo = progress;
       setColor(blendColors(colorFrom, colorTo, opacityOne, opacityTwo));
       return;
     }
