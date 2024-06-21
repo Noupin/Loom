@@ -3,16 +3,22 @@ import { cn } from "../helper/cn";
 type SpotlightProps = {
   className?: string;
   fill?: string;
+  transformMatrix?: string;
 };
 
-export const Spotlight = ({ className, fill }: SpotlightProps) => {
+export const Spotlight = ({
+  className,
+  fill,
+  transformMatrix = "matrix(0.822377 -0.568943 0.568943 0.822377 1155.12 2291.09)",
+}: SpotlightProps) => {
   return (
     <svg
       className={cn(
-        "animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
+        "animate-spotlight pointer-events-none absolute z-[1] top-0 left-0 h-full w-full",
         className
       )}
       xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
       viewBox="0 0 3787 2842"
       fill="none"
     >
@@ -22,7 +28,7 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
           cy="273.501"
           rx="1924.71"
           ry="273.501"
-          transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
+          transform={transformMatrix}
           fill={fill || "white"}
           fillOpacity="0.21"
         ></ellipse>

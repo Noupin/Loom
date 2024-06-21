@@ -10,6 +10,7 @@ import { Vortex } from "../component/Vortex";
 import { AuroraBackground } from "../component/Aurora";
 import { motion } from "framer-motion";
 import { STORIES } from "../Stories";
+import { Spotlight } from "../component/Spotlight";
 
 interface IEffectTransition {
   startTransition: number;
@@ -74,7 +75,9 @@ const storyParts = [
   // Fade red dots & spotlight out
   "I know what I have to do. I am not a monster; this is the job. Turning each and every one to ash.",
   // Flip through last word in \"I am ___\"
-  "I am merciless. I am silent. I am professional.",
+  "I am merciless.",
+  "I am silent.",
+  "I am professional.",
   "I take in a deep breath through my nose. First he dies, then I will put her out of the misery of becoming a vampire.",
   // Fade to dark red background
   "The shot is easy to line up and the trigger yields to my finger's pressure. A bolt flies straight through where his cold heart is. He shrieks in pain.",
@@ -91,8 +94,8 @@ const storyParts = [
   'I flinch, "Not like this."',
   'Claire wipes a tear from her eye. "I just wanted more time with you, my love."',
   'I crawl backward, searching for my crossbow. "You know, every night, I will hunt you."',
-  // Highlight callback text
-  'She cocks her head to the side. "I look forward to finally being your love. Till your last breath."',
+  'She cocks her head to the side. "I look forward to finally being your love,"',
+  '"Till your last breath."',
   // Fade in green ovals behind layered behind frosted glass
   "I see my crossbow a few feet away. As she looms over me, her eyes dart back and forth.",
   // Transition eyes from green to red
@@ -119,13 +122,11 @@ export default function MyXTheVampireSlayer() {
     { index: 27, color: "#991b1b" },
     { index: 28, color: "#431407" },
     { index: 29, color: "#1c1917" },
-    // { index: 30, color: "#9a3412" },
-    // { index: 40, color: "#450a0a" },
-    // { index: 42, color: "#030712" },
-    // { index: 49, color: "#450a0a" },
-    // { index: 54, color: "#0f172a" },
-    // { index: 55, color: "#030712" },
-    // { index: 65, color: "#292524" },
+    { index: 32, color: "#292524" },
+    { index: 44, color: "#450a0a" },
+    { index: 46, color: "#0c0a09" },
+    { index: 56, color: "#0c0a09" },
+    { index: 57, color: "#4b5563" },
   ];
   const bgTransitionIndexes = bgTransitions.map(
     (transition) => transition.index
@@ -144,31 +145,10 @@ export default function MyXTheVampireSlayer() {
     purpleVortexFade: 1500,
     bgColorTransition: 1000,
     auroraFade: 1000,
+    eyeTransition: 1000,
   };
 
   const effectTransitions: IEffectTransition[] = [
-    {
-      startTransition: 1,
-      endTransition: 1,
-      effect: (
-        <div
-          className="absolute z-[-1] top-0 left-0 transition-opacity duration-100 flex w-full
-          h-full justify-center items-center"
-          style={{
-            opacity: storyPart === 1 ? 1 : 0,
-          }}
-        >
-          <SparklesCore
-            background="transparent"
-            minSize={0.3}
-            maxSize={1}
-            particleDensity={125}
-            className="w-full h-full"
-            particleColor="#57534e"
-          />
-        </div>
-      ),
-    },
     {
       startTransition: 17,
       endTransition: 18,
@@ -185,6 +165,7 @@ export default function MyXTheVampireSlayer() {
             rangeY={800}
             particleCount={500}
             baseHue={273}
+            rangeHue={25}
             opacity={(20 - storyPart) / (19 - 17)}
             backgroundColor="transparent"
           />
@@ -235,6 +216,102 @@ export default function MyXTheVampireSlayer() {
             alt="Cover photo"
             className="w-full h-full object-cover"
           />
+        </div>
+      ),
+    },
+    {
+      startTransition: 30,
+      endTransition: 31,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity
+        flex w-full h-full justify-center items-center"
+          style={{
+            transitionDuration: `${AnimationTiming.bgColorTransition}ms`,
+            opacity: storyPart >= 30 && storyPart <= 31 ? 1 : 0,
+          }}
+        >
+          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60" />
+          <img
+            src={
+              STORIES.filter(
+                (item) => item.link === "/my-x-the-vampire-slayer"
+              )[0].image
+            }
+            alt="Cover photo"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ),
+    },
+    // {
+    //   startTransition: 32,
+    //   endTransition: 34,
+    //   effect: (
+    //     <div
+    //       className="absolute z-[-1] top-0 left-0 transition-opacity
+    //     flex w-full h-full justify-center items-center overflow-hidden"
+    //       style={{
+    //         transitionDuration: `${AnimationTiming.bgColorTransition}ms`,
+    //         opacity: storyPart >= 32 && storyPart <= 34 ? 1 : 0,
+    //       }}
+    //     >
+    //       <Spotlight className="top-0 -left-40" fill="white" />
+    //     </div>
+    //   ),
+    // },
+    {
+      startTransition: 44,
+      endTransition: 44,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity duration-100 flex w-full
+          h-full justify-center items-center"
+          style={{
+            opacity: storyPart === 44 ? 1 : 0,
+          }}
+        >
+          <SparklesCore
+            background="transparent"
+            minSize={0.3}
+            maxSize={2}
+            particleDensity={500}
+            className="w-full h-full"
+            particleColor="#1c1917"
+          />
+        </div>
+      ),
+    },
+    {
+      startTransition: 53,
+      endTransition: 54,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 flex w-full
+          h-full justify-center items-center flex-col"
+          style={{
+            opacity: storyPart >= 53 && storyPart <= 54 ? 1 : 0,
+          }}
+        >
+          <div className="absolute top-0 left-0 w-full h-full backdrop-blur-xl" />
+          <div className="flex-[1]" />
+          <div className="flex flex-row">
+            <div
+              className="w-16 h-10 rounded-full mr-5 transition-colors"
+              style={{
+                backgroundColor: storyPart <= 53 ? "#365314" : "#991b1b",
+                transitionDuration: `${AnimationTiming.eyeTransition}ms`,
+              }}
+            />
+            <div
+              className="w-16 h-10 rounded-full ml-5 transition-colors"
+              style={{
+                backgroundColor: storyPart <= 53 ? "#365314" : "#991b1b",
+                transitionDuration: `${AnimationTiming.eyeTransition}ms`,
+              }}
+            />
+          </div>
+          <div className="flex-[2]" />
         </div>
       ),
     },
