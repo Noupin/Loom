@@ -34,7 +34,7 @@ export default function AndroidTragedy() {
       <div className="flex-[7] bg-white bg-opacity-5 rounded-lg m-5 px-5 py-4">
         <div className="flex flex-col justify-center items-center w-full h-full">
           <TypewriterEffect words={words} cursorClassName="bg-blue-300" />
-          <p className="mt-5">
+          <p className="mt-5 text-xs lg:text-md text-center">
             (I mean I wanna write and make a game first AND write this story so)
           </p>
         </div>
