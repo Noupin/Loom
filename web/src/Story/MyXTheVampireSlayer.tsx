@@ -16,7 +16,7 @@ interface IEffectTransition {
   effect: JSX.Element;
 }
 
-const baseSkinColor = "#7b5644";
+// const baseSkinColor = "#7b5644";
 const greenEyeColor = "#757752";
 const redEyeColor = "#991b1b";
 const storyPartRenderWindow = 2;

@@ -23,7 +23,7 @@ const Progress: React.FC<ProgressProps> = ({ current, max, scaleHeightBy }) => {
 
   return (
     <div
-      className="w-2 bg-black dark:bg-white dark:bg-opacity-25 bg-opacity-25
+      className="w-2 bg-black dark:bg-white dark:bg-opacity-25 bg-opacity-25 backdrop-blur-sm
     rounded-full flex items-start transition-colors"
       style={{
         height: `${Math.floor((scaleHeightBy || 1) * 5)}rem`,
