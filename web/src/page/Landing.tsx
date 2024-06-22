@@ -13,6 +13,7 @@ import LandingTextile from "../component/LandingTextile";
 import LandingControls from "../component/LandingControls";
 import { fuzzySearchStories } from "../helper/search";
 import { Config } from "../Config";
+import { TScrollDirection } from "../types/TScrollDirection";
 
 function Landing() {
   // State
@@ -51,7 +52,7 @@ function Landing() {
     itemSetInPlace: 300,
     overlayAnimation: 1000,
     expandedStoryFade: 1500,
-    quickScrollDelay: 100,
+    scrollDebounce: 100,
     offsetForSetInAfterRotation: 100,
     preSetInDelay: 500,
     noResults: 200,
@@ -114,44 +115,11 @@ function Landing() {
   ];
 
   const handleWheel = (event: WheelEvent) => {
-    if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
-    const scrollingDown = event.deltaY > 0;
-    // If at the end of the carousel or at the beginning, do not scroll
-    if (
-      (scrollingDown &&
-        carouselIndexRef.current >= filteredStories.length - 1) ||
-      (!scrollingDown && carouselIndexRef.current <= 0)
-    )
-      return;
-
-    if (isPipelineRunning.current) {
-      setCancelState(true);
+    if (event.deltaY > 0) {
+      scroll(TScrollDirection.Down);
+    } else {
+      scroll(TScrollDirection.Up);
     }
-    isScrollingRef.current = true;
-
-    if (
-      scrollingDown &&
-      carouselIndexRef.current < filteredStories.length - 1
-    ) {
-      resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) =>
-        getNextStoryIdx(currentIndex, filteredStories)
-      );
-      carouselIndexRef.current += 1;
-      setRotationAngle((prevAngle) => prevAngle - 90);
-    } else if (!scrollingDown && carouselIndexRef.current > 0) {
-      resetCarouselAnimations();
-      setFocusedStoryIndex((currentIndex) =>
-        getPreviousStoryIdx(currentIndex, filteredStories)
-      );
-      carouselIndexRef.current -= 1;
-      setRotationAngle((prevAngle) => prevAngle + 90);
-    }
-
-    //TODO: Temp fix for scrolling too fast for display to switch from none to flex
-    setTimeout(() => {
-      isScrollingRef.current = false;
-    }, AnimationTiming.quickScrollDelay);
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -159,16 +127,32 @@ function Landing() {
   };
 
   const handleTouchMove = (event: TouchEvent) => {
-    if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
     const touchEndY = event.touches[0].clientY;
     const touchDeltaY = touchStartY.current - touchEndY;
-    const scrollingDown = touchDeltaY > 0;
+
+    if (touchDeltaY > 0) {
+      scroll(TScrollDirection.Down);
+    } else {
+      scroll(TScrollDirection.Up);
+    }
+  };
+
+  const arrowKeyPressed = (event: KeyboardEvent) => {
+    if (event.key === "ArrowDown") {
+      scroll(TScrollDirection.Down);
+    } else if (event.key === "ArrowUp") {
+      scroll(TScrollDirection.Up);
+    }
+  };
+
+  const scroll = (direction: TScrollDirection) => {
+    if (isScrollingRef.current) return; // Prevent firing if scrolling is in progress
 
     // If at the end of the carousel or at the beginning, do not scroll
     if (
-      (scrollingDown &&
+      (direction === TScrollDirection.Down &&
         carouselIndexRef.current >= filteredStories.length - 1) ||
-      (!scrollingDown && carouselIndexRef.current <= 0)
+      (direction === TScrollDirection.Up && carouselIndexRef.current <= 0)
     )
       return;
 
@@ -178,7 +162,7 @@ function Landing() {
     isScrollingRef.current = true;
 
     if (
-      scrollingDown &&
+      direction === TScrollDirection.Down &&
       carouselIndexRef.current < filteredStories.length - 1
     ) {
       resetCarouselAnimations();
@@ -187,7 +171,10 @@ function Landing() {
       );
       carouselIndexRef.current += 1;
       setRotationAngle((prevAngle) => prevAngle - 90);
-    } else if (!scrollingDown && carouselIndexRef.current > 0) {
+    } else if (
+      direction === TScrollDirection.Up &&
+      carouselIndexRef.current > 0
+    ) {
       resetCarouselAnimations();
       setFocusedStoryIndex((currentIndex) =>
         getPreviousStoryIdx(currentIndex, filteredStories)
@@ -199,7 +186,7 @@ function Landing() {
     //TODO: Temp fix for scrolling too fast for display to switch from none to flex
     setTimeout(() => {
       isScrollingRef.current = false;
-    }, AnimationTiming.quickScrollDelay);
+    }, AnimationTiming.scrollDebounce);
   };
 
   useEffect(() => {
@@ -209,10 +196,12 @@ function Landing() {
 
   useEffect(() => {
     window.addEventListener("wheel", handleWheel);
+    window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove);
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", arrowKeyPressed);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
     };
@@ -291,9 +280,6 @@ function Landing() {
             )
         )}
       <div className="flex-1 justify-center items-center p-2 md:p-5 flex flex-row">
-        <div className="flex justify-start opacity-0 xl:opacity-100">
-          <MoveVertical strokeWidth={2} />
-        </div>
         <div
           className="flex-1 flex flex-col text-center transition-[opacity] items-center"
           style={{
