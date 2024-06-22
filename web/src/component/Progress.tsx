@@ -8,7 +8,11 @@ interface ProgressProps {
   scaleHeightBy?: number;
 }
 
-const Progress: React.FC<ProgressProps> = ({ current, max, scaleHeightBy }) => {
+export const Progress: React.FC<ProgressProps> = ({
+  current,
+  max,
+  scaleHeightBy,
+}) => {
   let heightPercentage = 0;
   let progressPercentage = 100;
 
@@ -47,5 +51,3 @@ const Progress: React.FC<ProgressProps> = ({ current, max, scaleHeightBy }) => {
     </div>
   );
 };
-
-export default Progress;
