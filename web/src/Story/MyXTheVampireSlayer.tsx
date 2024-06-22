@@ -330,11 +330,27 @@ export default function MyXTheVampireSlayer() {
   ];
 
   const handleWheel = (event: WheelEvent) => {
+    if (event.deltaY > 0) {
+      scroll(TScrollDirection.Down);
+    } else {
+      scroll(TScrollDirection.Up);
+    }
+  };
+
+  const arrowKeyPressed = (event: KeyboardEvent) => {
+    if (event.key === "ArrowDown") {
+      scroll(TScrollDirection.Down);
+    } else if (event.key === "ArrowUp") {
+      scroll(TScrollDirection.Up);
+    }
+  };
+
+  const scroll = (direction: TScrollDirection) => {
     if (scrollDirectionChanged) {
       scrollDirectionChanged.current = false;
     }
 
-    if (event.deltaY > 0) {
+    if (direction === TScrollDirection.Down) {
       if (scrollDirection.current === TScrollDirection.Up) {
         scrollDirectionChanged.current = true;
       }
@@ -402,10 +418,12 @@ export default function MyXTheVampireSlayer() {
   useEffect(() => {
     setLogoType(TLogo.LightLogo);
     window.addEventListener("wheel", handleWheel);
+    window.addEventListener("keydown", arrowKeyPressed);
     // window.addEventListener("touchstart", handleTouchStart);
     // window.addEventListener("touchmove", handleTouchMove);
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", arrowKeyPressed);
       // window.removeEventListener("touchstart", handleTouchStart);
       // window.removeEventListener("touchmove", handleTouchMove);
     };
