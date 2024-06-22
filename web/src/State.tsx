@@ -36,3 +36,13 @@ export const logoDimensionState = atom({
   key: "logoDimensionsState",
   default: 50,
 });
+
+export const autoScrollState = atom({
+  key: "autoScrollState",
+  default: false,
+});
+
+export const wpmState = atom({
+  key: "wpmState",
+  default: 183,
+});

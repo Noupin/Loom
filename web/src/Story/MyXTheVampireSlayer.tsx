@@ -1,5 +1,5 @@
-import { useSetRecoilState } from "recoil";
-import { logoState } from "../State";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { autoScrollState, logoState, wpmState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import Progress from "../component/Progress";
@@ -9,6 +9,7 @@ import { SparklesCore } from "../component/Sparkles";
 import { Vortex } from "../component/Vortex";
 import { AuroraBackground } from "../component/Aurora";
 import { STORIES } from "../Stories";
+import { wpmToMs } from "../helper/animation";
 
 interface IEffectTransition {
   startTransition: number;
@@ -249,11 +250,14 @@ const storyParts: JSX.Element[] = [
 
 export default function MyXTheVampireSlayer() {
   const setLogoType = useSetRecoilState(logoState);
+  const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState);
+  const wpm = useRecoilValue(wpmState);
   const scrollDirection = useRef(TScrollDirection.Down);
   const scrollDirectionChanged = useRef(false);
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
   const [storyPart, setStoryPart] = useState(18);
+  const usedManualScroll = useRef(false);
 
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
@@ -278,6 +282,15 @@ export default function MyXTheVampireSlayer() {
   const [colorFrom, setColorFrom] = useState(bgTransitions[0].color);
   const [colorTo, setColorTo] = useState(bgTransitions[1].color);
   const [animateColorProgress, setAnimateColorProgress] = useState(0);
+
+  useAnimateColor(
+    colorFrom,
+    colorTo,
+    setBgColor,
+    false,
+    0,
+    animateColorProgress
+  );
 
   const AnimationTiming = {
     fadeTextIn: 500,
@@ -499,17 +512,17 @@ export default function MyXTheVampireSlayer() {
 
   const handleWheel = (event: WheelEvent) => {
     if (event.deltaY > 0) {
-      scroll(TScrollDirection.Down);
+      manualScroll(TScrollDirection.Down);
     } else {
-      scroll(TScrollDirection.Up);
+      manualScroll(TScrollDirection.Up);
     }
   };
 
   const arrowKeyPressed = (event: KeyboardEvent) => {
     if (event.key === "ArrowDown") {
-      scroll(TScrollDirection.Down);
+      manualScroll(TScrollDirection.Down);
     } else if (event.key === "ArrowUp") {
-      scroll(TScrollDirection.Up);
+      manualScroll(TScrollDirection.Up);
     }
   };
 
@@ -521,10 +534,15 @@ export default function MyXTheVampireSlayer() {
     const touchEndY = event.touches[0].clientY;
     const touchDeltaY = touchStartY.current - touchEndY;
     if (touchDeltaY > 0) {
-      scroll(TScrollDirection.Down);
+      manualScroll(TScrollDirection.Down);
     } else {
-      scroll(TScrollDirection.Up);
+      manualScroll(TScrollDirection.Up);
     }
+  };
+
+  const manualScroll = (direction: TScrollDirection) => {
+    usedManualScroll.current = true;
+    scroll(direction);
   };
 
   const scroll = (direction: TScrollDirection) => {
@@ -551,8 +569,23 @@ export default function MyXTheVampireSlayer() {
 
     setTimeout(() => {
       isScrolling.current = false;
+      usedManualScroll.current = false;
     }, AnimationTiming.fadeTextIn);
   };
+
+  useEffect(() => {
+    setLogoType(TLogo.LightLogo);
+    window.addEventListener("wheel", handleWheel);
+    window.addEventListener("keydown", arrowKeyPressed);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", arrowKeyPressed);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, []);
 
   useEffect(() => {
     if (
@@ -604,32 +637,41 @@ export default function MyXTheVampireSlayer() {
     );
   }, [storyPart]);
 
-  useEffect(() => {
-    setLogoType(TLogo.LightLogo);
-    window.addEventListener("wheel", handleWheel);
-    window.addEventListener("keydown", arrowKeyPressed);
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", arrowKeyPressed);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-    };
-  }, []);
+  const getAutoScrollDelay = () => {
+    let childList = storyParts[storyPart].props.children;
+    if (typeof childList === "string") {
+      childList = [childList];
+    }
+
+    const children = childList.flatMap((child: string | JSX.Element) => {
+      if (typeof child === "string") {
+        return child.split(" ");
+      } else if (typeof child === "object") {
+        return child.props.children.split(" ");
+      }
+      return [];
+    });
+    console.log(children);
+
+    return (
+      AnimationTiming.fadeTextIn +
+      AnimationTiming.translateTextIn +
+      wpmToMs(wpm) * children.length
+    );
+  };
 
   useEffect(() => {
-    console.log(bgColor);
-  }, [bgColor]);
+    if (!autoScroll) return;
+    if (usedManualScroll.current) {
+      setAutoScroll(false);
+      return;
+    }
 
-  useAnimateColor(
-    colorFrom,
-    colorTo,
-    setBgColor,
-    false,
-    0,
-    animateColorProgress
-  );
+    setTimeout(() => {
+      if (!autoScroll) return;
+      scroll(TScrollDirection.Down);
+    }, getAutoScrollDelay());
+  }, [storyPart, autoScroll]);
 
   return (
     <main
@@ -660,7 +702,7 @@ export default function MyXTheVampireSlayer() {
                 }}
               >
                 <p
-                  className="text-lg lg:text-3xl text-center"
+                  className="text-lg lg:text-3xl text-center backdrop-blur-sm"
                   style={{
                     transitionDuration:
                       index === storyPart

@@ -225,7 +225,6 @@ export const Vortex = (props: VortexProps) => {
 
   useEffect(() => {
     setup();
-    console.log(backgroundColor);
     window.addEventListener("resize", () => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");

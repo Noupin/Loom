@@ -111,3 +111,10 @@ export const getAnimationTiming = (
 ) => {
   return isFocused ? timings[key] : timings[key] / 10;
 };
+
+export const wpmToMs = (wpm: number): number => {
+  const wordsPerSecond = wpm / 60;
+  const secondsPerWord = 1 / wordsPerSecond;
+  const millisecondsPerWord = secondsPerWord * 1000;
+  return millisecondsPerWord;
+};

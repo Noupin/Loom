@@ -6,6 +6,7 @@ import {
   Gauge,
   Moon,
   Mouse,
+  MouseOff,
   Sun,
   Volume2,
 } from "lucide-react";
@@ -13,7 +14,12 @@ import Button from "../component/Button";
 import { useEffect, useRef, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { useRecoilState } from "recoil";
-import { darkModeState, leftHandModeState } from "../State";
+import {
+  autoScrollState,
+  darkModeState,
+  leftHandModeState,
+  wpmState,
+} from "../State";
 import { Config } from "../Config";
 import ControlFrame from "../component/ControlFrame";
 
@@ -30,10 +36,10 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
 }) => {
   // Component state
   const [mainVolume, setMainVolume] = useState(50);
-  const [wpm, setWpm] = useState(183);
+  const [wpm, setWpm] = useRecoilState(wpmState);
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
-  const [, setAutoscroll] = useState(false);
+  const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState);
   const [_, setMuteMain] = useState(false);
   const [showExpandedControls, setShowExpandedControls] = useState(false);
   const incomingDarkModeRef = useRef(darkMode);
@@ -121,17 +127,21 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
               transitionDuration: `${AnimationTiming.controlsGrow}ms`,
             }}
           >
-            <ControlFrame className="p-1 w-fit cursor-pointer">
-              <Button
-                className=""
-                onClick={() => {
-                  setAutoscroll((current) => !current);
-                }}
-              >
-                <Mouse height={20} width={20} strokeWidth={1} />
-              </Button>
-              <div className="mx-2">Autoscroll</div>
-            </ControlFrame>
+            <Button
+              onClick={() => {
+                setAutoScroll((current) => !current);
+              }}
+            >
+              <ControlFrame className="p-1 w-fit cursor-pointer">
+                {autoScroll ? (
+                  <Mouse height={20} width={20} strokeWidth={1} />
+                ) : (
+                  <MouseOff height={20} width={20} strokeWidth={1} />
+                )}
+
+                <div className="mx-2">Autoscroll</div>
+              </ControlFrame>
+            </Button>
             <ControlFrame className="p-1 ml-2 w-fit cursor-pointer">
               <Gauge height={20} width={20} strokeWidth={1} />
               <input
