@@ -304,6 +304,7 @@ export default function MyXTheVampireSlayer() {
     dustFade: 1000,
     greenEyeFade: 1000,
     changingEyesFade: 1000,
+    scrollDebounce: 10,
   };
 
   const effectTransitions: IEffectTransition[] = [
@@ -546,7 +547,7 @@ export default function MyXTheVampireSlayer() {
   };
 
   const scroll = (direction: TScrollDirection) => {
-    // if (isScrolling.current) return;
+    if (isScrolling.current) return;
 
     isScrolling.current = true;
     if (scrollDirectionChanged) {
@@ -570,7 +571,7 @@ export default function MyXTheVampireSlayer() {
     setTimeout(() => {
       isScrolling.current = false;
       usedManualScroll.current = false;
-    }, AnimationTiming.fadeTextIn);
+    }, AnimationTiming.scrollDebounce);
   };
 
   useEffect(() => {
