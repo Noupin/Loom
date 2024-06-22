@@ -16,7 +16,7 @@ export const STORIES: IStory[] = [
     timeToRead: 6,
     genres: ["Gothic", "16+"],
     description:
-      "In a world where monsters roam, a terminally ill woman and her monster-hunting lover grapple with the fleeting nature of time and love.",
+      "A relentless vampire hunter battles his own physical and emotional wounds, torn between his love for his dying wife and his unyielding quest to eliminate vampires.",
     image:
       "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/dca445d6-e85b-4a14-b31a-5df34fca1ee4/width=1536,quality=90/ComfyUI_00801_2.jpeg",
     datePublished: "21June2024",
