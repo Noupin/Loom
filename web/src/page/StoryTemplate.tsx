@@ -120,10 +120,10 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
 
         <div className="flex flex-col transition-[width] dark:text-off overflow-hidden">
           <div
-            className="flex mb-[10px] transition-opacity"
+            className="flex mb-[10px] transition-[opacity, width]"
             style={{
               opacity: showExpandedControls ? "100%" : "0%",
-              width: showExpandedControls ? "100%" : "0%",
+              width: showExpandedControls ? "100%" : "0px",
               transitionDuration: `${AnimationTiming.controlsGrow}ms`,
             }}
           >
