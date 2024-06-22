@@ -36,7 +36,7 @@ const storyParts = [
   'After minutes of contemplation Claire finally breaks the silence. "How long can you keep this up?"',
   'I wince as I reach to cup Claire\'s face. "I have to keep going until I kill every last one of them. I\'ll hunt them till my final breath." I bring my hands back,  my right knee starts to bounce, and I grin, "I did hit him though. No one else can claim such an achievement. He knows our next meeting will seal his fate."',
   "Claire drops the alcohol rag, her eyes welling with tears. \"I... I can't keep doing this. I don't know how much more time I have. Can't you... Won't you... take a break?\" She pauses, then says softly, \"For me?\"",
-  'I don\'t want to meet her beautiful green eyes, now rimmed in red I\'m sure, but I force myself to. "I can\'t stop, Claire, not while a single vampire remains." I let out a breath, quickly changing the subject, "How was the therapy?"',
+  'I don\'t want to meet her beautiful green eyes, now rimmed in red from crying I\'m sure, but I force myself to. "I can\'t stop, Claire, not while a single vampire remains." I let out a breath, quickly changing the subject, "How was the therapy?"',
   'Claire scoffs. "Oh, I am almost done. Can\'t you tell from my hair?"',
   'She reaches to take off my gauntlet, but I pull my arm away. "I have to keep the armor on. I need to be ready when I wake, just in case."',
   "I grab a vial of shimmering purple serum from the table and inject myself.",
@@ -61,7 +61,7 @@ const storyParts = [
   "I am merciless.",
   "I am silent.",
   "I am professional.",
-  "I take in a deep breath through my nose. First he dies, then I will put her out of the misery of becoming a vampire.",
+  "I take in a deep breath through my nose. First, he dies, then I will put her out of the misery of becoming a vampire.",
   "The shot is easy to line up and the trigger yields to my finger's pressure. A bolt flies straight through where his cold heart is. He shrieks in pain.",
   'I slowly approach him as he says, "You never were a romantic, were you?"',
   '"What I am doesn\'t matter. What matters is there\'s one less bloodsucker out there," knowing this is the last time he will hear his name makes this moment even sweeter, "Dracula".',
@@ -86,6 +86,7 @@ export default function MyXTheVampireSlayer() {
   const setLogoType = useSetRecoilState(logoState);
   const scrollDirection = useRef(TScrollDirection.Down);
   const scrollDirectionChanged = useRef(false);
+  const isScrolling = useRef(false);
   const [storyPart, setStoryPart] = useState(0);
 
   const bgTransitionIndex = useRef(0);
@@ -292,6 +293,7 @@ export default function MyXTheVampireSlayer() {
             className="flex w-full h-full justify-center items-center flex-col transition-opacity"
             style={{
               opacity: storyPart >= 53 && storyPart <= 54 ? 1 : 0,
+              transitionDuration: `${AnimationTiming.changingEyesFade}ms`,
             }}
           >
             <div className="flex-[1]" />
@@ -346,6 +348,9 @@ export default function MyXTheVampireSlayer() {
   };
 
   const scroll = (direction: TScrollDirection) => {
+    if (isScrolling.current) return;
+
+    isScrolling.current = true;
     if (scrollDirectionChanged) {
       scrollDirectionChanged.current = false;
     }
@@ -363,6 +368,10 @@ export default function MyXTheVampireSlayer() {
       scrollDirection.current = TScrollDirection.Up;
       setStoryPart((current) => Math.max(current - 1, 0));
     }
+
+    setTimeout(() => {
+      isScrolling.current = false;
+    }, AnimationTiming.fadeTextIn);
   };
 
   useEffect(() => {
@@ -428,10 +437,6 @@ export default function MyXTheVampireSlayer() {
       // window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
-
-  // useEffect(() => {
-  //   console.log(storyPart);
-  // }, [storyPart]);
 
   useEffect(() => {
     console.log(bgColor);
