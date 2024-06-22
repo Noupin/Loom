@@ -39,6 +39,9 @@ module.exports = {
     animation: {
       aurora: "aurora 60s linear infinite",
       spotlight: "spotlight 2s ease .75s 1 forwards",
+      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;",
+      exaggeratedPulse:
+        "exaggeratedPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;",
     },
     keyframes: {
       aurora: {
@@ -57,6 +60,22 @@ module.exports = {
         "100%": {
           opacity: 1,
           transform: "translate(-50%,-40%) scale(1)",
+        },
+      },
+      pulse: {
+        "0%, 100%": {
+          opacity: 1,
+        },
+        "50%": {
+          opacity: 0.5,
+        },
+      },
+      exaggeratedPulse: {
+        "0%, 100%": {
+          opacity: 1,
+        },
+        "50%": {
+          opacity: 0.25,
         },
       },
     },
