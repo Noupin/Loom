@@ -87,6 +87,7 @@ export default function MyXTheVampireSlayer() {
   const scrollDirection = useRef(TScrollDirection.Down);
   const scrollDirectionChanged = useRef(false);
   const isScrolling = useRef(false);
+  const touchStartY = useRef(0);
   const [storyPart, setStoryPart] = useState(0);
 
   const bgTransitionIndex = useRef(0);
@@ -347,6 +348,20 @@ export default function MyXTheVampireSlayer() {
     }
   };
 
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartY.current = event.touches[0].clientY;
+  };
+
+  const handleTouchMove = (event: TouchEvent) => {
+    const touchEndY = event.touches[0].clientY;
+    const touchDeltaY = touchStartY.current - touchEndY;
+    if (touchDeltaY > 0) {
+      scroll(TScrollDirection.Down);
+    } else {
+      scroll(TScrollDirection.Up);
+    }
+  };
+
   const scroll = (direction: TScrollDirection) => {
     if (isScrolling.current) return;
 
@@ -428,13 +443,13 @@ export default function MyXTheVampireSlayer() {
     setLogoType(TLogo.LightLogo);
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("keydown", arrowKeyPressed);
-    // window.addEventListener("touchstart", handleTouchStart);
-    // window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", arrowKeyPressed);
-      // window.removeEventListener("touchstart", handleTouchStart);
-      // window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 

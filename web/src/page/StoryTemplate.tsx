@@ -103,7 +103,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
 
   return (
     <>
-      <div className="absolute bottom-[40px] w-full px-[20px] flex flex-row z-[1]">
+      <div className="absolute bottom-[20px] w-full px-[20px] flex flex-row z-[1]">
         <div
           className="ease-in-out"
           style={{
@@ -198,7 +198,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
             }}
           >
             <ControlFrame
-              className="flex p-1 cursor-pointer mb-2 mr-2 md:mb-0 transition-[flex-grow]"
+              className="flex p-1 cursor-pointer mr-2 transition-[flex-grow]"
               style={{
                 flexGrow: showExpandedControls ? 1 : 0,
                 transitionDuration: `${AnimationTiming.controlsGrow}ms`,
@@ -217,7 +217,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
               />
             </ControlFrame>
             <ControlFrame
-              className="flex p-1 cursor-pointer mb-2 md:mb-0 transition-[flex-grow]"
+              className="flex p-1 cursor-pointer transition-[flex-grow]"
               style={{
                 flexGrow: showExpandedControls ? 1 : 0,
                 transitionDuration: `${AnimationTiming.controlsGrow}ms`,
