@@ -11,6 +11,7 @@ import { AuroraBackground } from "../component/Aurora";
 import { STORIES } from "../Stories";
 import { wpmToMs } from "../helper/animation";
 import { GlassShatter } from "../component/GlassShatter";
+import { useSearchParams } from "react-router-dom";
 
 interface IEffectTransition {
   startTransition: number;
@@ -251,6 +252,8 @@ const storyParts: JSX.Element[] = [
 ];
 
 export default function MyXTheVampireSlayer() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const setLogoType = useSetRecoilState(logoState);
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState);
   const wpm = useRecoilValue(wpmState);
@@ -258,7 +261,9 @@ export default function MyXTheVampireSlayer() {
   const scrollDirectionChanged = useRef(false);
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
-  const [storyPart, setStoryPart] = useState(7);
+  const [storyPart, setStoryPart] = useState(
+    parseInt(searchParams.get("section") || "0")
+  );
   const usedManualScroll = useRef(false);
 
   const bgTransitionIndex = useRef(0);
@@ -612,6 +617,11 @@ export default function MyXTheVampireSlayer() {
       scroll(TScrollDirection.Down);
     }, getAutoScrollDelay());
   }, [storyPart, autoScroll]);
+
+  useEffect(() => {
+    // Update the URL when the story part changes
+    setSearchParams({ section: storyPart.toString() });
+  }, [storyPart, setSearchParams]);
 
   return (
     <main
