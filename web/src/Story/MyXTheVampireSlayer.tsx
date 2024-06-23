@@ -5,7 +5,7 @@ import { TLogo } from "../types/TLogo";
 import { Progress } from "../component/Progress";
 import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
-import { ParticleSystem } from "../component/Sparkles";
+import { ParticleSystem } from "../component/Particles";
 import { Vortex } from "../component/Vortex";
 import { AuroraBackground } from "../component/Aurora";
 import { STORIES } from "../Stories";
@@ -258,7 +258,7 @@ export default function MyXTheVampireSlayer() {
   const scrollDirectionChanged = useRef(false);
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
-  const [storyPart, setStoryPart] = useState(0);
+  const [storyPart, setStoryPart] = useState(7);
   const usedManualScroll = useRef(false);
 
   const bgTransitionIndex = useRef(0);
@@ -506,30 +506,50 @@ export default function MyXTheVampireSlayer() {
   }, []);
 
   useEffect(() => {
+    // Find the correct initial transition index based on the storyPart
+    const initialTransitionIndex = bgTransitionIndexes.findIndex(
+      (index) => index >= storyPart
+    );
+
+    // Set initial colorFrom and colorTo based on the initial transition index
+    if (initialTransitionIndex > 0) {
+      setColorFrom(bgTransitions[initialTransitionIndex - 1].color);
+      setColorTo(bgTransitions[initialTransitionIndex].color);
+      bgTransitionIndex.current = initialTransitionIndex - 1;
+    } else {
+      setColorFrom(bgTransitions[0].color);
+      setColorTo(bgTransitions[1].color);
+      bgTransitionIndex.current = 0;
+    }
+
     if (
       bgTransitionIndexes.includes(storyPart) &&
       storyPart != 0 &&
       scrollDirection.current === TScrollDirection.Down &&
       bgTransitionIndex.current + 2 < bgTransitions.length
     ) {
+      console.log("First if");
       bgTransitionIndex.current++;
       setColorFrom(bgTransitions[bgTransitionIndex.current].color);
       setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
     } else if (
+      (console.log("first else if"),
       bgTransitionIndexes.includes(storyPart) &&
-      storyPart != bgTransitionIndexes[bgTransitionIndexes.length - 1] &&
-      scrollDirection.current === TScrollDirection.Up &&
-      bgTransitionIndex.current > 0
+        storyPart != bgTransitionIndexes[bgTransitionIndexes.length - 1] &&
+        scrollDirection.current === TScrollDirection.Up &&
+        bgTransitionIndex.current > 0)
     ) {
       bgTransitionIndex.current--;
       setColorFrom(bgTransitions[bgTransitionIndex.current].color);
       setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
     } else if (scrollDirectionChanged.current) {
+      console.log("second else if");
       if (
         scrollDirection.current === TScrollDirection.Up &&
         bgTransitionIndex.current > 0 &&
         storyPart < bgTransitionIndexes[bgTransitionIndex.current]
       ) {
+        console.log("first inner if");
         setColorFrom(bgTransitions[bgTransitionIndex.current - 1].color);
         setColorTo(bgTransitions[bgTransitionIndex.current].color);
         bgTransitionIndex.current--;
@@ -539,11 +559,13 @@ export default function MyXTheVampireSlayer() {
         bgTransitionIndex.current + 2 < bgTransitions.length &&
         storyPart > bgTransitionIndexes[bgTransitionIndex.current + 1]
       ) {
+        console.log("second inner if");
         setColorFrom(bgTransitions[bgTransitionIndex.current + 1].color);
         setColorTo(bgTransitions[bgTransitionIndex.current + 2].color);
         bgTransitionIndex.current++;
       }
     }
+    console.log(colorFrom, colorTo, animateColorProgress);
 
     setAnimateColorProgress(
       Math.min(
