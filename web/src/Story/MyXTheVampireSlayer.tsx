@@ -620,7 +620,7 @@ export default function MyXTheVampireSlayer() {
                 }}
               >
                 <p
-                  className="text-lg lg:text-3xl text-center backdrop-blur-sm"
+                  className="text-lg lg:text-3xl text-center relative z-10"
                   style={{
                     transitionDuration:
                       index === storyPart
@@ -646,9 +646,10 @@ export default function MyXTheVampireSlayer() {
             return transition.effect;
           }
         })}
+        <div className="absolute inset-0 z-0 backdrop-blur-sm mask-gradient" />
       </div>
 
-      <div>
+      <div className="relative z-10">
         <Progress current={storyPart} max={storyParts.length - 1} />
       </div>
     </main>
