@@ -423,10 +423,11 @@ export default function MyXTheVampireSlayer() {
             minScale={0.6}
             maxScale={1}
             color="#e7e5e455"
-            rotationRange={180}
-            movementNoise={20}
-            animationDuration={100}
+            rotationRange={270}
+            movementNoise={10}
+            animationDuration={50}
             edgeNoise={2}
+            seed={42}
           />
         </div>
       ),
