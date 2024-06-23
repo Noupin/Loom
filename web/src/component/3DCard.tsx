@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "../helper/cn";
 import React, {
   createContext,

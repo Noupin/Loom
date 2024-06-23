@@ -5,11 +5,12 @@ import { TLogo } from "../types/TLogo";
 import { Progress } from "../component/Progress";
 import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
-import { SparklesCore } from "../component/Sparkles";
+import { ParticleSystem } from "../component/Sparkles";
 import { Vortex } from "../component/Vortex";
 import { AuroraBackground } from "../component/Aurora";
 import { STORIES } from "../Stories";
 import { wpmToMs } from "../helper/animation";
+import { GlassShatter } from "../component/GlassShatter";
 
 interface IEffectTransition {
   startTransition: number;
@@ -17,9 +18,6 @@ interface IEffectTransition {
   effect: JSX.Element;
 }
 
-// const baseSkinColor = "#7b5644";
-const greenEyeColor = "#a3e635";
-const redEyeColor = "#dc2626";
 const storyPartRenderWindow = 2;
 
 const storyParts: JSX.Element[] = [
@@ -46,10 +44,8 @@ const storyParts: JSX.Element[] = [
     in my condition she gasps. “Oh, my love.”
   </span>,
   <span>
-    I look into her beautiful{" "}
-    <span style={{ color: greenEyeColor }}>green</span> eyes as her hands
-    tremble. Her voice cracks. “You need to rest.” She forces a small smile.
-    “How’s the other guy?”
+    I look into her beautiful green eyes as her hands tremble. Her voice cracks.
+    “You need to rest.” She forces a small smile. “How’s the other guy?”
   </span>,
   <span>
     The lacerations all over my body burn, though I can’t help but smirk,
@@ -161,7 +157,7 @@ const storyParts: JSX.Element[] = [
     Instinct takes over, as I fire a bolt into the figure's side before I can
     think. As the figure turns, I recognize him instantly. Blood leaks from his
     neck where the bolt struck true. He brings the woman's face close to his
-    chest and gently lowers her to the ground. A pale bite mark on her neck,
+    chest and gently lowers her to the floor. A pale bite mark on her neck,
     bathed in the twilights’ gaze, pooling in the deep red of blood.
   </span>,
   <span>
@@ -240,10 +236,9 @@ const storyParts: JSX.Element[] = [
     forth.
   </span>,
   <span>
-    They transition from that beautiful{" "}
-    <span style={{ color: greenEyeColor }}>green</span> that I loved, to a{" "}
-    <span style={{ color: redEyeColor }}>red</span> as deep as the blood she
-    will endlessly hunger for. “You’re already there. Grab it,” she says.
+    They transition from that beautiful green that I loved, to a red as deep as
+    the blood she will endlessly hunger for. “You’re already there. Grab it,”
+    she says.
   </span>,
   <span>
     I lace my fingers around the stake. She says, “What would you do without
@@ -276,10 +271,9 @@ export default function MyXTheVampireSlayer() {
     { index: 22, color: "#450a0a" },
     { index: 23, color: "#1c1917" },
     { index: 28, color: "#450a0a" },
-    { index: 32, color: "#450a0a" },
-    { index: 35, color: "#262626" },
-    { index: 41, color: "#262626" },
-    { index: 42, color: "#525252" },
+    { index: 31, color: "#450a0a" },
+    { index: 37, color: "#44403c" },
+    { index: 42, color: "#262626" },
   ];
   const bgTransitionIndexes = bgTransitions.map(
     (transition) => transition.index
@@ -309,7 +303,8 @@ export default function MyXTheVampireSlayer() {
     auroraFade: 1000,
     eyeTransition: 1000,
     dustFade: 1000,
-    scrollDebounce: 10,
+    glassFade: 500,
+    scrollDebounce: 50,
   };
 
   const effectTransitions: IEffectTransition[] = [
@@ -395,13 +390,38 @@ export default function MyXTheVampireSlayer() {
             transitionDuration: `${AnimationTiming.dustFade}ms`,
           }}
         >
-          <SparklesCore
+          <ParticleSystem
             background="transparent"
             minSize={1}
-            maxSize={3}
-            particleDensity={500}
+            maxSize={4}
+            particleDensity={75}
             className="w-full h-full"
             particleColor="#1c1917"
+          />
+        </div>
+      ),
+    },
+    {
+      startTransition: 42,
+      endTransition: 42,
+      effect: (
+        <div
+          className="absolute z-[-1] top-0 left-0 transition-opacity flex w-full
+          h-full justify-center items-center"
+          style={{
+            opacity: storyPart === 42 ? 1 : 0,
+            transitionDuration: `${AnimationTiming.glassFade}ms`,
+          }}
+        >
+          <GlassShatter
+            numPieces={25}
+            minScale={0.6}
+            maxScale={1}
+            color="#e7e5e455"
+            rotationRange={180}
+            movementNoise={20}
+            animationDuration={100}
+            edgeNoise={2}
           />
         </div>
       ),

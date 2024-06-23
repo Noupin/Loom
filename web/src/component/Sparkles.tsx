@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Container, SingleOrMultiple } from "@tsparticles/engine";
@@ -16,8 +15,9 @@ type ParticlesProps = {
   speed?: number;
   particleColor?: string;
   particleDensity?: number;
+  shape?: string;
 };
-export const SparklesCore = (props: ParticlesProps) => {
+export const ParticleSystem = (props: ParticlesProps) => {
   const {
     id,
     className,
@@ -27,6 +27,7 @@ export const SparklesCore = (props: ParticlesProps) => {
     speed,
     particleColor,
     particleDensity,
+    shape,
   } = props;
   const [init, setInit] = useState(false);
   useEffect(() => {
@@ -263,7 +264,7 @@ export const SparklesCore = (props: ParticlesProps) => {
                 close: true,
                 fill: true,
                 options: {},
-                type: "circle",
+                type: shape || "circle",
               },
               size: {
                 value: {
