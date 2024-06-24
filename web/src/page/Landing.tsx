@@ -153,7 +153,6 @@ function Landing() {
   const handleTouchEnd = () => {
     const touchDeltaY = touchStartY.current - touchEndY.current;
     const touchDeltaX = touchStartX.current - touchEndX.current;
-    console.log(touchStartY.current, touchEndY.current, touchDeltaY);
 
     if (Math.abs(touchDeltaY) > Math.abs(touchDeltaX)) {
       if (touchDeltaY > Config.touchEventThreshold) {
@@ -222,7 +221,7 @@ function Landing() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("wheel", handleWheel);
+    window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove, { passive: false });

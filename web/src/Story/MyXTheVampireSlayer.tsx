@@ -538,7 +538,7 @@ export default function MyXTheVampireSlayer() {
 
   useEffect(() => {
     setLogoType(TLogo.LightLogo);
-    window.addEventListener("wheel", handleWheel);
+    window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
