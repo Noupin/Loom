@@ -2,7 +2,6 @@
 import "typeface-lateef";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 
-// Pages
 import Landing from "./page/Landing";
 import StoryTemplate from "./page/StoryTemplate";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
