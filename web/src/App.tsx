@@ -14,6 +14,7 @@ import {
   logoDimensionState,
   logoState,
   tempLogoState,
+  wpmState,
 } from "./State";
 import { getLogo, getTempLogo } from "./helper/chooseLogo";
 import { useEffect, useRef, useState } from "react";
@@ -33,6 +34,7 @@ export default function App() {
   const [leftHandMode, setLeftHandMode] = useRecoilState(leftHandModeState);
   const [logoDimension, setLogoDimension] = useRecoilState(logoDimensionState);
   const initialPageLoadRef = useRef(true);
+  const [wpm, setWpm] = useRecoilState(wpmState);
 
   const [logoSrc, setLogoSrc] = useState("");
 
@@ -50,12 +52,18 @@ export default function App() {
         const parsedLeftHandMode = JSON.parse(storedLeftHandMode);
         setLeftHandMode(parsedLeftHandMode);
       }
+      const storedWpm = localStorage.getItem("wpm");
+      if (storedWpm) {
+        const parsedWpm = JSON.parse(storedWpm);
+        setWpm(parsedWpm);
+      }
       return;
     }
 
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
     localStorage.setItem("leftHandMode", JSON.stringify(leftHandMode));
-  }, [darkMode, leftHandMode]);
+    localStorage.setItem("wpm", JSON.stringify(wpm));
+  }, [darkMode, leftHandMode, wpm]);
 
   useEffect(() => {
     const themeColorMeta = document.getElementById("theme-color-meta");

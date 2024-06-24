@@ -33,7 +33,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             transitionDuration: `${Config.leftHandModeSwitchDuration}ms`,
           }}
         />
-        <div className="flex flex-col md:flex-row min-w-fit px-2 md:px-5 z-[1]">
+        <div className="flex flex-col md:flex-row min-w-fit px-2 md:px-5 z-20">
           <ControlFrame
             className="p-1 w-fit cursor-pointer mb-2 md:mr-2 md:mb-0"
             onClick={() => setLeftHandMode((current) => !current)}

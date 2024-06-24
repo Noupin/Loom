@@ -50,7 +50,6 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
     flipSearchIcon: 100,
     expandSearch: 300,
     fadeSearchText: 100,
-    resultHoverBackgroundChange: 300,
     searchResultsHeight: 350,
   };
   const animations = [
@@ -155,8 +154,8 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
         }}
       >
         <div
-          className="relative flex justify-start px-3 py-2 box-content rounded-full transition-[width]
-          text-clip items center ease-in-out"
+          className="relative flex justify-start px-3 py-2 box-content rounded-full
+          transition-[width, background-color, color] text-off-500 dark:text-off text-clip items center ease-in-out"
           style={{
             width: expandSearchCondition ? "80%" : "25px",
             transitionDuration: `${Config.darkModeSwitchDuration}ms`,
@@ -185,18 +184,19 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
                 : "rotate(0deg)",
             }}
           />
-          {/* TODO: Fix animation time for dark mode switch */}
           <input
             ref={searchInputRef}
             type="text"
-            className="transition-[flex-grow, background-color, opacity] ml-1 placeholder-black placeholder-opacity-50
-            dark:placeholder-white dark:placeholder-opacity-50 bg-transparent border-none outline-none"
+            className="transition-[flex-grow, background-color, placeholder, opacity, color] ml-1
+            placeholder-black placeholder-opacity-50 dark:placeholder-white
+            dark:placeholder-opacity-50 bg-transparent border-none outline-none
+            dark:text-off text-off-500"
             placeholder="Search..."
             autoFocus
             style={{
               display: fadeSearchTextCondition ? "flex" : "none",
               flexGrow: fadeSearchTextCondition ? 1 : 0,
-              transitionDuration: `${AnimationTiming.fadeSearchText}ms`,
+              transitionDuration: `${Config.darkModeSwitchDuration}ms`,
             }}
             value={searchTerm}
             onChange={(e) => {
@@ -240,7 +240,7 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
                 cursor-pointer px-3 py-1 rounded-3xl transition-[background-color, opacity, color] ease-in-out
                 text-black dark:text-white"
                     style={{
-                      transitionDuration: `${AnimationTiming.resultHoverBackgroundChange}ms`,
+                      transitionDuration: `${Config.darkModeSwitchDuration}ms`,
                     }}
                     onClick={() => navigate(result.link)}
                   >

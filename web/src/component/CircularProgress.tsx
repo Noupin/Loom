@@ -14,12 +14,16 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   stroke = 2,
   minSegment = 30,
 }) => {
+  const segmentErrorOffset = 10;
+  const rotationErrorOffset =
+    ((segmentErrorOffset / 360) * segmentErrorOffset) / 2;
   const maxIndex = max - 1;
   const normalizedRadius = radius - stroke * 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const progress = maxIndex ? (current / maxIndex) * 100 : 0;
-  const segmentSize = Math.max(360 / max, minSegment);
-  const rotation = (progress / 100) * (360 - segmentSize);
+  const segmentSize = Math.max((360 - segmentErrorOffset) / max, minSegment);
+  const rotation =
+    (progress / (100 + rotationErrorOffset)) * (360 - segmentSize);
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -35,8 +39,12 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
       <svg height={radius * 2} width={radius * 2}>
         <g transform={`rotate(-90 ${radius} ${radius})`}>
           <circle
-            className="stroke-black dark:stroke-white dark:stroke-opacity-25 stroke-opacity-25"
+            className="stroke-black dark:stroke-white dark:stroke-opacity-25
+            stroke-opacity-25 transition-[stroke]"
             fill="transparent"
+            style={{
+              transition: `stroke ${Config.darkModeSwitchDuration}ms ease-in-out`,
+            }}
             strokeWidth={stroke}
             strokeOpacity={0.25}
             r={normalizedRadius}
@@ -55,7 +63,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
               style={{
                 transformOrigin: "center",
                 transform: `rotate(${rotation}deg)`,
-                transition: `stroke-dashoffset ${Config.progressMovementDuration}ms ease-in-out, transform ${Config.progressMovementDuration}ms ease-in-out`,
+                transition: `stroke ${Config.darkModeSwitchDuration}ms ease-in-out, stroke-dashoffset ${Config.progressMovementDuration}ms ease-in-out, transform ${Config.progressMovementDuration}ms ease-in-out`,
               }}
               r={normalizedRadius}
               cx={radius}
