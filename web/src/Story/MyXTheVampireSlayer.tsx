@@ -409,8 +409,8 @@ export default function MyXTheVampireSlayer() {
             baseHue={178}
             baseTTL={1200}
             rangeTTL={800}
-            baseSpeed={0.01}
-            rangeSpeed={0.005}
+            baseSpeed={0.0175}
+            rangeSpeed={0.01}
             rangeHue={0}
             saturation={13}
             lightness={7}
@@ -485,6 +485,7 @@ export default function MyXTheVampireSlayer() {
   };
 
   const handleTouchMove = (event: TouchEvent) => {
+    event.preventDefault();
     touchEndY.current = event.touches[0].clientY;
     touchEndX.current = event.touches[0].clientX;
   };
@@ -538,7 +539,7 @@ export default function MyXTheVampireSlayer() {
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("wheel", handleWheel);

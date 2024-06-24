@@ -16,7 +16,6 @@ import { TScrollDirection } from "../types/TScrollDirection";
 import { CircularProgress } from "../component/CircularProgress";
 
 function Landing() {
-  // State
   const setLogoType = useSetRecoilState(logoState);
   const [darkMode, setDarkMode] = useRecoilState(darkModeState);
   const [expandSearch, setExpandSearch] = useState(false);
@@ -41,7 +40,6 @@ function Landing() {
     isPipelineRunning
   );
 
-  // Animation
   const [animationState, setAnimationState] = useState<{
     [key: string]: TAnimateStatus;
   }>({
@@ -147,6 +145,7 @@ function Landing() {
   };
 
   const handleTouchMove = (event: TouchEvent) => {
+    event.preventDefault();
     touchEndY.current = event.touches[0].clientY;
     touchEndX.current = event.touches[0].clientX;
   };
@@ -226,7 +225,7 @@ function Landing() {
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("wheel", handleWheel);

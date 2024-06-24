@@ -94,6 +94,9 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
 
   useEffect(() => {
     incomingDarkModeRef.current = darkMode;
+  }, []);
+
+  useEffect(() => {
     if (!allowDarkMode || !useLightColorControls) {
       setDarkMode(true);
     }
