@@ -12,6 +12,7 @@ import { wpmToMs } from "../helper/animation";
 import { GlassShatter } from "../component/GlassShatter";
 import { useSearchParams } from "react-router-dom";
 import { CircularProgress } from "../component/CircularProgress";
+import { Config } from "../Config";
 
 interface IEffectTransition {
   startTransition: number;
@@ -279,7 +280,7 @@ export default function MyXTheVampireSlayer() {
     { index: 23, color: "#1c1917" },
     { index: 28, color: "#450a0a" },
     { index: 31, color: "#450a0a" },
-    { index: 37, color: "#44403c" },
+    { index: 37, color: "#292524" },
     { index: 42, color: "#262626" },
   ];
   const bgTransitionIndexes = bgTransitions.map(
@@ -311,7 +312,6 @@ export default function MyXTheVampireSlayer() {
     eyeTransition: 1000,
     dustFade: 1000,
     glassFade: 500,
-    scrollDebounce: 50,
   };
 
   const effectTransitions: IEffectTransition[] = [
@@ -496,7 +496,7 @@ export default function MyXTheVampireSlayer() {
     setTimeout(() => {
       isScrolling.current = false;
       usedManualScroll.current = false;
-    }, AnimationTiming.scrollDebounce);
+    }, Config.storyPageScrollDebounceDefault);
   };
 
   useEffect(() => {
@@ -518,17 +518,6 @@ export default function MyXTheVampireSlayer() {
     const initialTransitionIndex = bgTransitionIndexes.findIndex(
       (index) => index >= storyPart
     );
-
-    // Set initial colorFrom and colorTo based on the initial transition index
-    if (initialTransitionIndex > 0) {
-      setColorFrom(bgTransitions[initialTransitionIndex - 1].color);
-      setColorTo(bgTransitions[initialTransitionIndex].color);
-      bgTransitionIndex.current = initialTransitionIndex - 1;
-    } else {
-      setColorFrom(bgTransitions[0].color);
-      setColorTo(bgTransitions[1].color);
-      bgTransitionIndex.current = 0;
-    }
 
     if (
       bgTransitionIndexes.includes(storyPart) &&
@@ -571,6 +560,18 @@ export default function MyXTheVampireSlayer() {
         setColorFrom(bgTransitions[bgTransitionIndex.current + 1].color);
         setColorTo(bgTransitions[bgTransitionIndex.current + 2].color);
         bgTransitionIndex.current++;
+      }
+    } else {
+      // Set initial colorFrom and colorTo based on the initial transition index
+      if (initialTransitionIndex > 0) {
+        console.log(initialTransitionIndex);
+        setColorFrom(bgTransitions[initialTransitionIndex - 1].color);
+        setColorTo(bgTransitions[initialTransitionIndex].color);
+        bgTransitionIndex.current = initialTransitionIndex - 1;
+      } else {
+        setColorFrom(bgTransitions[0].color);
+        setColorTo(bgTransitions[1].color);
+        bgTransitionIndex.current = 0;
       }
     }
     console.log(colorFrom, colorTo, animateColorProgress);
@@ -644,7 +645,7 @@ export default function MyXTheVampireSlayer() {
             return (
               <div
                 key={index}
-                className="absolute left-0 right-0 top-0 px-12 h-full flex items-center
+                className="absolute left-0 right-0 top-0 px-16 h-full flex items-center
                 justify-center transition-opacity overflow-hidden"
                 style={{
                   zIndex: storyPart === index ? 1 : 0,

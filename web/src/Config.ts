@@ -6,4 +6,5 @@ export const Config = {
   progressMovementDuration: 300,
   searchResultsPaddingAndMarginHeight: 16,
   searchResultItemHeight: 32,
+  storyPageScrollDebounceDefault: 50,
 };
