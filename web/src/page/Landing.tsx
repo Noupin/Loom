@@ -3,7 +3,6 @@ import { darkModeState, logoState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import { ArrowDown } from "lucide-react";
-import { Progress } from "../component/Progress";
 import { IStory, STORIES } from "../Stories";
 import { TAnimateStatus } from "../types/TAnimation";
 import { getNextStoryIdx, getPreviousStoryIdx } from "../helper/carousel";
@@ -14,6 +13,7 @@ import LandingControls from "../component/LandingControls";
 import { fuzzySearchStories } from "../helper/search";
 import { Config } from "../Config";
 import { TScrollDirection } from "../types/TScrollDirection";
+import { CircularProgress } from "../component/CircularProgress";
 
 function Landing() {
   // State
@@ -306,9 +306,9 @@ function Landing() {
       />
 
       <div className="absolute h-full flex items-center right-2 md:right-4 z-10">
-        <Progress
+        <CircularProgress
           current={focusedStoryIndex}
-          max={Math.max(filteredStories.length - 1, 0)}
+          max={filteredStories.length}
         />
       </div>
     </main>

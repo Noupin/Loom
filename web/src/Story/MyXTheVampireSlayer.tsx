@@ -2,7 +2,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { autoScrollState, logoState, wpmState } from "../State";
 import { useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
-import { Progress } from "../component/Progress";
 import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
 import { ParticleSystem } from "../component/Particles";
@@ -12,6 +11,7 @@ import { STORIES } from "../Stories";
 import { wpmToMs } from "../helper/animation";
 import { GlassShatter } from "../component/GlassShatter";
 import { useSearchParams } from "react-router-dom";
+import { CircularProgress } from "../component/CircularProgress";
 
 interface IEffectTransition {
   startTransition: number;
@@ -264,7 +264,7 @@ export default function MyXTheVampireSlayer() {
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
   const [storyPart, setStoryPart] = useState(
-    parseInt(searchParams.get("section") || "0")
+    parseInt(searchParams.get("section") || "1") - 1
   );
   const usedManualScroll = useRef(false);
 
@@ -622,8 +622,9 @@ export default function MyXTheVampireSlayer() {
   }, [storyPart, autoScroll]);
 
   useEffect(() => {
+    if (storyPart <= 0) setStoryPart(0);
     // Update the URL when the story part changes
-    setSearchParams({ section: storyPart.toString() });
+    setSearchParams({ section: (storyPart + 1).toString() });
   }, [storyPart, setSearchParams]);
 
   return (
@@ -685,7 +686,7 @@ export default function MyXTheVampireSlayer() {
       </div>
 
       <div className="absolute h-full flex items-center right-2 md:right-4 z-10">
-        <Progress current={storyPart} max={storyParts.length - 1} />
+        <CircularProgress current={storyPart} max={storyParts.length} />
       </div>
     </main>
   );

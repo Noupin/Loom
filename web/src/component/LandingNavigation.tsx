@@ -142,11 +142,11 @@ const LandingNavigation: React.FC<LandingNavigationProps> = ({
       }}
     >
       <div className="flex-1" />
-      {/* <div className="flex-[2] flex text-center text-2xl flex-col lg:flex-row opacity-0 lg:opacity-100">
-        <div className="flex-1">Textiles</div>
+      <div className="flex-[2] flex text-center text-2xl flex-col lg:flex-row opacity-0 lg:opacity-100">
+        {/* <div className="flex-1">Textiles</div>
         <div className="flex-1">Genres</div>
-        <div className="flex-1">Platform</div>
-      </div> */}
+        <div className="flex-1">Platform</div> */}
+      </div>
       <div
         className="flex flex-col ml-5 justify-end items-end transition-[flex-grow] ease-in-out"
         style={{
