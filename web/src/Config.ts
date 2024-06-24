@@ -8,5 +8,5 @@ export const Config = {
   searchResultItemHeight: 32,
   touchEventThreshold: 30,
   wheelEventThreshold: 7,
-  trackPadEventThreshold: 14,
+  trackPadEventThreshold: 28,
 };
