@@ -139,16 +139,16 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>
     Fog rolls across the ground, and nature seems to still the closer I get to
-    his lair. The trees are barren, and and it seems life has abandoned the
+    his lair. The trees are barren, and it seems life has abandoned the
     unstable, rocky terrain.
   </span>,
   <span>
-    As I approach the castle, the fog pooling on the ground is tinged green by
-    the left over patches of grass. An ominous tapestry of crimson, amber, and
-    onyx fills the sky in the last moments before nightfall. The castle is
-    imposing, with long shadows growing softer as the sunset turns to twilight.
-    Echoes are amplified now, from the tiniest squeak of a mouse to the call of
-    a feeding crow. Yet one distinctly sounds like a hiss.
+    As I approach the castle, the fog pooled on the ground is tinged green by
+    the remaining patches of grass. An ominous tapestry of crimson, amber, and
+    onyx fills the sky in the last moments before nightfall. The castle looms,
+    with long shadows growing softer. Echoes are amplified now, from the tiniest
+    squeak of a mouse to the call of a feeding crow. Yet one distinctly sounds
+    like a hiss.
   </span>,
   <span>
     I carefully check around a corner and see two figures at the end of a long
@@ -159,8 +159,8 @@ const storyParts: JSX.Element[] = [
     Instinct takes over, as I fire a bolt into the figure's side before I can
     think. As the figure turns, I recognize him instantly. Blood leaks from his
     neck where the bolt struck true. He brings the woman's face close to his
-    chest and gently lowers her to the floor. A pale bite mark on her neck,
-    bathed in twilights’ gaze, pools with deep scarlet blood.
+    chest and gently lowers her to the floor. A bite mark on her pale neck,
+    bathed in twilight’s gaze, pools with deep scarlet blood.
   </span>,
   <span>
     I know what I have to do; this is the job. I am merciless. I am silent. I am
@@ -187,10 +187,11 @@ const storyParts: JSX.Element[] = [
     with my life. The stake must pierce his heart.
   </span>,
   <span>
-    I pull out a new crossbow bolt and fake a reload. He takes the bait and
-    races towards me. I shift my stance bracing for the impact and stick the
-    bolt in the path of his slashing hand. His shriek of pain rips through the
-    air, acting as a warning to every creature in this castle.
+    I pull out a new crossbow bolt and fake a reload. Like a predator sensing
+    weakness, he takes the bait and races towards me. I shift my stance bracing
+    for the impact and stick the bolt in the path of his slashing hand. His
+    shriek of pain rips through the air, acting as a warning to every creature
+    in this castle.
   </span>,
   <span>
     A warm feeling catches my attention on the outside of my right thigh. Blood
@@ -210,7 +211,7 @@ const storyParts: JSX.Element[] = [
     comes forth from beneath her snow white pallor.
   </span>,
   <span>
-    A wave of cold rolls over me from head to toe as I glance the womans eyes
+    A wave of cold rolls over me from head to toe as I glance the woman's eyes
     and see a twinge of familiar green. I dart my gaze away, not wanting to
     believe. My eyes land on the woman's hands, the very same hands that have
     put me together so many times. I slowly raise my gaze, hoping to disprove
