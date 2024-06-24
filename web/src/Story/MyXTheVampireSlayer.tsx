@@ -1,11 +1,10 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { autoScrollState, logoState, wpmState } from "../State";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { TLogo } from "../types/TLogo";
 import { useAnimateColor } from "../hook/animateColor";
 import { TScrollDirection } from "../types/TScrollDirection";
 import { ParticleSystem } from "../component/Particles";
-import { Vortex } from "../component/Vortex";
 import { AuroraBackground } from "../component/Aurora";
 import { STORIES } from "../Stories";
 import { wpmToMs } from "../helper/animation";
@@ -24,7 +23,7 @@ const storyPartRenderWindow = 2;
 
 const storyParts: JSX.Element[] = [
   <span>
-    My skin is shredded from the recent encounter with a vampire I’ve been
+    My skin is shredded after a recent encounter with the vampire I’ve been
     tracking. He managed to escape. I should have known better than to
     underestimate him, given his reputation. But next time, I won’t. Next time,
     I am going to turn that bloodsucker to dust.
@@ -86,8 +85,8 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>
     I don’t want to meet those eyes I love, now rimmed in red from crying I’m
-    sure, but I force myself to. “I can’t stop, Claire, not while a single
-    vampire remains.” I let out a breath, quickly changing the subject, “How was
+    sure, but I force myself to. “I can’t stop, Claire, not while a single one
+    of them remains.” I let out a breath, quickly changing the subject, “How was
     the therapy?”
   </span>,
   <span>She scoffs. “Oh, I am almost done. Can’t you tell from my hair?”</span>,
@@ -96,7 +95,7 @@ const storyParts: JSX.Element[] = [
     the armor on. I need to be ready when I wake, just in case.”
   </span>,
   <span>
-    I grab a vial of shimmering purple serum from the table and inject myself.
+    I pick up a vial of shimmering purple serum off the table and inject myself.
     My veins <span className="animate-pulse text-purple-300">pulse</span> with a
     faint glow before the light slowly fades. I am stilled, wishing the magic
     that helps me could heal her. “I wish I could be there with you, Claire.”
@@ -111,10 +110,9 @@ const storyParts: JSX.Element[] = [
     shifts.
   </span>,
   <span>
-    “He is a vampire, and you have cancer. Maybe his remains will help me
-    understand decay. This is how I can save you, and we can spend time
-    together. No vampires for me, no cancer for you, just us.” I bring the glass
-    to my lips.
+    “Maybe we can study him and find a cure. This is how I can save you, and we
+    can spend time together. No vampires for me, no cancer for you, just us.” I
+    bring the glass to my lips.
   </span>,
   <span>
     She lunges towards me, words tumbling out. “It’s been sitting for too long.
@@ -133,24 +131,24 @@ const storyParts: JSX.Element[] = [
     overtakes me.
   </span>,
   <span>
-    My eyes snap open, red light from the sunset bleeding through the cracks in
-    the shutters. The burning of the lacerations that previously riddled my body
-    is no longer noticeable. I have been asleep much longer than anticipated. I
-    know I have lost time in the hunt for him. I stand up, grab my crossbow, and
-    head towards the abandoned castle I tracked him to earlier.
+    My eyes snap open. The setting sun already bleeds through cracks in the
+    shutters. The burning of the lacerations that riddle my body has eased. I
+    have been asleep much longer than anticipated. I know I have lost time in
+    the hunt for him. I stand up, grab my crossbow, and head towards the
+    abandoned castle I tracked him to earlier.
   </span>,
   <span>
-    Fog is rolling across the ground and nature seems to have stilled the closer
-    I get to his lair. Trees barren and life seemingly wanting to escape from
-    the unstable rocky terrain.
+    Fog rolls across the ground, and nature seems to still the closer I get to
+    his lair. The trees are barren, and and it seems life has abandoned the
+    unstable, rocky terrain.
   </span>,
   <span>
-    As I approach the castle, the fog pooling on the ground is tinged green from
-    the little grass there is. The sky is an ominous tapestry of red, yellow,
-    and black from the setting sun. The castle is imposing, with long shadows
-    growing softer as the sunset turns to twilight. Echoes are amplified now,
-    from the rustle of mice to the cry of hawks, though one distinctly sounds
-    like a hiss.
+    As I approach the castle, the fog pooling on the ground is tinged green by
+    the left over patches of grass. An ominous tapestry of crimson, amber, and
+    onyx fills the sky in the last moments before nightfall. The castle is
+    imposing, with long shadows growing softer as the sunset turns to twilight.
+    Echoes are amplified now, from the tiniest squeak of a mouse to the call of
+    a feeding crow. Yet one distinctly sounds like a hiss.
   </span>,
   <span>
     I carefully check around a corner and see two figures at the end of a long
@@ -162,7 +160,7 @@ const storyParts: JSX.Element[] = [
     think. As the figure turns, I recognize him instantly. Blood leaks from his
     neck where the bolt struck true. He brings the woman's face close to his
     chest and gently lowers her to the floor. A pale bite mark on her neck,
-    bathed in the twilights’ gaze, pooling in the deep red of blood.
+    bathed in twilights’ gaze, pools with deep scarlet blood.
   </span>,
   <span>
     I know what I have to do; this is the job. I am merciless. I am silent. I am
@@ -272,14 +270,13 @@ export default function MyXTheVampireSlayer() {
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
     { index: 0, color: "#450a0a" },
-    { index: 1, color: "#422006" },
+    { index: 3, color: "#422006" },
     { index: 14, color: "#1e293b" },
     { index: 20, color: "#030712" },
     { index: 21, color: "#b45309" },
-    { index: 22, color: "#450a0a" },
-    { index: 23, color: "#1c1917" },
-    { index: 28, color: "#450a0a" },
-    { index: 31, color: "#450a0a" },
+    { index: 22, color: "#2D211D" },
+    { index: 23, color: "#2D211D" },
+    { index: 31, color: "#621414" },
     { index: 37, color: "#292524" },
     { index: 42, color: "#262626" },
   ];
@@ -327,13 +324,15 @@ export default function MyXTheVampireSlayer() {
             opacity: storyPart === 14 ? 1 : 0,
           }}
         >
-          <Vortex
+          <ParticleSystem
             rangeY={800}
             particleCount={500}
             baseHue={273}
             rangeHue={25}
-            opacity={(19 - storyPart) / (18 - 17)}
+            rangeSpeed={0.5}
+            opacity={storyPart}
             backgroundColor="transparent"
+            glow={true}
           />
         </div>
       ),
@@ -398,12 +397,20 @@ export default function MyXTheVampireSlayer() {
           }}
         >
           <ParticleSystem
-            background="transparent"
-            minSize={1}
-            maxSize={4}
-            particleDensity={75}
-            className="w-full h-full"
-            particleColor="#1c1917"
+            rangeY={1400}
+            particleCount={75}
+            baseRadius={4}
+            rangeRadius={3}
+            baseHue={178}
+            baseTTL={1200}
+            rangeTTL={800}
+            baseSpeed={0.01}
+            rangeSpeed={0.005}
+            rangeHue={0}
+            saturation={13}
+            lightness={7}
+            opacity={storyPart}
+            backgroundColor="transparent"
           />
         </div>
       ),
@@ -518,63 +525,16 @@ export default function MyXTheVampireSlayer() {
     const initialTransitionIndex = bgTransitionIndexes.findIndex(
       (index) => index >= storyPart
     );
-
-    if (
-      bgTransitionIndexes.includes(storyPart) &&
-      storyPart != 0 &&
-      scrollDirection.current === TScrollDirection.Down &&
-      bgTransitionIndex.current + 2 < bgTransitions.length
-    ) {
-      console.log("First if");
-      bgTransitionIndex.current++;
-      setColorFrom(bgTransitions[bgTransitionIndex.current].color);
-      setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
-    } else if (
-      (console.log("first else if"),
-      bgTransitionIndexes.includes(storyPart) &&
-        storyPart != bgTransitionIndexes[bgTransitionIndexes.length - 1] &&
-        scrollDirection.current === TScrollDirection.Up &&
-        bgTransitionIndex.current > 0)
-    ) {
-      bgTransitionIndex.current--;
-      setColorFrom(bgTransitions[bgTransitionIndex.current].color);
-      setColorTo(bgTransitions[bgTransitionIndex.current + 1].color);
-    } else if (scrollDirectionChanged.current) {
-      console.log("second else if");
-      if (
-        scrollDirection.current === TScrollDirection.Up &&
-        bgTransitionIndex.current > 0 &&
-        storyPart < bgTransitionIndexes[bgTransitionIndex.current]
-      ) {
-        console.log("first inner if");
-        setColorFrom(bgTransitions[bgTransitionIndex.current - 1].color);
-        setColorTo(bgTransitions[bgTransitionIndex.current].color);
-        bgTransitionIndex.current--;
-      }
-      if (
-        scrollDirection.current === TScrollDirection.Down &&
-        bgTransitionIndex.current + 2 < bgTransitions.length &&
-        storyPart > bgTransitionIndexes[bgTransitionIndex.current + 1]
-      ) {
-        console.log("second inner if");
-        setColorFrom(bgTransitions[bgTransitionIndex.current + 1].color);
-        setColorTo(bgTransitions[bgTransitionIndex.current + 2].color);
-        bgTransitionIndex.current++;
-      }
+    // Set initial colorFrom and colorTo based on the initial transition index
+    if (initialTransitionIndex > 0) {
+      setColorFrom(bgTransitions[initialTransitionIndex - 1].color);
+      setColorTo(bgTransitions[initialTransitionIndex].color);
+      bgTransitionIndex.current = initialTransitionIndex - 1;
     } else {
-      // Set initial colorFrom and colorTo based on the initial transition index
-      if (initialTransitionIndex > 0) {
-        console.log(initialTransitionIndex);
-        setColorFrom(bgTransitions[initialTransitionIndex - 1].color);
-        setColorTo(bgTransitions[initialTransitionIndex].color);
-        bgTransitionIndex.current = initialTransitionIndex - 1;
-      } else {
-        setColorFrom(bgTransitions[0].color);
-        setColorTo(bgTransitions[1].color);
-        bgTransitionIndex.current = 0;
-      }
+      setColorFrom(bgTransitions[0].color);
+      setColorTo(bgTransitions[1].color);
+      bgTransitionIndex.current = 0;
     }
-    console.log(colorFrom, colorTo, animateColorProgress);
 
     setAnimateColorProgress(
       Math.min(
@@ -600,7 +560,6 @@ export default function MyXTheVampireSlayer() {
       }
       return [];
     });
-    console.log(children);
 
     return (
       AnimationTiming.fadeTextIn +
@@ -675,12 +634,12 @@ export default function MyXTheVampireSlayer() {
           }
         })}
 
-        {effectTransitions.map((transition) => {
+        {effectTransitions.map((transition, index) => {
           if (
             storyPart >= transition.startTransition - storyPartRenderWindow &&
             storyPart <= transition.endTransition + storyPartRenderWindow
           ) {
-            return transition.effect;
+            return <Fragment key={index}>{transition.effect}</Fragment>;
           }
         })}
         <div className="absolute inset-0 z-0 backdrop-blur-sm mask-gradient" />

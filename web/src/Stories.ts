@@ -19,7 +19,7 @@ export const STORIES: IStory[] = [
       "A relentless vampire hunter battles his own physical and emotional wounds, torn between his love for his dying wife and his unyielding quest to eliminate vampires.",
     image:
       "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/dca445d6-e85b-4a14-b31a-5df34fca1ee4/width=1536,quality=90/ComfyUI_00801_2.jpeg",
-    datePublished: "23June2024",
+    datePublished: "24June2024",
     link: "/my-x-the-vampire-slayer",
   },
   {
