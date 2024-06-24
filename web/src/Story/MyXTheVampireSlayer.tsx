@@ -470,6 +470,7 @@ export default function MyXTheVampireSlayer() {
   };
 
   const handleTouchMove = (event: TouchEvent) => {
+    event.preventDefault();
     touchEndY.current = event.touches[0].clientY;
     touchEndX.current = event.touches[0].clientX;
   };
@@ -523,7 +524,7 @@ export default function MyXTheVampireSlayer() {
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("wheel", handleWheel);
