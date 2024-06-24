@@ -408,8 +408,8 @@ export default function MyXTheVampireSlayer() {
             baseHue={178}
             baseTTL={1200}
             rangeTTL={800}
-            baseSpeed={0.01}
-            rangeSpeed={0.005}
+            baseSpeed={0.0175}
+            rangeSpeed={0.01}
             rangeHue={0}
             saturation={13}
             lightness={7}
