@@ -150,7 +150,7 @@ function Landing() {
     touchEndX.current = event.touches[0].clientX;
   };
 
-  const handleTouchEnd = (event: TouchEvent) => {
+  const handleTouchEnd = () => {
     const touchDeltaY = touchStartY.current - touchEndY.current;
     const touchDeltaX = touchStartX.current - touchEndX.current;
     console.log(touchStartY.current, touchEndY.current, touchDeltaY);
