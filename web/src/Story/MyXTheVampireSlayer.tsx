@@ -266,6 +266,7 @@ export default function MyXTheVampireSlayer() {
   const touchStartX = useRef(0);
   const touchEndY = useRef(0);
   const touchEndX = useRef(0);
+  const accumulatedTrackPadScroll = useRef(0);
   const [storyPart, setStoryPart] = useState(
     parseInt(searchParams.get("section") || "1") - 1
   );
@@ -449,10 +450,24 @@ export default function MyXTheVampireSlayer() {
 
   const handleWheel = (event: WheelEvent) => {
     event.preventDefault();
-    if (event.deltaY > Config.wheelEventThreshold) {
-      manualScroll(TScrollDirection.Down);
-    } else if (event.deltaY < -Config.wheelEventThreshold) {
-      manualScroll(TScrollDirection.Up);
+    if (event.deltaMode === 1) {
+      if (event.deltaY > Config.wheelEventThreshold) {
+        manualScroll(TScrollDirection.Down);
+      } else if (event.deltaY < -Config.wheelEventThreshold) {
+        manualScroll(TScrollDirection.Up);
+      }
+    } else if (event.deltaMode === 0) {
+      accumulatedTrackPadScroll.current += event.deltaY;
+      // Handle trackpad
+      if (accumulatedTrackPadScroll.current > Config.trackPadEventThreshold) {
+        accumulatedTrackPadScroll.current = 0;
+        manualScroll(TScrollDirection.Down);
+      } else if (
+        accumulatedTrackPadScroll.current < -Config.trackPadEventThreshold
+      ) {
+        accumulatedTrackPadScroll.current = 0;
+        manualScroll(TScrollDirection.Up);
+      }
     }
   };
 
@@ -474,7 +489,7 @@ export default function MyXTheVampireSlayer() {
     touchEndX.current = event.touches[0].clientX;
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (event: TouchEvent) => {
     const touchDeltaY = touchStartY.current - touchEndY.current;
     const touchDeltaX = touchStartX.current - touchEndX.current;
 

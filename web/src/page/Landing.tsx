@@ -28,6 +28,7 @@ function Landing() {
   const touchStartX = useRef(0);
   const touchEndY = useRef(0);
   const touchEndX = useRef(0);
+  const accumulatedTrackPadScroll = useRef(0);
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -118,10 +119,25 @@ function Landing() {
   ];
 
   const handleWheel = (event: WheelEvent) => {
-    if (event.deltaY > 0) {
-      scroll(TScrollDirection.Down);
-    } else {
-      scroll(TScrollDirection.Up);
+    event.preventDefault();
+    if (event.deltaMode === 1) {
+      if (event.deltaY > Config.wheelEventThreshold) {
+        scroll(TScrollDirection.Down);
+      } else if (event.deltaY < -Config.wheelEventThreshold) {
+        scroll(TScrollDirection.Up);
+      }
+    } else if (event.deltaMode === 0) {
+      accumulatedTrackPadScroll.current += event.deltaY;
+      // Handle trackpad
+      if (accumulatedTrackPadScroll.current > Config.trackPadEventThreshold) {
+        accumulatedTrackPadScroll.current = 0;
+        scroll(TScrollDirection.Down);
+      } else if (
+        accumulatedTrackPadScroll.current < -Config.trackPadEventThreshold
+      ) {
+        accumulatedTrackPadScroll.current = 0;
+        scroll(TScrollDirection.Up);
+      }
     }
   };
 
@@ -135,9 +151,10 @@ function Landing() {
     touchEndX.current = event.touches[0].clientX;
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (event: TouchEvent) => {
     const touchDeltaY = touchStartY.current - touchEndY.current;
     const touchDeltaX = touchStartX.current - touchEndX.current;
+    console.log(touchStartY.current, touchEndY.current, touchDeltaY);
 
     if (Math.abs(touchDeltaY) > Math.abs(touchDeltaX)) {
       if (touchDeltaY > Config.touchEventThreshold) {
