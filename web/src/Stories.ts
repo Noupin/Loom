@@ -13,7 +13,7 @@ export const STORIES: IStory[] = [
   {
     title: "My X, the Vampire Slayer",
     contributors: ["Alexandre Cabello", "Noah Perkins"],
-    timeToRead: 6,
+    timeToRead: 10,
     genres: ["Gothic", "16+"],
     description:
       "A relentless vampire hunter battles his own physical and emotional wounds, torn between his love for his dying wife and his unyielding quest to eliminate vampires.",
@@ -25,7 +25,7 @@ export const STORIES: IStory[] = [
   {
     title: "Android Tragedy",
     contributors: ["Noah Perkins"],
-    timeToRead: 13,
+    timeToRead: 14,
     genres: ["Science Fiction", "Romance", "16+"],
     description: "Ha! You wish there was a summary ready.",
     image: "https://img.freepik.com/premium-photo/woman-rain_869640-17071.jpg",
