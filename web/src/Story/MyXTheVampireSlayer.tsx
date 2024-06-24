@@ -271,7 +271,7 @@ export default function MyXTheVampireSlayer() {
     parseInt(searchParams.get("section") || "1") - 1
   );
   const usedManualScroll = useRef(false);
-  const autoScrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const autoScrollTimeout = useRef<any>(null);
 
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
