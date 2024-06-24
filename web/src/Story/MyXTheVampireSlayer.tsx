@@ -271,6 +271,7 @@ export default function MyXTheVampireSlayer() {
     parseInt(searchParams.get("section") || "1") - 1
   );
   const usedManualScroll = useRef(false);
+  const autoScrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const bgTransitionIndex = useRef(0);
   const bgTransitions = [
@@ -505,6 +506,7 @@ export default function MyXTheVampireSlayer() {
 
   const manualScroll = (direction: TScrollDirection) => {
     usedManualScroll.current = true;
+    setAutoScroll(false);
     scroll(direction);
   };
 
@@ -599,14 +601,15 @@ export default function MyXTheVampireSlayer() {
   };
 
   useEffect(() => {
-    if (!autoScroll) return;
-    if (usedManualScroll.current) {
-      setAutoScroll(false);
+    if (
+      (!autoScroll || usedManualScroll.current) &&
+      autoScrollTimeout.current
+    ) {
+      clearTimeout(autoScrollTimeout.current);
       return;
     }
 
-    setTimeout(() => {
-      if (!autoScroll) return;
+    autoScrollTimeout.current = setTimeout(() => {
       scroll(TScrollDirection.Down);
     }, getAutoScrollDelay());
   }, [storyPart, autoScroll]);

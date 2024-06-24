@@ -131,6 +131,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
             }}
           >
             <Button
+              className="focus:outline-none"
               onClick={() => {
                 setAutoScroll((current) => !current);
               }}
@@ -145,7 +146,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
                 <div className="mx-2">Autoscroll</div>
               </ControlFrame>
             </Button>
-            <ControlFrame className="p-1 ml-2 w-fit cursor-pointer">
+            <ControlFrame className="p-1 ml-2 w-fit">
               <Gauge height={20} width={20} strokeWidth={1} />
               <input
                 type="number"
@@ -157,10 +158,10 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
               />
               <span>wpm</span>
               <div className="flex flex-col mx-2">
-                <Button onClick={incrementWpm}>
+                <Button onClick={incrementWpm} className="focus:outline-none">
                   <ChevronUp width={12} height={12} />
                 </Button>
-                <Button onClick={decrementWpm}>
+                <Button onClick={decrementWpm} className="focus:outline-none">
                   <ChevronDown width={12} height={12} />
                 </Button>
               </div>
@@ -172,6 +173,7 @@ const StoryTemplate: React.FC<IStoryTemplate> = ({
           >
             <ControlFrame className="p-1 w-fit cursor-pointer">
               <Button
+                className="focus:outline-none"
                 onClick={() => {
                   setMuteMain((current) => !current);
                 }}
