@@ -297,13 +297,6 @@ function Landing() {
           </span>
           <ArrowDown strokeWidth={2} />
         </div>
-        <div className="flex justify-end">
-          <Progress
-            current={focusedStoryIndex}
-            max={Math.max(filteredStories.length - 1, 0)}
-            transitionDuration={Config.darkModeSwitchDuration}
-          />
-        </div>
       </div>
       <LandingControls
         darkMode={darkMode}
@@ -311,6 +304,13 @@ function Landing() {
         focusedStoryIndex={focusedStoryIndex}
         filteredStories={filteredStories}
       />
+
+      <div className="absolute h-full flex items-center right-2 md:right-4 z-10">
+        <Progress
+          current={focusedStoryIndex}
+          max={Math.max(filteredStories.length - 1, 0)}
+        />
+      </div>
     </main>
   );
 }

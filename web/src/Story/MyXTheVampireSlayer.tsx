@@ -24,8 +24,9 @@ const storyPartRenderWindow = 2;
 const storyParts: JSX.Element[] = [
   <span>
     My skin is shredded from the recent encounter with a vampire I’ve been
-    tracking. He managed to escape, but next time he won’t be so lucky. Next
-    time, I am going to turn that bloodsucker to dust.
+    tracking. He managed to escape. I should have known better than to
+    underestimate him, given his reputation. But next time, I won’t. Next time,
+    I am going to turn that bloodsucker to dust.
   </span>,
   <span>
     I open the door to our home just in time to see Claire crushing sleeping
@@ -49,9 +50,9 @@ const storyParts: JSX.Element[] = [
     “You need to rest.” She forces a small smile. “How’s the other guy?”
   </span>,
   <span>
-    The lacerations all over my body burn, though I can’t help but smirk,
-    straightening up and exhaling sharply through my nose. “His escape was but a
-    temporary reprieve; his end is inevitable.”
+    I can still feel the lacerations searing across my body, though I can’t help
+    but smirk, straightening up and exhaling sharply through my nose. “His
+    escape was but a temporary reprieve; his end is inevitable.”
   </span>,
   <span>
     Her fingers trace the cuts on my body with all the care in the world. She
@@ -59,12 +60,11 @@ const storyParts: JSX.Element[] = [
     abdomen and bicep.
   </span>,
   <span>
-    She lingers around the places she most enjoys, even if they aren't touched
-    by blood. Just how she always does when tending to my wounds, and I don’t
-    mind one bit. It’s a small comfort, letting our minds wander and forgetting
-    everything for a moment. After cleaning the wounds, she sews my skin, adding
-    to the collection of scars strewn across my body, given to me by those
-    bloodsuckers.
+    She lingers around the places she most enjoys, just how she always does when
+    tending to my wounds, and I don’t mind one bit. It’s a small comfort,
+    letting our minds wander and being able to forget everything for a moment.
+    After cleaning the wounds, she sews my skin, adding to the collection of
+    scars strewn across my body, given to me by years of the hunt.
   </span>,
   <span>
     After minutes of contemplation Claire finally breaks the silence. “How long
@@ -105,8 +105,9 @@ const storyParts: JSX.Element[] = [
     can be with me, my love. There will always be more to hunt.”
   </span>,
   <span>
-    Once again, I respond with the answer I know she does now want to hear.
-    “Hopefully not for long,” I wink and as I pick up the water, she flinches.
+    Once again, I respond with the answer I know she does not want to hear.
+    “Hopefully not for long,” I say with a wink. As I pick up the water, she
+    shifts.
   </span>,
   <span>
     “He is a vampire, and you have cancer. Maybe his remains will help me
@@ -116,25 +117,26 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>
     She lunges towards me, words tumbling out. “It’s been sitting for too long.
-    Let me make it again.”
+    L-let me make it again.”
   </span>,
   <span>
     She prepares a new glass of water. I hear her crush a pill, mix the water,
     and bring it over to me. I take the glass of water from her and say, “One
-    pill. The sooner I will return to you.” I drink the mixture. It tastes
-    sweeter than usual. I smile at her. “Would you dim the lights please?”
+    pill. The sooner I will return to you.” I drink the mixture. I smile at her.
+    “Would you dim the lights please?”
   </span>,
   <span>
-    She moves to turn off the lights, and as I drift into a land of recurring
-    nightmares, I hear rustling and a soft creak. My last thought is a fleeting
-    curiosity about the tint of the drink before sleep finally overtakes me.
+    She moves to turn off the lights as I drift into a land of recurring
+    nightmares. I hear rustling and the soft creak of our door. My last thought
+    is a fleeting curiosity about the tint of the drink before sleep finally
+    overtakes me.
   </span>,
   <span>
-    My eyes snap open, red light bleeding through the cracks in the shutters.
-    The burning of the lacerations that previously riddled my body is no longer
-    noticeable. I have been asleep much longer than anticipated. I know I have
-    lost time in the hunt for him. I stand up, grab my crossbow, and head
-    towards the abandoned castle I tracked him to earlier.
+    My eyes snap open, red light from the sunset bleeding through the cracks in
+    the shutters. The burning of the lacerations that previously riddled my body
+    is no longer noticeable. I have been asleep much longer than anticipated. I
+    know I have lost time in the hunt for him. I stand up, grab my crossbow, and
+    head towards the abandoned castle I tracked him to earlier.
   </span>,
   <span>
     Fog is rolling across the ground and nature seems to have stilled the closer
@@ -162,8 +164,8 @@ const storyParts: JSX.Element[] = [
     bathed in the twilights’ gaze, pooling in the deep red of blood.
   </span>,
   <span>
-    I know what I have to do. This is the job. I am merciless. I am silent. I am
-    professional. I take in a deep breath through my nose. First, he dies, then
+    I know what I have to do; this is the job. I am merciless. I am silent. I am
+    professional. I take in a deep breath through my nose. First, he dies. Then
     I will put her out of the misery of becoming a vampire.
   </span>,
   <span>
@@ -198,8 +200,8 @@ const storyParts: JSX.Element[] = [
     my back and wrap my left arm around his. He tries to pull away from me
     anticipating the blow, but I push us both to the ground, my arm arcing as we
     go down. His back meets the floor with resonant crack, I drive the stake
-    directly into where I know his lifeless heart to be. Dracula dissipates into
-    a dark dune of dust.
+    directly into where I know his lifeless heart to be. Dracula is dead. He
+    dissipates into a dark dune of dust.
   </span>,
   <span>
     Weary now from blood loss, I snap my head as quickly as I can to the woman.
@@ -209,12 +211,12 @@ const storyParts: JSX.Element[] = [
     comes forth from beneath her snow white pallor.
   </span>,
   <span>
-    A wave of cold rolls over me from head to toe as I see a twinge of familiar
-    green from the corner of my eye. I quickly look away and my eyes land on the
-    woman's hands. To the very same hands that look like those that have put me
-    together so many times. I slowly raise my gaze, hoping to discredit what I
-    now suspect. I feel the color being siphoned from my face to match that of
-    the blanched skin that belongs to a rustling Claire.
+    A wave of cold rolls over me from head to toe as I glance the womans eyes
+    and see a twinge of familiar green. I dart my gaze away, not wanting to
+    believe. My eyes land on the woman's hands, the very same hands that have
+    put me together so many times. I slowly raise my gaze, hoping to disprove
+    what I now suspect. I feel the color being leached from my face to match
+    that of the blanched skin that belongs to a rustling Claire.
   </span>,
   <span>
     She knocks me back with a strength far surpassing my expectations, sending
@@ -682,7 +684,7 @@ export default function MyXTheVampireSlayer() {
         <div className="absolute inset-0 z-0 backdrop-blur-sm mask-gradient" />
       </div>
 
-      <div className="relative z-10">
+      <div className="absolute h-full flex items-center right-2 md:right-4 z-10">
         <Progress current={storyPart} max={storyParts.length - 1} />
       </div>
     </main>

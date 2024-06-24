@@ -4,7 +4,6 @@ import { Config } from "../Config";
 interface ProgressProps {
   current: number;
   max: number;
-  transitionDuration?: number;
   scaleHeightBy?: number;
 }
 
