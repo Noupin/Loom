@@ -263,6 +263,9 @@ export default function MyXTheVampireSlayer() {
   const scrollDirectionChanged = useRef(false);
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const touchEndY = useRef(0);
+  const touchEndX = useRef(0);
   const [storyPart, setStoryPart] = useState(
     parseInt(searchParams.get("section") || "1") - 1
   );
@@ -445,9 +448,10 @@ export default function MyXTheVampireSlayer() {
   ];
 
   const handleWheel = (event: WheelEvent) => {
-    if (event.deltaY > 0) {
+    event.preventDefault();
+    if (event.deltaY > Config.wheelEventThreshold) {
       manualScroll(TScrollDirection.Down);
-    } else {
+    } else if (event.deltaY < -Config.wheelEventThreshold) {
       manualScroll(TScrollDirection.Up);
     }
   };
@@ -462,15 +466,24 @@ export default function MyXTheVampireSlayer() {
 
   const handleTouchStart = (event: TouchEvent) => {
     touchStartY.current = event.touches[0].clientY;
+    touchStartX.current = event.touches[0].clientX;
   };
 
   const handleTouchMove = (event: TouchEvent) => {
-    const touchEndY = event.touches[0].clientY;
-    const touchDeltaY = touchStartY.current - touchEndY;
-    if (touchDeltaY > 0) {
-      manualScroll(TScrollDirection.Down);
-    } else {
-      manualScroll(TScrollDirection.Up);
+    touchEndY.current = event.touches[0].clientY;
+    touchEndX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const touchDeltaY = touchStartY.current - touchEndY.current;
+    const touchDeltaX = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(touchDeltaY) > Math.abs(touchDeltaX)) {
+      if (touchDeltaY > Config.touchEventThreshold) {
+        manualScroll(TScrollDirection.Down);
+      } else if (touchDeltaY < -Config.touchEventThreshold) {
+        manualScroll(TScrollDirection.Up);
+      }
     }
   };
 
@@ -501,10 +514,8 @@ export default function MyXTheVampireSlayer() {
       setStoryPart((current) => Math.max(current - 1, 0));
     }
 
-    setTimeout(() => {
-      isScrolling.current = false;
-      usedManualScroll.current = false;
-    }, Config.storyPageScrollDebounceDefault);
+    isScrolling.current = false;
+    usedManualScroll.current = false;
   };
 
   useEffect(() => {
@@ -513,11 +524,13 @@ export default function MyXTheVampireSlayer() {
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", arrowKeyPressed);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, []);
 

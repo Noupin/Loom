@@ -25,6 +25,9 @@ function Landing() {
   const [rotationAngle, setRotationAngle] = useState(0);
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const touchEndY = useRef(0);
+  const touchEndX = useRef(0);
   const isPipelineRunning = useRef(false);
   const [cancelState, setCancelState] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -124,16 +127,24 @@ function Landing() {
 
   const handleTouchStart = (event: TouchEvent) => {
     touchStartY.current = event.touches[0].clientY;
+    touchStartX.current = event.touches[0].clientX;
   };
 
   const handleTouchMove = (event: TouchEvent) => {
-    const touchEndY = event.touches[0].clientY;
-    const touchDeltaY = touchStartY.current - touchEndY;
+    touchEndY.current = event.touches[0].clientY;
+    touchEndX.current = event.touches[0].clientX;
+  };
 
-    if (touchDeltaY > 0) {
-      scroll(TScrollDirection.Down);
-    } else {
-      scroll(TScrollDirection.Up);
+  const handleTouchEnd = () => {
+    const touchDeltaY = touchStartY.current - touchEndY.current;
+    const touchDeltaX = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(touchDeltaY) > Math.abs(touchDeltaX)) {
+      if (touchDeltaY > Config.touchEventThreshold) {
+        scroll(TScrollDirection.Down);
+      } else if (touchDeltaY < -Config.touchEventThreshold) {
+        scroll(TScrollDirection.Up);
+      }
     }
   };
 
@@ -199,11 +210,13 @@ function Landing() {
     window.addEventListener("keydown", arrowKeyPressed);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", arrowKeyPressed);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [filteredStories]);
 
