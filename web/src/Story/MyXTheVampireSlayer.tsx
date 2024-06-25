@@ -97,8 +97,8 @@ const storyParts: JSX.Element[] = [
   <span>
     I pick up a vial of shimmering purple serum off the table and inject myself.
     My veins <span className="animate-pulse text-purple-300">pulse</span> with a
-    faint glow before the light slowly fades. I am stilled, wishing the magic
-    that helps me could heal her. “I wish I could be there with you, Claire.”
+    faint glow that gradually fades away. I am stilled, wishing the magic that
+    helps me could heal her. “I wish I could be there with you, Claire.”
   </span>,
   <span>
     She sighs, preparing to echo words we’ve exchanged countless times. “But you
@@ -127,8 +127,8 @@ const storyParts: JSX.Element[] = [
   <span>
     She moves to turn off the lights as I drift into a land of recurring
     nightmares. I hear rustling and the soft creak of our door. My last thought
-    is a fleeting curiosity about the tint of the drink before sleep finally
-    overtakes me.
+    is a fleeting curiosity about the tint of the drink before I am plunged into
+    that dark land.
   </span>,
   <span>
     My eyes snap open. The setting sun already bleeds through cracks in the
@@ -145,10 +145,10 @@ const storyParts: JSX.Element[] = [
   <span>
     As I approach the castle, the fog pooled on the ground is tinged green by
     the remaining patches of grass. An ominous tapestry of crimson, amber, and
-    onyx fills the sky in the last moments before nightfall. The castle looms,
-    with long shadows growing softer. Echoes are amplified now, from the tiniest
-    squeak of a mouse to the call of a feeding crow. Yet one distinctly sounds
-    like a hiss.
+    onyx fills the sky in the last moments preceding nightfall. The castle
+    looms, with long shadows growing softer. Echoes are amplified now, from the
+    tiniest squeak of a mouse to the call of a feeding crow. Yet one distinctly
+    sounds like a hiss.
   </span>,
   <span>
     I carefully check around a corner and see two figures at the end of a long
@@ -156,7 +156,7 @@ const storyParts: JSX.Element[] = [
     a cloaked figure is feeding.
   </span>,
   <span>
-    Instinct takes over, as I fire a bolt into the figure's side before I can
+    Instinct takes over, and I fire a bolt into the figure's side before I can
     think. As the figure turns, I recognize him instantly. Blood leaks from his
     neck where the bolt struck true. He brings the woman's face close to his
     chest and gently lowers her to the floor. A bite mark on her pale neck,
@@ -164,14 +164,14 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>
     I know what I have to do; this is the job. I am merciless. I am silent. I am
-    professional. I take in a deep breath through my nose. First, he dies. Then
-    I will put her out of the misery of becoming a vampire.
+    efficient. I take in a deep breath through my nose. First, he dies. Then I
+    will put her out of the misery of becoming a vampire.
   </span>,
   <span>
     The shot is easy to line up and the trigger yields to my finger’s pressure.
-    The bolt is on a path straight through where his cold heart is. Inches
-    before he would release a cry of pain, the vampire turns, sees the bolt, and
-    is swiftly on the other side of the room.
+    The bolt is on a path straight through where his cold heart is. Mere inches
+    away from him releasing a cry of pain, the vampire turns, sees the bolt, and
+    sweeps towards me, hand outstretched.
   </span>,
   <span>
     Before I can register the movement, his claws are inches from my throat. I
@@ -187,8 +187,8 @@ const storyParts: JSX.Element[] = [
     with my life. The stake must pierce his heart.
   </span>,
   <span>
-    I pull out a new crossbow bolt and fake a reload. Like a predator sensing
-    weakness, he takes the bait and races towards me. I shift my stance bracing
+    I pull out a new crossbow bolt for a faux reload. Like a predator sensing
+    weakness, he races towards me, taking the bait. I shift my stance bracing
     for the impact and stick the bolt in the path of his slashing hand. His
     shriek of pain rips through the air, acting as a warning to every creature
     in this castle.
@@ -225,7 +225,7 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>I flinch, “Not like this.”</span>,
   <span>
-    A tear silently streams down her face before she wipes it away. “I just
+    A tear silently streams down her face, which she quickly wipes away. “I just
     wanted more time with you, my love.”
   </span>,
   <span>I crawl backward, searching for my stake. “Claire. My love.”</span>,
@@ -601,11 +601,8 @@ export default function MyXTheVampireSlayer() {
   };
 
   useEffect(() => {
-    if (
-      (!autoScroll || usedManualScroll.current) &&
-      autoScrollTimeout.current
-    ) {
-      clearTimeout(autoScrollTimeout.current);
+    if (!autoScroll || usedManualScroll.current) {
+      if (autoScrollTimeout.current) clearTimeout(autoScrollTimeout.current);
       return;
     }
 
@@ -616,7 +613,9 @@ export default function MyXTheVampireSlayer() {
 
   useEffect(() => {
     if (storyPart <= 0) setStoryPart(0);
-    // Update the URL when the story part changes
+    if (storyPart >= storyParts.length - 1) setStoryPart(storyParts.length - 1);
+    if (!storyPart) setStoryPart(0);
+
     setSearchParams({ section: (storyPart + 1).toString() });
   }, [storyPart, setSearchParams]);
 
