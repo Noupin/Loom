@@ -26,5 +26,18 @@
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
   },
-  "svg.preview.background": "white"
+  "svg.preview.background": "white",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#EAAB24",
+    "activityBar.foreground": "#191a1a",
+    "activityBar.inactiveForeground": "#747878",
+    "titleBar.activeBackground": "#EAAB24",
+    "titleBar.activeForeground": "#191a1a",
+    "titleBar.border": "#EAAB24",
+    "titleBar.inactiveBackground": "#EAAB24",
+    "titleBar.inactiveForeground": "#191a1a",
+    "statusBar.background": "#EAAB24",
+    "statusBar.foreground": "#191a1a",
+    "statusBar.border": "#EAAB24"
+  }
 }
