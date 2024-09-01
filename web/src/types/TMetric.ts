@@ -1,3 +1,3 @@
 export enum TMetric {
-  TTFB = "TTFB",
+  TimeToFirstByte = "TimeToFirstByte",
 }
