@@ -1,0 +1,32 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": ["node_modules", ".git", "cdk.out", "cspell.json"],
+  "allowCompoundWords": true,
+  "patterns": [
+    {
+      "name": "camelCase",
+      "pattern": "[a-z]+(?:[A-Z][a-z]+)+"
+    },
+    {
+      "name": "kebab-case",
+      "pattern": "[a-z]+(?:-[a-z]+)+"
+    },
+    {
+      "name": "snake_case",
+      "pattern": "[a-z]+(?:_[a-z]+)+"
+    }
+  ],
+  "words": [
+    "Cabello",
+    "clsx",
+    "feryv",
+    "lateef",
+    "lerp",
+    "lucide",
+    "Makoto",
+    "Matsumoto",
+    "Mersenne",
+    "TAOCP"
+  ]
+}
