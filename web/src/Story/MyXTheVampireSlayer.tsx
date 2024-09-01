@@ -37,7 +37,7 @@ const storyParts: JSX.Element[] = [
     My dedication to Claire and my work have finally come together, and I can
     use what I love to save the one who I love. Yet it seems every time I am
     lucky enough to lay eyes on Claire, she has less hair than before. The
-    cancer is holding us both captive, tightening its grip on her, and one day
+    disease is holding us both captive, tightening its grip on her, and one day
     soon she won’t be able to breathe.
   </span>,
   <span>
@@ -87,7 +87,7 @@ const storyParts: JSX.Element[] = [
     I don’t want to meet those eyes I love, now rimmed in red from crying I’m
     sure, but I force myself to. “I can’t stop, Claire, not while a single one
     of them remains.” I let out a breath, quickly changing the subject, “How was
-    the therapy?”
+    the treatment?”
   </span>,
   <span>She scoffs. “Oh, I am almost done. Can’t you tell from my hair?”</span>,
   <span>
@@ -111,7 +111,7 @@ const storyParts: JSX.Element[] = [
   </span>,
   <span>
     “Maybe we can study him and find a cure. This is how I can save you, and we
-    can spend time together. No vampires for me, no cancer for you, just us.” I
+    can spend time together. No vampires for me, no disease for you, just us.” I
     bring the glass to my lips.
   </span>,
   <span>
