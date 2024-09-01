@@ -1,5 +1,4 @@
 import { Fn, Stack, StackProps } from "aws-cdk-lib";
-import { Distribution } from "aws-cdk-lib/aws-cloudfront";
 import {
   BuildSpec,
   LinuxBuildImage,
@@ -12,8 +11,6 @@ import {
   S3SourceAction,
   S3Trigger,
 } from "aws-cdk-lib/aws-codepipeline-actions";
-import { Rule } from "aws-cdk-lib/aws-events";
-import { CodePipeline } from "aws-cdk-lib/aws-events-targets";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
