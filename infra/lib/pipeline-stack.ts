@@ -83,9 +83,7 @@ export class LoomPipelineStack extends Stack {
               commands: [
                 "npm install -g aws-cdk",
                 "npm install",
-                "npx cdk deploy LoomStorageStack --require-approval never",
-                "npx cdk deploy LoomCloudfrontStack --require-approval never",
-                "npx cdk deploy LoomPipelineStack --require-approval never",
+                "npx cdk deploy --require-approval never",
               ],
             },
           },

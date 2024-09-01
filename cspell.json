@@ -1,7 +1,12 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": ["node_modules", ".git", "cdk.out", "cspell.json"],
+  "ignorePaths": [
+    "node_modules",
+    ".git",
+    "cdk.out",
+    "cspell.json"
+  ],
   "allowCompoundWords": true,
   "patterns": [
     {
@@ -27,6 +32,7 @@
     "Makoto",
     "Matsumoto",
     "Mersenne",
+    "OAIID",
     "TAOCP"
   ]
 }

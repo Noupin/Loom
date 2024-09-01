@@ -7,15 +7,22 @@ import { LoomPipelineStack } from "../lib/pipeline-stack";
 import { LoomMetricsStack } from "../lib/metrics-stack";
 
 const app = new App();
-new LoomStorageStack(app, "LoomStorageStack", {
+
+const storageStack = new LoomStorageStack(app, "LoomStorageStack", {
   description: "The storage stack for the Loom website",
 });
-new LoomCloudfrontStack(app, "LoomCloudfrontStack", {
+
+const cloudfrontStack = new LoomCloudfrontStack(app, "LoomCloudfrontStack", {
   description: "The hosting stack for the Loom website",
 });
-new LoomPipelineStack(app, "LoomPipelineStack", {
+cloudfrontStack.addDependency(storageStack);
+
+const pipelineStack = new LoomPipelineStack(app, "LoomPipelineStack", {
   description: "The pipeline stack for the Loom website",
 });
-new LoomMetricsStack(app, "LoomMetricsStack", {
+pipelineStack.addDependency(storageStack);
+pipelineStack.addDependency(cloudfrontStack);
+
+const metricsStack = new LoomMetricsStack(app, "LoomMetricsStack", {
   description: "The metrics stack for the Loom website",
 });
