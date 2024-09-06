@@ -106,6 +106,10 @@ export default function App() {
     }
   }, [windowSize]);
 
+  useEffect(() => {
+    console.log("initialized.");
+  }, []);
+
   return (
     <BrowserRouter>
       <Link to="/">

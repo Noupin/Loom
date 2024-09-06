@@ -50,34 +50,30 @@ function createMetrics(distributionId: string, bucketName: string) {
   };
 }
 
-function addWidgetsToDashboard(
-  dashboard: Dashboard,
-  metrics: any,
-  prefix: string
-) {
+function addWidgetsToDashboard(dashboard: Dashboard, metrics: any) {
   dashboard.addWidgets(
     new GraphWidget({
-      title: `${prefix} CloudFront Requests`,
+      title: "CloudFront Requests",
       left: [metrics.cloudFrontRequests],
     }),
     new GraphWidget({
-      title: `${prefix} CloudFront Total Error Rate`,
+      title: "CloudFront Total Error Rate",
       left: [metrics.cloudFrontTotalErrorRate],
     }),
     new GraphWidget({
-      title: `${prefix} CloudFront 4xx Error Rate`,
+      title: "CloudFront 4xx Error Rate",
       left: [metrics.cloudFront4xxErrorRate],
     }),
     new GraphWidget({
-      title: `${prefix} CloudFront 5xx Error Rate`,
+      title: "CloudFront 5xx Error Rate",
       left: [metrics.cloudFront5xxErrorRate],
     }),
     new GraphWidget({
-      title: `${prefix} S3 All Requests`,
+      title: "S3 All Requests",
       left: [metrics.s3AllRequests],
     }),
     new GraphWidget({
-      title: `${prefix} S3 4xx Errors`,
+      title: "S3 4xx Errors",
       left: [metrics.s3Errors],
     })
   );
@@ -96,11 +92,11 @@ export class LoomMetricsStack extends Stack {
 
     // Create log groups for dev and prod environments
     const devLogGroup = new LogGroup(this, "LoomDevLogGroup", {
-      logGroupName: "/aws/cloudfront/loom/dev",
+      logGroupName: "/aws/cloudfront/loom/dev/metrics",
       retention: RetentionDays.INFINITE,
     });
     const prodLogGroup = new LogGroup(this, "LoomProdLogGroup", {
-      logGroupName: "/aws/cloudfront/loom/prod",
+      logGroupName: "/aws/cloudfront/loom/prod/metrics",
       retention: RetentionDays.INFINITE,
     });
 
@@ -118,9 +114,9 @@ export class LoomMetricsStack extends Stack {
     const prodMetrics = createMetrics(distributionID, hostingBucketName);
 
     // Add widgets to the dev dashboard
-    addWidgetsToDashboard(devDashboard, devMetrics, "Dev");
+    addWidgetsToDashboard(devDashboard, devMetrics);
 
     // Add widgets to the prod dashboard
-    addWidgetsToDashboard(prodDashboard, prodMetrics, "Prod");
+    addWidgetsToDashboard(prodDashboard, prodMetrics);
   }
 }
